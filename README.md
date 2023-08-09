@@ -6,7 +6,7 @@ This Discord bot harnesses the power of OpenAI's GPT-4 model and provides additi
 
 Created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether it's for personal use, a group of friends, a study group, or project management, this bot has got you covered. 🌟🚀💻🎉
 
-Please note that the Discord Interpreter creates a server vulnerability, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
+Please note that the Discord Interpreter creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-04%204.48.30%20PM%20(1).png?raw=True">
 
