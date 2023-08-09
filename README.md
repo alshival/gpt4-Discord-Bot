@@ -1,4 +1,4 @@
-# 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀💻
+# 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
