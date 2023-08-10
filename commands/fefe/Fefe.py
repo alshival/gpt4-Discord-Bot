@@ -11,7 +11,7 @@ async def talk_to_fefe(ctx,message):
 
     for prompt, response in past_prompts:
         messages.extend([{'role': 'user', 'content': f"""Message:\n```\n{prompt}\n```\n"""}, {'role': 'assistant', 'content': response}])
-    messages.append({'role': 'user', 'content': f"""If it is a casual message, and you wish to express yourself with a gif, reply with `GIF: <search term>`. But try to stay on topic and use GIFs sparingly. \n Message:\n```\n{message}\n```\n"""})
+    messages.append({'role': 'user', 'content': f"""If it is a casual message, and you wish to express yourself with a gif, reply with `GIF: <search term>`. But use GIFs sparingly. Prioritize text-based responses. \n Message:\n```\n{message}\n```\n"""})
     
     # Abide to token limit:
     completion_limit = 1200
