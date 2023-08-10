@@ -95,8 +95,8 @@ Fine-tuning:
 {{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
     strings =  [x for x in vars.values() if (type(x) is str)]
     files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None]
+    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
     # Send the zcode back to the user
-
     with open(py_filename, 'w') as file:
         file.write(jsonl)
     # Send the .png file back

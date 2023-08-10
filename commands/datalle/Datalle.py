@@ -114,9 +114,11 @@ Here's the code:
 ```
 {extracted_code}
 ```
-'''
+'''    
+        with open(py_filename, 'w') as file:
+            file.write(jsonl)
 
-        await ctx.send(jsonl,embed=embed1)
+        await ctx.send("Error. Please see attached file.",file=discord.File(py_filename),embed=embed1)
         sys.stdout = original_stdout
         db = await create_connection()
         await store_prompt(db, ctx.author.name, prompt_prep, openai_model, jsonl, ctx.channel.id,ctx.channel.name,'')
@@ -137,12 +139,13 @@ Fine-tuning:
     # check if there are any files
     strings =  [x for x in vars.values() if (type(x) is str)]
     files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None] + [py_filename]
-    
-    await ctx.send(f'''
+    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
+    await send_chunks(ctx, f'''
 ```
 {output}
 ```
-''',files=[discord.File(k) for k in files_to_send],embed=embed1)
+''')
+    await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
     
     db = await create_connection()
     await store_prompt(db, ctx.author.name, prompt_prep, openai_model, extracted_code, ctx.channel.id,ctx.channel.name,'datalle')

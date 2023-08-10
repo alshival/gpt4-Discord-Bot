@@ -60,6 +60,7 @@ Here's the error:
     # check if there are any files
     strings =  [x for x in vars.values() if (type(x) is str)]
     files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None]
+    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
     #send results
     await send_results(ctx,output,embed1,files_to_send)
     

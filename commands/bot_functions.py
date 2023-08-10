@@ -149,3 +149,16 @@ async def send_chunks(ctx, text):
 
     for chunk in chunks:
         await ctx.send(chunk)
+
+# check file size
+async def file_size_ok(file_path):
+    # Get file size in bytes
+    file_size = os.path.getsize(file_path)
+    # Convert to megabytes
+    file_size_mb = file_size / (1024 * 1024)
+    # Check if file size is less than 25MB
+    if file_size_mb < 25:
+        return True
+    else:
+        return False
+    

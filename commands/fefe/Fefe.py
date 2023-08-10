@@ -11,7 +11,7 @@ async def talk_to_fefe(ctx,message):
 
     for prompt, response in past_prompts:
         messages.extend([{'role': 'user', 'content': f'Message:\n```\n{prompt}\n```\n'}, {'role': 'assistant', 'content': response}])
-    messages.append({'role': 'user', 'content': f'If you wish to make a joke and want to reply with a GIF, respond with `GIF: <search term>`. Otherwise, just respond normally. \n Message:\n```\n{message}\n```\n'})
+    messages.append({'role': 'user', 'content': f'If it is a casual message, you can reply with a GIF by responding with `GIF: <search term>`. But only do that if the moment is right. \n Message:\n```\n{message}\n```\n'})
     
     # Abide to token limit:
     completion_limit = 1200
@@ -36,16 +36,17 @@ async def talk_to_fefe(ctx,message):
     check_if_gif = re.search('GIF:',response_text)
     if check_if_gif:
         search_query = re.sub('.*GIF:','',response_text)
-        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=5')
+        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=7')
         data = gif_response.json()
         
         # Choose a random GIF from the results
-        if 'data' in data:
+        try:
             gif = random.choice(data['data'])
             response_text = gif['images']['original']['url']
-        else:
-            await ctx.send("I was going to respond with a GIF, but I couldn't find the right one.")
-            return
+        except exception as e:
+            response_text = "I was going to respond with a GIF, but I couldn't find the right one."
+            print(e)
+            
     if len(response_text) > 2000:
         await send_chunks(ctx, response_text)
     else:
