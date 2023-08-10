@@ -2,6 +2,7 @@ from app.config import *
 from commands.bot_functions import *
 
 async def talk_to_fefe(ctx,message):
+    completion_limit = 1250
     db = await create_connection()
     messages = []
     sample_prompts = [
@@ -19,7 +20,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="cute"'
+        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="anime cute"'
     },
     {
         'role': 'user',
@@ -35,7 +36,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="hello"'
+        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="anime hello"'
     },
     {
         'role':'user',
@@ -59,24 +60,35 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Wow. Don\'t give up! MEMORABLE=True GIF="cheer"'
+        'content':f'Wow. Don\'t give up! MEMORABLE=True GIF="anime cheer"'
+    },
+    {'role':'user',
+     'content':'love you, fefe ❤️'
+    },
+    {'role':'assistant',
+     'content':f'I love you too, {ctx.author.mention}! ❤️ MEMORABLE=True GIF="anime Blush"'
     }
 ]
 
+    enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
+    sample_string = json.dumps(sample_prompts)
+    sample_tokens = len(enc.encode(sample_string))
+
     messages.extend(sample_prompts)
 
+    # Check tokens for latest prompt
+    new_prompt = {"role": "user", "content": f"{ctx.author.mention}: {message}"}
+    latest_string = json.dumps(new_prompt)
+    latest_token = len(enc.encode(latest_string))
+
     # Load in past prompts
-    past_prompts = await fetch_prompts(db, ctx.channel.id, 10)
+    past_prompts = await fetch_prompts(db, ctx.channel.id, 7)
+    past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',completion_limit + latest_token + sample_tokens) 
+        
     messages.extend(past_prompts)
 
     # Load newest prompt
-    new_prompt = {"role": "user", "content": f"{ctx.author.mention}: {message}"}
-    messages.append({"role": "user", "content": f"For adding emotion to casual conversation, add gifs using `GIF=\"<search>\"`, e.g. `GIF=\"cute anime\"` or `GIF=\"Happy\"`.\n\n{ctx.author.mention}: {message}"})
-    
-    # Abide to token limit:
-    completion_limit = 1200
-    
-    messages = check_tokens(messages,model = 'gpt-3.5-turbo',completion_limit = 1200)
+    messages.append(new_prompt)
     
     # Generate a response using the 'gpt-3.5-turbo' model
     response = openai.ChatCompletion.create(
