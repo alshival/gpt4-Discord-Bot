@@ -10,8 +10,8 @@ async def talk_to_fefe(ctx,message):
     messages = []
 
     for prompt, response in past_prompts:
-        messages.extend([{'role': 'user', 'content': f'Message:\n```\n{prompt}\n```\n'}, {'role': 'assistant', 'content': response}])
-    messages.append({'role': 'user', 'content': f'If it is a casual message, you can reply with a GIF by responding with `GIF: <search term>`. But only do that if the moment is right. \n Message:\n```\n{message}\n```\n'})
+        messages.extend([{'role': 'user', 'content': f"""Message:\n```\n{prompt}\n```\n"""}, {'role': 'assistant', 'content': response}])
+    messages.append({'role': 'user', 'content': f"""If it is a casual message, and you wish to express yourself with a gif, reply with `GIF: <search term>`. But try to stay on topic and use GIFs sparingly. \n Message:\n```\n{message}\n```\n"""})
     
     # Abide to token limit:
     completion_limit = 1200
@@ -36,14 +36,19 @@ async def talk_to_fefe(ctx,message):
     check_if_gif = re.search('GIF:',response_text)
     if check_if_gif:
         search_query = re.sub('.*GIF:','',response_text)
-        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=7')
+        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=4')
         data = gif_response.json()
         
         # Choose a random GIF from the results
         try:
             gif = random.choice(data['data'])
             response_text = gif['images']['original']['url']
-        except exception as e:
+            await ctx.send(response_text)
+            # store the prompt
+            await store_prompt(db, ctx.author.name, message, openai_model, "Responded with GIF. Will not respond again with a GIF for a while.", ctx.channel.id,ctx.channel.name,source='GIFY')
+            await db.close()
+            return
+        except Exception as e:
             response_text = "I was going to respond with a GIF, but I couldn't find the right one."
             print(e)
             
