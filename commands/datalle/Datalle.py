@@ -63,12 +63,15 @@ request:
 """
     
     messages.append({'role': 'user', 'content': f'If there are any files you wish to return to the user, assign the filename a variable first before saving. Save any files to the directory `app/downloads/`: \n' + prompt_prep})
+
+    messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
+
     try: 
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
                 model=openai_model,
                 messages=messages,
-                max_tokens=1450,
+                max_tokens=data_viz_completion_limit,
                 n=1,
                 temperature=0.5,
                 top_p=1,

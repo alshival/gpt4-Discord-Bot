@@ -4,18 +4,25 @@ from commands.bot_functions import *
 async def talk_to_fefe(ctx,message):
     db = await create_connection()
     
-    past_prompts = await fetch_prompts(db, ctx.channel.id, 4)
+    past_prompts = await fetch_prompts(db, ctx.channel.id, 10)
+    # Need to check token limit. For `!fefe`, we are using 'gpt-3.5-turbo` until GPT4 scales and response time decreases.
+    # We will pull at most 8 chats. Then, we will check the tokens to see if it falls beneath gpt-3.5-turbo's 4096 limit.
     messages = []
 
     for prompt, response in past_prompts:
-        messages.extend([{'role': 'user', 'content': prompt}, {'role': 'assistant', 'content': response}])
-    messages.append({'role': 'user', 'content': message})
-
+        messages.extend([{'role': 'user', 'content': f'Message:\n```\n{prompt}\n```\n'}, {'role': 'assistant', 'content': response}])
+    messages.append({'role': 'user', 'content': f'If you wish to make a joke and want to reply with a GIF, respond with `GIF: <search term>`. Otherwise, just respond normally. \n Message:\n```\n{message}\n```\n'})
+    
+    # Abide to token limit:
+    completion_limit = 1200
+    
+    messages = check_tokens(messages,model = 'gpt-3.5-turbo',completion_limit = 1200)
+    
     # Generate a response using the 'gpt-3.5-turbo' model
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',
         messages=messages,
-        max_tokens=1200,
+        max_tokens=completion_limit,
         n=1,
         temperature=0.5,
         top_p=1,
@@ -25,6 +32,20 @@ async def talk_to_fefe(ctx,message):
 
     # Extract the response text and send it back to the user
     response_text = response['choices'][0]['message']['content']
+    # Check to see if it is a gif.
+    check_if_gif = re.search('GIF:',response_text)
+    if check_if_gif:
+        search_query = re.sub('.*GIF:','',response_text)
+        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=5')
+        data = gif_response.json()
+        
+        # Choose a random GIF from the results
+        if 'data' in data:
+            gif = random.choice(data['data'])
+            response_text = gif['images']['original']['url']
+        else:
+            await ctx.send("I was going to respond with a GIF, but I couldn't find the right one.")
+            return
     if len(response_text) > 2000:
         await send_chunks(ctx, response_text)
     else:

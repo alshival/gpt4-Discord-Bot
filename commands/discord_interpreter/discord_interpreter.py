@@ -19,12 +19,14 @@ async def discord_interpreter(interaction,message):
     messages = [item for sublist in messages for item in sublist]
 
     messages.append({'role': 'user', 'content': f'If there are any files you wish to return to the user, assign the filename a variable first before saving. Save any files to the directory `app/downloads/`:' + message})
+    
+    messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
 
     try:
         response = openai.ChatCompletion.create(
             model=openai_model,
             messages=messages,
-            max_tokens=1500,
+            max_tokens=data_viz_completion_limit,
             n=1,
             temperature=0.6,
             top_p=1,

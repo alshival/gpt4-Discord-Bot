@@ -120,3 +120,32 @@ async def delete_music_downloads(bot):
     directory = 'app/downloads'
     if os.path.exists(directory) and os.path.isdir(directory):
         delete_everything(directory)
+
+# Check tokens
+def check_tokens(jsonl, model,completion_limit):
+    enc = tiktoken.encoding_for_model(model)
+    messages_string = json.dumps(jsonl)
+    tokens = len(enc.encode(messages_string))
+
+    if model == 'gpt-3.5-turbo':
+        token_limit = 4096
+    if model == 'gpt-4':
+        token_limit = 8000
+    
+    while tokens > token_limit - completion_limit:
+        # Remove the first two messages from the JSON list
+        jsonl = jsonl[2:]
+        
+        # Update the messages string and token count
+        messages_string = json.dumps(jsonl)
+        tokens = len(enc.encode(messages_string))
+    
+    return jsonl
+# Used to abide by Discord's 2000 character limit.
+async def send_chunks(ctx, text):
+    chunk_size = 2000  # Maximum length of each chunk
+
+    chunks = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+
+    for chunk in chunks:
+        await ctx.send(chunk)
