@@ -35,7 +35,7 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 
 </html>
 
-Note that choropleth map are quite difficult to generate. Fefe currently only supports state-level data. She hasn't learned how to convert between long state name and state abbreviation yet.
+Note that choropleth map are quite difficult to generate. Fefe currently only supports state-level data. She hasn't learned how to convert between long state name and state abbreviation yet. She currently does will with long names, e.g. `New Jersey`.
 ## Usage
 
 - Use the command prefix `!` to interact with the bot:
