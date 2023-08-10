@@ -11,7 +11,7 @@ async def talk_to_fefe(ctx,message):
 
     for prompt, response in past_prompts:
         messages.extend([{'role': 'user', 'content': f"""Message:\n```\n{prompt}\n```\n"""}, {'role': 'assistant', 'content': response}])
-    messages.append({'role': 'user', 'content': f"""If it is a casual message, and you wish to express yourself with a gif, reply with `GIF: <search term>`. But use GIFs sparingly. Prioritize text-based responses. \n Message:\n```\n{message}\n```\n"""})
+    messages.append({'role': 'user', 'content': f"""Generate a text-based response or reply to casual conversations with `GIF: <search term>` to reply with a GIF. \n Message:\n```\n{message}\n```\n"""})
     
     # Abide to token limit:
     completion_limit = 1200
@@ -43,11 +43,6 @@ async def talk_to_fefe(ctx,message):
         try:
             gif = random.choice(data['data'])
             response_text = gif['images']['original']['url']
-            await ctx.send(response_text)
-            # store the prompt
-            await store_prompt(db, ctx.author.name, message, openai_model, "Responded with GIF. Will not respond again with a GIF for a while.", ctx.channel.id,ctx.channel.name,source='GIFY')
-            await db.close()
-            return
         except Exception as e:
             response_text = "I was going to respond with a GIF, but I couldn't find the right one."
             print(e)
