@@ -66,6 +66,7 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
 
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
+   - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
      
 ### Clone Repository
 - Clone the repository:
