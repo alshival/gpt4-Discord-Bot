@@ -71,7 +71,7 @@ async def talk_to_fefe(ctx,message):
 
     # Load newest prompt
     new_prompt = {"role": "user", "content": f"{ctx.author.mention}: {message}"}
-    messages.append(new_prompt)
+    messages.append({"role": "user", "content": f"For adding emotion to casual conversation, add gifs using `GIF=\"<search>\"`, e.g. `GIF=\"cute anime\"` or `GIF=\"Happy\"`.\n\n{ctx.author.mention}: {message}"})
     
     # Abide to token limit:
     completion_limit = 1200
@@ -114,7 +114,7 @@ async def talk_to_fefe(ctx,message):
     memorable = re.search("MEMORABLE=(True|False)",final_response)
     if memorable:
         memorable_value =  memorable.group(1)
-        print(f'memorable is {memorable_value}')
+        # print(f'memorable is {memorable_value}')
         if memorable_value == 'True':
             await store_memory(db,json.dumps(new_prompt))
             await store_memory(db,json.dumps({'role':'assistant','content':response_text}))
