@@ -23,30 +23,24 @@ async def Exeggute(ctx,python):
 
         exec(code_compiled,vars,vars)  # execute the code    
     except Exception as e:
-        jsonl = f"""
-####################
-Error
-####################
+        m = f"""
+Here's the error:
 ```
 {type(e).__name__} - {e}
 ```
-"""
-        await ctx.send(jsonl)
-        print(f"Error: {type(e).__name__} - {e}")
-        sys.stdout = original_stdout
-    
-        db = await create_connection()
-        await store_prompt(db, ctx.author.name, f"""
-Here's my python code:
+and here's the code:
 ```
 {extracted_code}
 ```
-Here's the error:
-```
-{e} 
-```
-""", openai_model, 'Noted.', ctx.channel.id,ctx.channel.name,'')
-        await db_conn.close()
+"""
+        pack = {{"role":"user","content":{m}}}
+        await ctx.send(m)
+        print(f"Error: {type(e).__name__} - {e}")
+        sys.stdout = original_stdout
+        db = await create_connection()
+        await store_prompt(db,json.dumps(pack),ctx.channel.id,ctx.channel.name)
+        await store_prompt(db,json.dumps({"role":"assistant","content":"Noted"}),ctx.channel.id,ctx.channel.name)
+        await db.close()
         return
     sys.stdout = original_stdout
     # Get the output
@@ -65,14 +59,18 @@ Here's the error:
     await send_results(ctx,output,embed1,files_to_send)
     
     db = await create_connection()
-    await store_prompt(db, ctx.author.name, f"""
-Here's my python code:
+    m = f"""
+Here's my code:
 ```
 {extracted_code}
 ```
-Here's the output:
+and here's the output:
 ```
-{output} 
+{output}
 ```
-""", openai_model, 'Noted.', ctx.channel.id,ctx.channel.name,'')
+"""
+    
+    pack = {"role":"user","content":m}
+    await store_prompt(db,json.dumps(pack),ctx.channel.id,ctx.channel.name)
+    await store_prompt(db,json.dumps({"role":"assistant","content":"Noted"}),ctx.channel.id,ctx.channel.name)
     await db.close()

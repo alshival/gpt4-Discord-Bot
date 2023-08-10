@@ -11,43 +11,64 @@ async def create_chat_history_table():
     cursor = await db.cursor()
     await cursor.execute("""
 CREATE TABLE IF NOT EXISTS chat_history
-    (username TEXT NOT NULL,
-    prompt TEXT NOT NULL,
-    model TEXT,
-    response TEXT,
+    (jsonl TEXT NOT NULL,
     channel_id TEXT,
     channel_name TEXT,
-    source TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
     """)
     await db.commit()
     await db.close()
 
 # Function to store a prompt
-async def store_prompt(db_conn,username,prompt,model,response,channel_id,channel_name,source):
+async def store_prompt(db_conn,jsonl,channel_id,channel_name):
     cursor = await db_conn.cursor()
     await cursor.execute("""
-INSERT INTO chat_history (username,prompt,model,response,channel_id,channel_name,source) VALUES (?,?,?,?,?,?,?) 
-""",(username,prompt,model,response,channel_id,channel_name,source))
+INSERT INTO chat_history (jsonl,channel_id,channel_name) VALUES (?,?,?) 
+""",(jsonl,channel_id,channel_name))
     await db_conn.commit()
+
+async def create_memories():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("""
+CREATE TABLE IF NOT EXISTS memories
+    (jsonl TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+    """)
+    await db.commit()
+    await db.close()
+
+# Function to store a prompt
+async def store_memory(db,jsonl):
+    cursor = await db.cursor()
+    await cursor.execute("""
+INSERT INTO memories (jsonl) VALUES (?) 
+""",(jsonl,))
+    await db.commit()
     
 # Function to fetch the last few prompts. Used to provide chat history to openAi.
-async def fetch_prompts(db_conn, channel_id, limit):
-    async with db_conn.cursor() as cursor:
-        query = """
-        SELECT prompt, response 
-        FROM (
-            SELECT prompt, response, timestamp 
-            FROM chat_history 
-            WHERE channel_id = ? 
-            ORDER BY timestamp DESC 
-            LIMIT ?
-        ) AS subquery 
-        ORDER BY timestamp ASC;
-        """
-        
-        await cursor.execute(query, (channel_id, limit,))
-        return await cursor.fetchall()
+async def fetch_prompts(db,channel_id,limit):
+    cursor = await db.cursor()
+    # Fetch the last few rows from the table for the given channel_id
+    await cursor.execute("""
+    select jsonl
+    from (
+        SELECT jsonl,timestamp FROM chat_history
+        WHERE channel_id = ?
+        ORDER BY timestamp DESC
+        LIMIT ?
+    ) AS subquery
+    order by timestamp asc
+    """, (channel_id, limit))
+    
+    # Fetch and load the json data from the selected rows
+    rows = await cursor.fetchall()
+    prompts = []
+    for row in rows:
+        json_data = json.loads(row[0])
+        prompts.append(json_data)
+    
+    return prompts
 
 # Get list of channels
 async def list_channels(bot):
@@ -151,7 +172,7 @@ async def send_chunks(ctx, text):
         await ctx.send(chunk)
 
 # check file size
-async def file_size_ok(file_path):
+def file_size_ok(file_path):
     # Get file size in bytes
     file_size = os.path.getsize(file_path)
     # Convert to megabytes

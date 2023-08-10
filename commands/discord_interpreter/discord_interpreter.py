@@ -63,7 +63,7 @@ async def discord_interpreter(interaction,message):
         print(message)
         print(e)
         print(extracted_code)
-        jsonl = f'''
+        m = f'''
 I ran into an Error: 
 ```
 {type(e).__name__} - {str(e)}
@@ -75,30 +75,32 @@ Here's the code:
 {extracted_code}
 ```
 '''
-
+        jsonl = {'role':'user','content':m}
         with open(py_filename, "w") as file:
-            file.write(jsonl)
+            file.write(m)
         await interaction.followup.send("I ran into an error.",files = [discord.File(py_filename)],embed=embed1)
         sys.stdout = original_stdout
-        db_conn = await create_connection()
-        await store_prompt(db_conn, interaction.user.name, message, openai_model, jsonl, interaction.channel_id,interaction.channel.name,'discord interpreter')
-        await db_conn.close()
+        db = await create_connection()
+        await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name)
+        await store_prompt(db,json.dumps({'role':'assistant','content':'noted'}),interaction.channel_id,interaction.channel.name)
+        await db.close()
         return
         
     sys.stdout = original_stdout
     output = captured_output.getvalue()
-    jsonl = f'''
+    m = f'''
 ################################################################
 Fine-tuning:
 ################################################################
 {{'role':'user','content':"""{r'' +message}"""}},
 {{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
+    jsonl = {'role':'user','content':message}
     strings =  [x for x in vars.values() if (type(x) is str)]
     files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None]
     files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
     # Send the zcode back to the user
     with open(py_filename, 'w') as file:
-        file.write(jsonl)
+        file.write(m)
     # Send the .png file back
     await interaction.followup.send(f'''
 ```
@@ -106,6 +108,7 @@ Fine-tuning:
 ```
 ''',files=[discord.File(x) for x in files_to_send] + [discord.File(py_filename)],embed=embed1)
         
-    db_conn = await create_connection()
-    await store_prompt(db_conn, interaction.user.name, message, openai_model, extracted_code, interaction.channel_id,interaction.channel.name,'')
-    await db_conn.close()
+    db = await create_connection()
+    await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name)
+    await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),interaction.channel_id,interaction.channel.name)
+    await db.close()

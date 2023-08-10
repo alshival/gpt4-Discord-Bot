@@ -8,6 +8,7 @@ bot = commands.Bot(command_prefix="!",intents=discord.Intents.all())
 
 from commands.bot_functions import *
 asyncio.get_event_loop().run_until_complete(create_chat_history_table())
+asyncio.get_event_loop().run_until_complete(create_memories())
 
 from commands.fefe import Fefe
 @bot.command()

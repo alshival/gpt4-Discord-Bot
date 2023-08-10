@@ -103,7 +103,7 @@ request:
         print(message)
         print(e)
         print(extracted_code)
-        jsonl = f'''
+        m = f'''
 I ran into an Error: 
 ```
 {type(e).__name__} - {str(e)}
@@ -115,27 +115,32 @@ Here's the code:
 {extracted_code}
 ```
 '''    
+        jsonl = {'role':'user','content':m}
         with open(py_filename, 'w') as file:
-            file.write(jsonl)
-
+            file.write(m)
         await ctx.send("Error. Please see attached file.",file=discord.File(py_filename),embed=embed1)
         sys.stdout = original_stdout
         db = await create_connection()
-        await store_prompt(db, ctx.author.name, prompt_prep, openai_model, jsonl, ctx.channel.id,ctx.channel.name,'')
+        await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name)
+        await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name)
         await db.close()
         return
+            
     sys.stdout = original_stdout
     # Get the output
     output = captured_output.getvalue()
-    jsonl = f'''
+          
+    m = [f'''
 ################################################################
 Fine-tuning:
 ################################################################
 {{'role':'user','content':"""\n{prompt_prep}\n"""}},
-{{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
-
+{{'role':'assistant','content':"""\n{extracted_code}\n"""}}
+'''][0]
+     
+    jsonl = {'role':'user','content':prompt_prep}
     with open(py_filename, 'w') as file:
-        file.write(jsonl)
+        file.write(m)
     # check if there are any files
     strings =  [x for x in vars.values() if (type(x) is str)]
     files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None] + [py_filename]
@@ -148,5 +153,6 @@ Fine-tuning:
     await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
     
     db = await create_connection()
-    await store_prompt(db, ctx.author.name, prompt_prep, openai_model, extracted_code, ctx.channel.id,ctx.channel.name,'datalle')
+    await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name)
+    await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name)
     await db.close()
