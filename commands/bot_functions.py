@@ -1,6 +1,7 @@
 from app.config import *
 import openai
 import aioduckdb
+import jsonlines
 
 # Create database 
 async def create_connection():
@@ -14,17 +15,29 @@ CREATE TABLE IF NOT EXISTS chat_history
     (jsonl TEXT NOT NULL,
     channel_id TEXT,
     channel_name TEXT,
+    source TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
     """)
     await db.commit()
     await db.close()
 
+# clear chat history
+async def clear_chat_history_db():
+    # Create a connection pool
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("DROP TABLE IF EXISTS chat_history")
+    await db.commit()
+    await db.close()
+
+    await create_chat_history_table()
+
 # Function to store a prompt
-async def store_prompt(db_conn,jsonl,channel_id,channel_name):
+async def store_prompt(db_conn,jsonl,channel_id,channel_name,source):
     cursor = await db_conn.cursor()
     await cursor.execute("""
-INSERT INTO chat_history (jsonl,channel_id,channel_name) VALUES (?,?,?) 
-""",(jsonl,channel_id,channel_name))
+INSERT INTO chat_history (jsonl,channel_id,channel_name,source) VALUES (?,?,?,?) 
+""",(jsonl,channel_id,channel_name,source))
     await db_conn.commit()
 
 async def create_memories():
@@ -47,7 +60,8 @@ INSERT INTO memories (jsonl) VALUES (?)
     await db.commit()
     
 # Function to fetch the last few prompts. Used to provide chat history to openAi.
-async def fetch_prompts(db,channel_id,limit):
+async def fetch_prompts(db,channel_id,limit,source=None):
+    
     cursor = await db.cursor()
     # Fetch the last few rows from the table for the given channel_id
     await cursor.execute("""
@@ -69,6 +83,104 @@ async def fetch_prompts(db,channel_id,limit):
         prompts.append(json_data)
     
     return prompts
+
+# Function to create reminder table
+async def create_reminders():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("""
+CREATE TABLE IF NOT EXISTS reminders
+    (username TEXT NOT NULL,
+    time TIMESTAMP NOT NULL,
+    note TEXT,
+    channel_id TEXT,
+    channel_name TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+    """)
+    await db.commit()
+    await db.close()
+    
+# Function to store a reminder
+async def store_reminder(db,username,reminder_time,note,channel_id,channel_name):
+    cursor = await db.cursor()
+    await cursor.execute("""
+INSERT INTO reminders (username,time,note,channel_id,channel_name) VALUES (?,?,?,?,?) 
+""",(username,reminder_time,note,channel_id,channel_name))
+    await db.commit()
+
+# 'delete_reminder' function deletes a reminder from the 'reminders' table using the reminder_id.
+async def delete_reminder(username,reminder_time,note,timestamp):
+    conn = await create_connection()
+    cursor = await conn.cursor()
+
+    await cursor.execute('DELETE FROM reminders WHERE username = ? AND time = ? AND note = ? AND timestamp = ?', (username, reminder_time,note,timestamp))
+    await conn.commit()
+    await conn.close()
+    
+# 'fetch_due_reminders' function fetches all reminders that are due to be sent.
+# It selects all reminders from the 'reminders' table where the reminder_time is less than or equal to the current timestamp.
+async def fetch_due_reminders():
+    conn = await create_connection()
+    cursor = await conn.cursor()
+
+    await cursor.execute('SELECT time, note,channel_id FROM reminders WHERE time <= CURRENT_TIMESTAMP')
+    reminders = await cursor.fetchall()
+
+    await conn.close()
+
+    return reminders
+
+# Clears out a user's reminders
+async def clear_user_reminders(interaction):
+    """Clears all reminders of the invoking user"""
+    conn = await create_connection()
+    cursor = await conn.cursor()
+    # Delete records from the reminders table where username is ctx.author.name
+    await cursor.execute("DELETE FROM reminders WHERE username=?", (str(interaction.user.name),))
+    await conn.commit()
+    await conn.close()
+    embed=discord.Embed(
+                #title="Sample Embed", 
+                #url="https://realdrewdata.medium.com/", 
+                description=f"Clear reminders.", 
+                color=discord.Color.blue())
+            
+    embed.set_author(name=f"{interaction.user.name}",
+                             icon_url=interaction.user.avatar)
+    await interaction.response.send_message('All your reminders have been cleared.',embed=embed)
+
+async def send_reminders(bot):
+    conn = await create_connection()
+    cursor = await conn.cursor()
+    # Send out the reminders
+    await cursor.execute('''
+    SELECT 
+        username, 
+        time, 
+        note, 
+        channel_id, 
+        channel_name,
+        timestamp
+    FROM reminders 
+    WHERE time is not null''')
+    
+    reminders = await cursor.fetchall()
+    
+    for reminder in reminders: 
+        username, reminder_time, note, channel_id, channel_name,timestamp = reminder
+        
+        if datetime.now() >= reminder_time:
+            channel = bot.get_channel(int(channel_id))
+            if channel is not None:
+                await channel.send(note)
+            else:
+                print(f"Channel with ID {channel_id} not found.")
+
+            await cursor.execute('DELETE FROM reminders WHERE username = ? AND timestamp = ?',
+                                 (username, timestamp,))
+
+    # Commit the changes here
+    await conn.commit()
 
 # Get list of channels
 async def list_channels(bot):
@@ -106,9 +218,8 @@ async def send_results(ctx, output, embed=None, files_to_send=[]):
     chunk_size = 2000  # Maximum length of each chunk
     
     response = f'''
-```
 {output}
-```'''
+'''
     
     chunks = [response[i:i+chunk_size] for i in range(0, len(response), chunk_size)]
     
@@ -162,6 +273,27 @@ def check_tokens(jsonl, model,completion_limit):
         tokens = len(enc.encode(messages_string))
     
     return jsonl
+
+# Used to abide by Discord's 2000 character limit.
+async def send_interactions(interaction, text,embed = None):
+    chunk_size = 2000  # Maximum length of each chunk
+
+    chunks = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+    if len(chunks) == 1:
+        if embed:
+            await interaction.followup.send(chunks[0],files=[discord.File(x) for x in files_to_send],embed=embed)
+        else:
+            await interaction.followup.send(chunks[0],files=[discord.File(x) for x in files_to_send],embed=embed)
+    else:
+        for chunk in chunks:
+            if chunk != chunks[len(chunks)]:
+                await interaction.followup.send(chunk)
+            else:
+                if embed:
+                    await interaction.followup.send(chunk,files = [discord.File(x) for x in files_to_send],embed=embed)
+                else:
+                    await interaction.followup.send(chunk,files = [discord.File(x) for x in files_to_send])
+                    
 # Used to abide by Discord's 2000 character limit.
 async def send_chunks(ctx, text):
     chunk_size = 2000  # Maximum length of each chunk
@@ -182,4 +314,3 @@ def file_size_ok(file_path):
         return True
     else:
         return False
-    

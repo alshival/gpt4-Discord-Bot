@@ -10,6 +10,9 @@ import re
 import requests
 import pandas as pd
 import json
+import jsonlines
+import ast
+from datetime import datetime,timedelta
 
 discord_bot_token = os.environ.get("DISCORD_BOT_TOKEN")
 
@@ -23,6 +26,28 @@ openai_model = 'gpt-4'
 # Abide to token limit:
 data_viz_completion_limit = 1500
 openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+# Used to generate datalle finetune data
+async def generate_dataviz_finetune_data(interaction):
+
+    from commands.datalle import finetune as finetune_datalle
+    from commands.discord_interpreter import finetune as finetune_interpreter
+
+    data = finetune_datalle.finetune + finetune_interpreter.finetune
+
+    result = []
+    
+    for i in range(0, len(data), 2):
+        if data[i]['role'] == 'user' and data[i+1]['role'] == 'assistant':
+            result.append({'prompt': data[i]['content'], 'completion': data[i+1]['content']})
+    
+    filename = "commands/finetune.jsonl"
+    
+    with jsonlines.open(filename, 'w') as fl:
+        for item in result:
+            fl.write(item)
+            
+    await interaction.followup.send("DATALL-E finetune data generation complete",file=discord.File(filename))
 
 ############################################
 # GIFY API config 

@@ -9,6 +9,7 @@ bot = commands.Bot(command_prefix="!",intents=discord.Intents.all())
 from commands.bot_functions import *
 asyncio.get_event_loop().run_until_complete(create_chat_history_table())
 asyncio.get_event_loop().run_until_complete(create_memories())
+asyncio.get_event_loop().run_until_complete(create_reminders())
 
 from commands.fefe import Fefe
 @bot.command()
@@ -77,6 +78,26 @@ async def help(interaction: discord.Interaction):
     
     await interaction.response.send_message(help_text,embed=embed1)
 
+@bot.tree.command(name="clear_chat_history")
+async def clear_chat_history(interaction: discord.Interaction):
+    await clear_chat_history_db()
+    embed1 = discord.Embed(
+            color = discord.Color.orange()
+        )
+    embed1.set_author(name=f"{interaction.user.name} wiped Fefe's memory.",icon_url=interaction.user.avatar)
+    
+    response = openai.Completion.create(
+      model="text-davinci-003",
+      prompt="Write a short sentence of something a cute anime girl would say after having their memory wiped clean.",
+      max_tokens=220,
+      temperature=1,
+      n=5
+    )
+    # Return the first choice's text
+    response_text = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
+    
+    await interaction.response.send_message(response_text,embed=embed1)
+    
 def restart_bot():
     python = sys.executable
     os.execl(python, python, *sys.argv)
@@ -86,6 +107,36 @@ def restart_bot():
 async def restart_fefe(interaction: discord.Interaction):
     await interaction.response.send_message("Restarting bot...")
     restart_bot()
+
+@bot.tree.command(name="retrain_datalle")
+@app_commands.checks.has_permissions(administrator=True)
+async def retrain_datalle(interaction: discord.Interaction):
+    embed1 = discord.Embed(
+            color = discord.Color.gold()
+        )
+    embed1.set_author(name=f"{interaction.user.name} finetuned Datalle",icon_url=interaction.user.avatar)
+    
+    await interaction.response.defer(thinking = True)
+    await generate_dataviz_finetune_data(interaction)
+    # Finetune model
+    import subprocess
+
+    command = "openai"
+    args = ["api", "fine_tunes.create", "-t", "commands/finetune.jsonl", "-m", "gpt-4"]
+        
+    try:
+        result = subprocess.run([command] + args, stdout=subprocess.PIPE)
+    except Exception as e:
+        interaction.followup.send(f"Error: \n```\n{e}\n```",embed=embed1)
+        return
+    
+    output = result.stdout.decode("utf-8")
+    interaction.followup.send(output,embed = embed1)
+
+# '!clear_reminders` command 
+@bot.tree.command(name="clear_reminders")
+async def clear_reminders(interaction: discord.Interaction):
+    await clear_user_reminders(interaction)
     
 @bot.tree.command(name="upgrade_fefe")
 @app_commands.checks.has_permissions(administrator=True)
@@ -122,13 +173,21 @@ async def delete_downloads(bot):
     delete_downloads_task_loop_running = True
     await delete_music_downloads(bot)
     print('Download folder cleared')
-    
 
-@bot.event
+reminder_task_loop_running = False
+@tasks.loop(minutes=1)
+async def reminders(bot):
+    global reminder_task_loop_running
+    reminder_task_loop_running = True
+    try:
+        await send_reminders(bot)
+    except Exception as e:
 async def on_ready():
     print(f'We have logged in as {bot.user}')
     if not delete_downloads_task_loop_running:
         delete_downloads.start(bot)
+    if not reminder_task_loop_running:
+        reminders.start(bot)
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} slash command(s)")
@@ -137,5 +196,5 @@ async def on_ready():
     first_text_channel = await get_first_text_channel(bot)
     
     await first_text_channel.send("I'm online! :heart:")
-    
+
 bot.run(discord_bot_token)

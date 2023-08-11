@@ -968,5 +968,36 @@ m.save(filename)
 # Open the HTML file in a web browser to view the map
 import webbrowser
 webbrowser.open(filename)
+"""},
+{'role':'user','content':"""
+
+take `app/downloads/customer_statement-10_24_2021.txt` and save to `filename=app/downloads/customer_statement.txt`, but wrap the text to text width 65.
+
+filename:
+```
+app/downloads/customer_statement-10_24_2021.txt
+```
+
+filetype:
+```
+.txt
+```
+            
+"""},
+{'role':'assistant','content':"""
+
+import textwrap
+
+# Read the content of the file
+with open('app/downloads/customer_statement-10_24_2021.txt', 'r') as file:
+    content = file.read()
+
+# Wrap the text to text width 65
+wrapped_content = textwrap.fill(content, width=65)
+
+# Write the wrapped text to a new file
+filename = "app/downloads/customer_statement.txt"
+with open(filename, 'w') as file:
+    file.write(wrapped_content)
 """}
 ]

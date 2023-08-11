@@ -10,7 +10,10 @@ async def data_int(ctx,message):
     embed1.set_author(name=f"{ctx.author.name} used Datall-E",icon_url=ctx.message.author.avatar)
 
     py_filename = f"app/downloads/{ctx.author.name}.py"
-
+    # Create a copy of the global variables and set the 'data' variable to the provided DataFrame
+    vars = {}
+    
+    
     # Check if there is a .csv file attached.
     if len(ctx.message.attachments)==1:
         url = ctx.message.attachments[0].url
@@ -28,8 +31,7 @@ async def data_int(ctx,message):
     else: 
         await ctx.send("Attach a file to continue",embed=embed1)
         return
-        
-   # For random prompts.
+    # For random prompts.
     messages = finetune.finetune
 
     messages = [[finetune.finetune[i],finetune.finetune[i+1]] for i in [j for j in range(len(finetune.finetune)) if j%2==0]] 
@@ -38,9 +40,12 @@ async def data_int(ctx,message):
     messages = random.sample(messages,5)
     messages = [item for sublist in messages for item in sublist]
     # Prepare the prompt for OpenAI by displaying the user message and the data column types
-    if filetype == '.csv':
+    if filetype.lower() == "csv":
         data = pd.read_csv(filepath)
-    prompt_prep = f"""
+        vars['data'] = data
+        prompt_prep = f"""
+{message}
+
 filename:
 ```
 app/downloads/{filename}
@@ -55,17 +60,27 @@ First 3 rows:
 ```
 {data.head(3).to_string()}
 ```
-
-request:
-```
-{message}
-```
 """
+    else:
+        prompt_prep = f"""
+{message}
+
+filename:
+```
+app/downloads/{filename}
+```
+
+filetype:
+```
+{filetype}
+```
+            """
+        jsonl = {'role': 'user', 'content': prompt_prep}
+        messages.append({'role': 'user', 'content': 'Assign a variable to a filename before saving the file in `app/downloads`. \n\n'+prompt_prep})
+        print({'role': 'user', 'content': prompt_prep})
     
-    messages.append({'role': 'user', 'content': f'If there are any files you wish to return to the user, assign the filename a variable first before saving. Save any files to the directory `app/downloads/`: \n' + prompt_prep})
-
-    messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
-
+        messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
+        print(messages)
     try: 
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
@@ -86,9 +101,6 @@ request:
     response_text = response['choices'][0]['message']['content']
     extracted_code = extract_code(response_text)
     
-    # Create a copy of the global variables and set the 'data' variable to the provided DataFrame
-    vars = {}
-    vars['data'] = data
     # Save the original stdout so we can reset it later
     original_stdout = sys.stdout
     # Create a StringIO object to capture output
@@ -121,8 +133,8 @@ Here's the code:
         await ctx.send("Error. Please see attached file.",file=discord.File(py_filename),embed=embed1)
         sys.stdout = original_stdout
         db = await create_connection()
-        await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name)
-        await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name)
+        await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
+        await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await db.close()
         return
             
@@ -130,29 +142,27 @@ Here's the code:
     # Get the output
     output = captured_output.getvalue()
           
-    m = [f'''
+    m = f'''
+################################################################
+Output:
+{output}
+################################################################
 ################################################################
 Fine-tuning:
 ################################################################
 {{'role':'user','content':"""\n{prompt_prep}\n"""}},
 {{'role':'assistant','content':"""\n{extracted_code}\n"""}}
-'''][0]
+'''
      
-    jsonl = {'role':'user','content':prompt_prep}
     with open(py_filename, 'w') as file:
         file.write(m)
     # check if there are any files
     strings =  [x for x in vars.values() if (type(x) is str)]
-    files_to_send = [x  for x in strings if re.search('\.([^.]+$)',x) is not None] + [py_filename]
+    files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None] + [py_filename]
     files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
-    await send_chunks(ctx, f'''
-```
-{output}
-```
-''')
     await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
     
     db = await create_connection()
-    await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name)
-    await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name)
+    await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
+    await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name,'DATALL-E')
     await db.close()

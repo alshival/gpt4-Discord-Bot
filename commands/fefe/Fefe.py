@@ -12,7 +12,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role': 'assistant',
-        'content': f"That's great, {ctx.author.mention}! You're a data scientist. MEMORABLE=True"
+        'content': f"That's great, {ctx.author.mention}! You're a data scientist. MEMORABLE=True GIF=\"\" REMINDER={{}}"
     },
     {
         'role':'user',
@@ -20,7 +20,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="anime cute"'
+        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="anime cute" REMINDER={{}}'
     },
     {
         'role': 'user',
@@ -28,7 +28,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role': 'assistant',
-        'content': "Sure, I can assist you with the coding problem. MEMORABLE=False"
+        'content': "Sure, I can assist you with the coding problem. MEMORABLE=False GIF=\"\" REMINDER={{}}"
     },
     {
         'role':'user',
@@ -36,7 +36,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="anime hello"'
+        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="anime hello" REMINDER={{}}'
     },
     {
         'role':'user',
@@ -44,7 +44,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'I\'m Fefe. MEMORABLE=FALSE GIF="cute anime girl"'
+        'content':f'I\'m Fefe. MEMORABLE=FALSE GIF="cute anime girl" REMINDER={{}}'
     },
     {
         'role':'user',
@@ -52,7 +52,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Oh, neat. What\'s your favorite team? MEMORABLE=True'
+        'content':f'Oh, neat. What\'s your favorite team? MEMORABLE=True GIF=\"\" REMINDER={{}}'
     },
     {
         'role':'user',
@@ -60,14 +60,39 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Wow. Don\'t give up! MEMORABLE=True GIF="anime cheer"'
+        'content':f'Wow. Don\'t give up! MEMORABLE=True GIF="anime cheer" REMINDER={{}}'
     },
     {'role':'user',
      'content':'love you, fefe ❤️'
     },
     {'role':'assistant',
-     'content':f'I love you too, {ctx.author.mention}! ❤️ MEMORABLE=True GIF="anime Blush"'
-    }
+     'content':f"""
+I love you too, {ctx.author.mention}! ❤️ MEMORABLE=True GIF="anime Blush" REMINDER={{}}
+"""
+    },
+    {'role':'user',
+    'content':f'Hey Fefe, can you remind me to turn in my project tomorrow at 9am?'},
+    {'role':'assistant',
+    'content':f"""
+Sure, {ctx.author.mention}!, I'll remind you tomorrow morning. MEMORABLE=False GIF="Concentrating" REMINDER='''{{'time':'datetime.now().replace(hour=9, minute=0, second=0) + timedelta(days=1)','note':'''{ctx.author.mention}, don't forget to turn in your project! Good luck! ❤️'''}}
+"""},
+    {'role':'user',
+     'content':f'Hey Fefe, can you remind me to submit my report by the end of today?'},
+    {'role':'assistant',
+     'content':f"""
+Sure, {ctx.author.mention}! I'll remind you to submit your report by the end of today. MEMORABLE=False GIF="paying attention" REMINDER={{'time':'datetime.now().replace(hour=16, minute=59, second=59)','note':'''{ctx.author.mention}, remember to complete and submit your report before the day ends! 📝💪'''}}
+"""},
+    {'role':'user',
+     'content':f'Hi Fefe, can you remind the team to attend the team meeting at 2pm tomorrow?'},
+    {'role':'assistant',
+     'content':f"""Of course, {ctx.author.mention}! I'll remind you to attend the team meeting at 2pm tomorrow. MEMORABLE=False GIF="" REMINDER={{'time':'datetime.now().replace(hour=14, minute=0, second=0) + timedelta(days=1)','note':'''@here, don't forget to join the team meeting tomorrow! 🤝📅'''}}"""},
+    {'role':'user',
+     'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
+    {'role':'assistant',
+     'content':f"""
+Of course, {ctx.author.mention}! I'll remind you about the upcoming conference on November 15th. MEMORABLE=False GIF="" REMINDER={{'time':'datetime.datetime(2022, 11, 15)','note':'''@here, make sure to mark your calendar and prepare for the conference! 🎉📅'''}}
+"""}
+
 ]
 
     enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
@@ -82,7 +107,7 @@ async def talk_to_fefe(ctx,message):
     latest_token = len(enc.encode(latest_string))
 
     # Load in past prompts
-    past_prompts = await fetch_prompts(db, ctx.channel.id, 7)
+    past_prompts = await fetch_prompts(db, ctx.channel.id, 5)
     past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',completion_limit + latest_token + sample_tokens) 
         
     messages.extend(past_prompts)
@@ -105,23 +130,29 @@ async def talk_to_fefe(ctx,message):
     # Extract the response text and send it back to the user
     response_text = response['choices'][0]['message']['content']
     final_response = response_text
-
+    ############
+    # GIF
+    ############
     #Check to see if it is a gif.
-    check_if_gif = re.search('GIF="([^"]+)"',final_response)
+    check_if_gif = re.search('GIF="([^"]*)"',final_response)
     if check_if_gif:
-        search_query = check_if_gif.group(1)
-        gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=6')
-        data = gif_response.json()
-        # Choose a random GIF from the results
-        try:
-            gif = random.choice(data['data'])
-            gif_url = gif['images']['original']['url']
-            sub_this = re.search('GIF="([^"]+)"',final_response).group(0)
-            final_response = re.sub(sub_this,f"\n[Powered by GIPHY]({gif_url})",final_response)
-        except Exception as e:
-            await ctx.send("I was going to respond with a GIF, but I couldn't find the right one.")
-            return
-
+        if len(check_if_gif.group(1))>0:
+            search_query = check_if_gif.group(1)
+            gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=6')
+            data = gif_response.json()
+            # Choose a random GIF from the results
+            try:
+                gif = random.choice(data['data'])
+                gif_url = gif['images']['original']['url']
+                sub_this = re.search('GIF="([^"]*)"',final_response).group(0)
+                final_response = re.sub(sub_this,f"\n[Powered by GIPHY]({gif_url})",final_response)
+            except Exception as e:
+                await ctx.send("I was going to respond with a GIF, but I couldn't find the right one.")
+                return
+        final_response = re.sub('GIF="([^"]*)"','',final_response)
+    ##############
+    # Memorable
+    ##############
     # Check if interaction is memorable
     memorable = re.search("MEMORABLE=(True|False)",final_response)
     if memorable:
@@ -130,11 +161,24 @@ async def talk_to_fefe(ctx,message):
         if memorable_value == 'True':
             await store_memory(db,json.dumps(new_prompt))
             await store_memory(db,json.dumps({'role':'assistant','content':response_text}))
-        final_response = re.sub(memorable.group(0),'',final_response)
+        final_response = re.sub("MEMORABLE=(True|False)",'',final_response)
+    #################
+    # Check reminder
+    #################
+    reminder = re.search('REMINDER=(\{.*\})',final_response)
+    if reminder:
+        dict = ast.literal_eval(reminder.group(1))
+        if ('time' in dict.keys()) & ('note' in dict.keys()):
+            time = eval(dict['time'])
+            note = dict['note']
+            await store_reminder(db,ctx.author.name,time,note,ctx.channel.id,ctx.channel.name)
+            print('reminder stored in database')
+
+        final_response = re.sub('REMINDER=(\{.*\})','',final_response)
         
     await send_chunks(ctx, final_response)
 
     # store the prompt
-    await store_prompt(db,json.dumps(new_prompt),ctx.channel.id,ctx.channel.name)
-    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),ctx.channel.id,ctx.channel.name)
+    await store_prompt(db,json.dumps(new_prompt),ctx.channel.id,ctx.channel.name,'fefe')
+    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),ctx.channel.id,ctx.channel.name,'fefe')
     await db.close()
