@@ -21,7 +21,7 @@ async def data_int(ctx,message):
         # get filename using regex
         filename = re.search('([^\/]+$)',url).group(0)
         filepath = 'app/downloads/' + re.search('([^\/]+$)',url).group(0)
-        filetype = re.search('\.([^.]+$)',url).group(0)
+        filetype = re.search('\.([^.]+$)',url).group(1)
         
         res = requests.get(url)
         # Extract file type
@@ -37,13 +37,14 @@ async def data_int(ctx,message):
     messages = [[finetune.finetune[i],finetune.finetune[i+1]] for i in [j for j in range(len(finetune.finetune)) if j%2==0]] 
 
     # Random sample messages.
-    messages = random.sample(messages,5)
+    messages = random.sample(messages,7)
     messages = [item for sublist in messages for item in sublist]
     # Prepare the prompt for OpenAI by displaying the user message and the data column types
-    if filetype.lower() == "csv":
-        data = pd.read_csv(filepath)
-        vars['data'] = data
-        prompt_prep = f"""
+    if filetype != 'csv':
+        await ctx.send("Sorry, I can only handle data in `.csv` files at the moment.")
+    data = pd.read_csv(filepath)
+    vars['data'] = data
+    prompt_prep = f"""
 {message}
 
 filename:
@@ -61,26 +62,11 @@ First 3 rows:
 {data.head(3).to_string()}
 ```
 """
-    else:
-        prompt_prep = f"""
-{message}
-
-filename:
-```
-app/downloads/{filename}
-```
-
-filetype:
-```
-{filetype}
-```
-            """
-        jsonl = {'role': 'user', 'content': prompt_prep}
-        messages.append({'role': 'user', 'content': 'Assign a variable to a filename before saving the file in `app/downloads`. \n\n'+prompt_prep})
-        print({'role': 'user', 'content': prompt_prep})
+    jsonl = {'role': 'user', 'content': prompt_prep}
+    messages.append({'role': 'user', 'content': 'Assign a variable to a filename before saving the file in `app/downloads`. \n\n'+prompt_prep})
     
-        messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
-        print(messages)
+    messages = check_tokens(messages,model = openai_model,completion_limit = data_viz_completion_limit)
+    
     try: 
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
