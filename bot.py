@@ -182,6 +182,9 @@ async def reminders(bot):
     try:
         await send_reminders(bot)
     except Exception as e:
+        print(f"Error in send_reminders: {e}")
+        
+@bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
     if not delete_downloads_task_loop_running:
