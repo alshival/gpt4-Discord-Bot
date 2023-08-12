@@ -1,5 +1,6 @@
 from app.config import *
-from commands.discord_interpreter import finetune
+from commands.discord_interpreter import finetune_interpreter
+from commands.datalle import finetune_datalle
 from commands.bot_functions import *
 
 async def discord_interpreter(interaction,message):
@@ -10,14 +11,18 @@ async def discord_interpreter(interaction,message):
         )
     embed1.set_author(name=f"{interaction.user.name} used the Discord Interpreter",icon_url=interaction.user.avatar)
     py_filename = f"app/downloads/{interaction.user.name}.py"
-    
-    messages = [[finetune.finetune[i],finetune.finetune[i+1]] for i in [j for j in range(len(finetune.finetune)) if j%2==0]] 
 
-    # Random sample messages.
-    messages = random.sample(messages,5)
-    # sample_stock_charts defined in `app/config.py`.
-
-    messages = [item for sublist in messages for item in sublist]
+    # Random sample finetune_interpreter data.
+    interpreter_messages = [[finetune_interpreter.finetune[i],finetune_interpreter.finetune[i+1]] for i in [j for j in range(len(finetune_interpreter.finetune)) if j%2==0]] 
+    interpreter_messages = random.sample(interpreter_messages,6)
+    interpreter_messages = [item for sublist in interpreter_messages for item in sublist]
+    # Random sample finetune_datalle data.
+    datalle_messages = [[finetune_datalle.finetune[i],finetune_datalle.finetune[i+1]] for i in [j for j in range(len(finetune_datalle.finetune)) if j%2==0]] 
+    datalle_messages = random.sample(datalle_messages,6)
+    datalle_messages = [item for sublist in datalle_messages for item in sublist]
+    # Combine and random sample again
+    messages = interpreter_messages + datalle_messages
+    messages = random.sample(messages,4)
 
     # Pull last few DATALL-E & Interpreter interactions in. So that interpreter can continue processing data from DATALL-E.
     cursor = await db.cursor()
@@ -26,12 +31,12 @@ async def discord_interpreter(interaction,message):
     from (
         select jsonl, timestamp from chat_history
         where channel_id = ?
-        and source in ('interpreter','DATALL-E')
+        and source in ('interpreter','DATALL-E','fefe')
         order by timestamp desc
         limit ?
     ) as subquery
     order by timestamp asc
-    """,(interaction.channel_id,3))
+    """,(interaction.channel_id,2))
     # Fetch and load the json data from the selected rows
     rows = await cursor.fetchall()
     past_code = []

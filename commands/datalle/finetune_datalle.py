@@ -466,7 +466,7 @@ First 3 rows:
 
 request:
 ```
-Create an interactive histogram showing survivors and dead for males and females. Save the `.html` file and then `.show()` the figure.
+Create an interactive histogram showing survivors and dead for males and females.
 ```
 
 """},

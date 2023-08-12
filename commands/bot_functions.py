@@ -338,3 +338,33 @@ def file_size_ok(file_path):
         return True
     else:
         return False
+
+# Get GIF
+async def gif_search(response_text):
+    check_gif = re.search(gif_regex_string,response_text)
+    print(check_gif.group(0))
+    if check_gif:
+        search_query = check_gif.group(1)
+        
+        if len(search_query)>0:
+            gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=12')
+            data = gif_response.json()
+            try:
+                gif = random.choice(data['data'])
+                gif_url = gif['images']['original']['url']
+                return re.sub(gif_regex_string,f'\n[Powered by GIPHY]({gif_url})',response_text)
+            except Exception as E:
+                return re.sub(gif_regex_string,'',response_text)
+        else:
+            return re.sub(gif_regex_string,'',response_text)
+    re.sub(gif_regex_string,'',response_text)
+
+# Generate an image
+async def generate_image(text):
+    response = openai.Image.create(
+      prompt=text,
+      n=1,
+      size="1024x1024"
+    )
+    image_url = response['data'][0]['url']
+    return image_url

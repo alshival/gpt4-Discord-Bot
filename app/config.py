@@ -23,6 +23,7 @@ import openai
 import tiktoken
 # Set up the OpenAI API. The key is stored as an environment variable for security reasons.
 openai_model = 'gpt-4'
+imagegen_regex_string = 'IMAGEGEN=\{([^}]*)\}'
 # Abide to token limit:
 data_viz_completion_limit = 1500
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -53,12 +54,14 @@ async def generate_dataviz_finetune_data(interaction):
 # GIFY API config 
 ############################################
 gify_api_token = os.environ.get("GIPHY_API_KEY")
+gif_regex_string = 'GIF=\{([^}]*)\}'
 
 ############################################
 # Youtube Data API config
 ############################################
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+youtube_regex_string = 'YOUTUBE=\{([^}]*)\}'
 # Set up the Google Youtube Data API key. For youtube searching and playback.
 google_api_key = os.environ.get("google_api_key")
 

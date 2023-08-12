@@ -1,6 +1,6 @@
 from app.config import *
 from commands.bot_functions import *
-from commands.datalle import finetune
+from commands.datalle import finetune_datalle
 
 async def data_int(ctx,message):
     embed1 = discord.Embed(
@@ -32,9 +32,7 @@ async def data_int(ctx,message):
         await ctx.send("Attach a file to continue",embed=embed1)
         return
     # For random prompts.
-    messages = finetune.finetune
-
-    messages = [[finetune.finetune[i],finetune.finetune[i+1]] for i in [j for j in range(len(finetune.finetune)) if j%2==0]] 
+    messages = [[finetune_datalle.finetune[i],finetune_datalle.finetune[i+1]] for i in [j for j in range(len(finetune_datalle.finetune)) if j%2==0]] 
 
     # Random sample messages.
     messages = random.sample(messages,7)

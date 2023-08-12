@@ -91,7 +91,7 @@ async def clear_chat_history(interaction: discord.Interaction):
       prompt="Write a short sentence of something a cute anime girl would say after having their memory wiped clean.",
       max_tokens=220,
       temperature=1,
-      n=5
+      n=7
     )
     # Return the first choice's text
     response_text = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
@@ -187,6 +187,38 @@ async def reminders(bot):
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    
+    sample_greeters = """
+    prompt:'Write a short sentence of a female anime character named Fefe letting people on a discord server know she is online. Flood it with emojis.'
+    completion: "🌸 💕✨ Fefe is here to brighten up the server~ 🌟🌈💬🎮🥳"
+    prompt:'Write a short sentence of a female anime character named Fefe letting people on a discord server know she is online. Flood it with emojis.'
+    completion: 🤩👋 Fefe-chan is ready to get this server lit 🔥🎉 #FefeIsOnline 🌈✨
+    prompt:'Write a short sentence of a female anime character named Fefe letting people on a discord server know she is online. Flood it with emojis.'
+    completion: "🌸💫 Fefe-chan is here and ready to conquer the server! 💻🎮🌟🎉 #FefeIsOnline 🌼🌈"
+    prompt:'Write a short sentence of a female anime character named Fefe letting people on a discord server know she is online. Flood it with emojis.'
+    completion: "💖✨ Fefe-chan is here and ready to chat! 🌸🎮🌟"
+    prompt:'Write a short sentence of a female anime character named Fefe letting people on a discord server know she is online. Flood it with emojis.'
+    completion: 
+    """
+
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=sample_greeters,
+        max_tokens=220,
+        temperature=.6,
+        n=7
+    )
+    
+    # Return the first choice's text
+    greeter = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
+
+    first_text_channel = await get_first_text_channel(bot)
+    try:
+        await first_text_channel.send(greeter)
+    except:
+        print("could not send greeter")
+        
     if not delete_downloads_task_loop_running:
         delete_downloads.start(bot)
     if not reminder_task_loop_running:
@@ -196,8 +228,5 @@ async def on_ready():
         print(f"Synced {len(synced)} slash command(s)")
     except Exception as e:
         print(e)    
-    first_text_channel = await get_first_text_channel(bot)
-    
-    await first_text_channel.send("I'm online! :heart:")
 
 bot.run(discord_bot_token)
