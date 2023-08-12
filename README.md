@@ -2,7 +2,7 @@
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
-This Discord bot harnesses the power of OpenAI's GPT-4 model and provides additional functionalities like writing and executing code, generating data visualizations from `.CSV` files 📊📈, and more. It now also includes **Discord Interpreter**, which allows you to manage files on your computer or create financial charts using yfinance using natural language. This bot also includes a tool called, **DATALL-E**, which generates charts or maps using `.csv` data you upload as an attachment. The code used to generate the image is returned as well, so that the data on the charts can be vetted. 📈📉📊🔍
+This Discord bot harnesses the power of OpenAI's GPT-4 model and provides additional functionalities like setting reminders, writing and executing code, image generation, data visualizations from `.CSV` files 📊📈, search youtube, and more! Fefe was built as a productivity bot with a personality. Great for personal use or small study groups or data teams. It now also includes **Discord Interpreter**, which allows you to manage files on your computer or create financial charts using yfinance using natural language. This bot also includes a tool called, **DATALL-E**, which generates charts or maps using `.csv` data you upload as an attachment. The code used to generate the image is returned as well, so that the data on the charts can be vetted. 📈📉📊🔍
 
 Created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether it's for personal use, a group of friends, a study group, or project management, this bot has got you covered. 🌟🚀💻🎉
 
@@ -40,7 +40,7 @@ Note that choropleth map are quite difficult to generate. Fefe currently only su
 
 - Use the command prefix `!` to interact with the bot:
 
-  - `!fefe <message>`: Ask Fefe to write code or answer questions.
+  - `!fefe <message>`: Ask Fefe to write or debug code from `DATALL-E` and `Discord Interpreter`, or answer questions. She can also set reminders, generate images, and search youtube.
   - `!datalle`: Attach a .CSV file and ask Fefe to generate charts or maps. Then ask `!fefe` to go over the code with you.
   - `!exeggutor`: (Admin) Exeggute raw python code. Ask `!fefe` to go over the code or any errors with you.
 - The bot also includes the following slash commands:
@@ -68,6 +68,7 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
    - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
+   - google_api_key for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
      
 ### Clone Repository
 - Clone the repository:
