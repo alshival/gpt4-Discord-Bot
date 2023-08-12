@@ -77,7 +77,6 @@ async def talk_to_fefe(ctx,message):
     # Check reminder
     #################
     reminder = re.search('REMINDER=(\{[^}]*\})',final_response)
-    print(reminder.group(0))
     if reminder:
         dict = ast.literal_eval(reminder.group(1))
         if ('time' in dict.keys()) & ('note' in dict.keys()):
@@ -91,7 +90,6 @@ async def talk_to_fefe(ctx,message):
     # Search Youtube
     #################
     youtube = re.search(youtube_regex_string,final_response)
-    print(youtube.group(0))
     if youtube:
         search_query = youtube.group(1)
         if len(search_query)>0:
@@ -110,7 +108,6 @@ async def talk_to_fefe(ctx,message):
     
     if imagegen:
         search_query = imagegen.group(1)
-        print(search_query)
         if len(search_query)>0:
             try:
                 image_url = await generate_image(search_query)
