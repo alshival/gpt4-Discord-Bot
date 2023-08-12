@@ -61,7 +61,6 @@ INSERT INTO memories (jsonl) VALUES (?)
     
 # Function to fetch the last few prompts. Used to provide chat history to openAi.
 async def fetch_prompts(db,channel_id,limit,source=None):
-    
     cursor = await db.cursor()
     # Fetch the last few rows from the table for the given channel_id
     await cursor.execute("""
@@ -69,6 +68,31 @@ async def fetch_prompts(db,channel_id,limit,source=None):
     from (
         SELECT jsonl,timestamp FROM chat_history
         WHERE channel_id = ?
+        ORDER BY timestamp DESC
+        LIMIT ?
+    ) AS subquery
+    order by timestamp asc
+    """, (channel_id, limit))
+    
+    # Fetch and load the json data from the selected rows
+    rows = await cursor.fetchall()
+    prompts = []
+    for row in rows:
+        json_data = json.loads(row[0])
+        prompts.append(json_data)
+    
+    return prompts
+
+# Function to fetch the last few prompts. Used to provide chat history to openAi.
+async def fetch_dataviz_prompts(db,channel_id,limit,source=None):
+    cursor = await db.cursor()
+    # Fetch the last few rows from the table for the given channel_id
+    await cursor.execute("""
+    select jsonl
+    from (
+        SELECT jsonl,timestamp FROM chat_history
+        WHERE channel_id = ?
+        AND source in ('DATALL-E','interpreter')
         ORDER BY timestamp DESC
         LIMIT ?
     ) AS subquery

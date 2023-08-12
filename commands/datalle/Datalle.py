@@ -97,6 +97,34 @@ First 3 rows:
         response_compiled = compile(extracted_code, "<string>", "exec")
         # Execute the extracted code with the global variables
         exec(response_compiled, vars,vars)
+        sys.stdout = original_stdout
+        # Get the output
+        output = captured_output.getvalue()
+              
+        m = f'''
+    ################################################################
+    Output:
+    {output}
+    ################################################################
+    ################################################################
+    Fine-tuning:
+    ################################################################
+    {{'role':'user','content':"""\n{prompt_prep}\n"""}},
+    {{'role':'assistant','content':"""\n{extracted_code}\n"""}}
+    '''
+         
+        with open(py_filename, 'w') as file:
+            file.write(m)
+        # check if there are any files
+        strings =  [x for x in vars.values() if (type(x) is str)]
+        files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None] + [py_filename]
+        files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
+        await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
+        
+        db = await create_connection()
+        await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
+        await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),ctx.channel.id,ctx.channel.name,'DATALL-E')
+        await db.close()
     except Exception as e:
         print(message)
         print(e)
@@ -124,31 +152,3 @@ Here's the code:
         await db.close()
         return
             
-    sys.stdout = original_stdout
-    # Get the output
-    output = captured_output.getvalue()
-          
-    m = f'''
-################################################################
-Output:
-{output}
-################################################################
-################################################################
-Fine-tuning:
-################################################################
-{{'role':'user','content':"""\n{prompt_prep}\n"""}},
-{{'role':'assistant','content':"""\n{extracted_code}\n"""}}
-'''
-     
-    with open(py_filename, 'w') as file:
-        file.write(m)
-    # check if there are any files
-    strings =  [x for x in vars.values() if (type(x) is str)]
-    files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None] + [py_filename]
-    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
-    await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
-    
-    db = await create_connection()
-    await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
-    await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name,'DATALL-E')
-    await db.close()

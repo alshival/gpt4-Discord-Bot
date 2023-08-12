@@ -53,3 +53,14 @@ async def generate_dataviz_finetune_data(interaction):
 # GIFY API config 
 ############################################
 gify_api_token = os.environ.get("GIPHY_API_KEY")
+
+############################################
+# Youtube Data API config
+############################################
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+# Set up the Google Youtube Data API key. For youtube searching and playback.
+google_api_key = os.environ.get("google_api_key")
+
+# Set up the YouTube Data API client
+youtube = build("youtube", "v3", developerKey=google_api_key)

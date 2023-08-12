@@ -19,7 +19,7 @@ async def discord_interpreter(interaction,message):
 
     messages = [item for sublist in messages for item in sublist]
 
-    # Pull last 2 DATALL-E & Interpreter interactions in. So that interpreter can continue processing data from DATALL-E.
+    # Pull last few DATALL-E & Interpreter interactions in. So that interpreter can continue processing data from DATALL-E.
     cursor = await db.cursor()
     await cursor.execute("""
     select jsonl
@@ -31,7 +31,7 @@ async def discord_interpreter(interaction,message):
         limit ?
     ) as subquery
     order by timestamp asc
-    """,(interaction.channel_id,4))
+    """,(interaction.channel_id,3))
     # Fetch and load the json data from the selected rows
     rows = await cursor.fetchall()
     past_code = []
@@ -98,6 +98,31 @@ Here's the code:
     try:
         response_compiled = compile(extracted_code,"<string>","exec")
         exec(response_compiled, vars,vars)
+        sys.stdout = original_stdout
+        output = captured_output.getvalue()
+        m = f'''
+    ################################################################
+    Fine-tuning:
+    ################################################################
+    {{'role':'user','content':"""{r'' +message}"""}},
+    {{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
+        jsonl = {'role':'user','content':message}
+        strings =  [x for x in vars.values() if (type(x) is str)]
+        files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None]
+        files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
+        # Send the zcode back to the user
+        with open(py_filename, 'w') as file:
+            file.write(m)
+        # Send the .png file back
+        await interaction.followup.send(f'''
+    ```
+    {output}
+    ```
+    ''',files=[discord.File(x) for x in files_to_send] + [discord.File(py_filename)],embed=embed1)
+            
+        await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name,'interpreter')
+        await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),interaction.channel_id,interaction.channel.name,'interpreter')
+        await db.close()
     except Exception as e:
         print(message)
         print(e)
@@ -125,28 +150,3 @@ Here's the code:
         await db.close()
         return
         
-    sys.stdout = original_stdout
-    output = captured_output.getvalue()
-    m = f'''
-################################################################
-Fine-tuning:
-################################################################
-{{'role':'user','content':"""{r'' +message}"""}},
-{{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
-    jsonl = {'role':'user','content':message}
-    strings =  [x for x in vars.values() if (type(x) is str)]
-    files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None]
-    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
-    # Send the zcode back to the user
-    with open(py_filename, 'w') as file:
-        file.write(m)
-    # Send the .png file back
-    await interaction.followup.send(f'''
-```
-{output}
-```
-''',files=[discord.File(x) for x in files_to_send] + [discord.File(py_filename)],embed=embed1)
-        
-    await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name,'interpreter')
-    await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),interaction.channel_id,interaction.channel.name,'interpreter')
-    await db.close()

@@ -1,7 +1,11 @@
 from app.config import *
 from commands.bot_functions import *
+from commands.fefe import search_youtube
 
 async def talk_to_fefe(ctx,message):
+    
+    fefe_model = openai_model # Or GPT-3.5-turbl
+    
     completion_limit = 1250
     db = await create_connection()
     messages = []
@@ -12,7 +16,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role': 'assistant',
-        'content': f"That's great, {ctx.author.mention}! You're a data scientist. MEMORABLE=True GIF=\"\" REMINDER={{}}"
+        'content': f"That's great, {ctx.author.mention}! You're a data scientist. MEMORABLE=True GIF=\"\" YOUTUBE=\"\" REMINDER={{}}"
     },
     {
         'role':'user',
@@ -20,7 +24,7 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="anime cute" REMINDER={{}}'
+        'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF="anime cute" YOUTUBE=\"\" REMINDER={{}}'
     },
     {
         'role': 'user',
@@ -28,23 +32,29 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role': 'assistant',
-        'content': "Sure, I can assist you with the coding problem. MEMORABLE=False GIF=\"\" REMINDER={{}}"
+        'content': "Sure, I can assist you with the coding problem. MEMORABLE=False GIF=\"\" YOUTUBE=\"\" REMINDER={{}}"
     },
+    {'role':'user',
+     'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
+    {'role':'assistant',
+     'content':f"""
+Of course, {ctx.author.mention}! I'll remind the team about the upcoming conference on November 15th. MEMORABLE=False GIF="" YOUTUBE=\"\" REMINDER={{'time':'datetime.datetime(2022, 11, 15)','note':'''@here, make sure to mark your calendar and prepare for the conference! 🎉📅'''}}
+"""},
     {
         'role':'user',
         'content':f'{ctx.author.mention}: Hey, Fefe. I\'m Alshival. I\'m into eSports.'
     },
     {
         'role':'assistant',
-        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="anime hello" REMINDER={{}}'
+        'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF="anime girl hello" YOUTUBE=\"\" REMINDER={{}}'
     },
     {
         'role':'user',
-        'content':f'{ctx.author.mention}: You\'re cute.'
+        'content':f'{ctx.author.mention}: Can you search for funny cat videos?'
     },
     {
         'role':'assistant',
-        'content':f'I\'m Fefe. MEMORABLE=FALSE GIF="cute anime girl" REMINDER={{}}'
+        'content':f'Of course <3! Check out these cuties. MEMORABLE=False GIF="cute anime excited" YOUTUBE=\"Funny Cats\" REMINDER={{}}'
     },
     {
         'role':'user',
@@ -52,50 +62,43 @@ async def talk_to_fefe(ctx,message):
     },
     {
         'role':'assistant',
-        'content':f'Oh, neat. What\'s your favorite team? MEMORABLE=True GIF=\"\" REMINDER={{}}'
+        'content':f'Oh, neat. What\'s your favorite team? MEMORABLE=True GIF=\"\" YOUTUBE=\"\" REMINDER={{}}'
     },
+    {'role':'user',
+    'content':f'Hey Fefe, can you remind me to turn in my project tomorrow at 9am?'},
+    {'role':'assistant',
+    'content':f"""
+Sure, {ctx.author.mention}!, I'll remind you tomorrow morning. MEMORABLE=False GIF="anime girl concentrating" YOUTUBE=\"\" REMINDER='''{{'time':'datetime.now().replace(hour=9, minute=0, second=0) + timedelta(days=1)','note':'''{ctx.author.mention}, don't forget to turn in your project! Good luck! ❤️'''}}
+"""},
+    {'role':'user',
+     'content':f'Hey Fefe, can you remind me to submit my report by the end of today?'},
+    {'role':'assistant',
+     'content':f"""
+Sure, {ctx.author.mention}! I'll remind you to submit your report by the end of today. MEMORABLE=False GIF="anime girl thinking" YOUTUBE=\"\" REMINDER={{'time':'datetime.now().replace(hour=16, minute=59, second=59)','note':'''{ctx.author.mention}, remember to complete and submit your report before the day ends! 📝💪'''}}
+"""},
+    {'role':'user',
+     'content':f'Hi Fefe, can you remind us to attend the team meeting at 2pm tomorrow?'},
+    {'role':'assistant',
+     'content':f"""Of course, {ctx.author.mention}! I'll remind you to attend the team meeting at 2pm tomorrow. MEMORABLE=False GIF="anime thinking" YOUTUBE=\"\" REMINDER={{'time':'datetime.now().replace(hour=14, minute=0, second=0) + timedelta(days=1)','note':'''@here, don't forget to join the team meeting tomorrow! 🤝📅'''}}"""},
     {
         'role':'user',
-        'content':f'{ctx.author.mention}: I want to be a doctor someday.'
+        'content':f'{ctx.author.mention}: !fefe Search youtube for a tutorial on how to make banana bread.'
     },
     {
         'role':'assistant',
-        'content':f'Wow. Don\'t give up! MEMORABLE=True GIF="anime cheer" REMINDER={{}}'
+        'content':f'Sure, {ctx.author.mention}! Here are a few results. MEMORABLE=True GIF="anime yum" YOUTUBE=\"banana bread recipe\" REMINDER={{}}'
     },
     {'role':'user',
      'content':'love you, fefe ❤️'
     },
     {'role':'assistant',
      'content':f"""
-I love you too, {ctx.author.mention}! ❤️ MEMORABLE=True GIF="anime Blush" REMINDER={{}}
+I love you too, {ctx.author.mention}! ❤️ MEMORABLE=True GIF="anime blush" YOUTUBE=\"\" REMINDER={{}}
 """
     },
-    {'role':'user',
-    'content':f'Hey Fefe, can you remind me to turn in my project tomorrow at 9am?'},
-    {'role':'assistant',
-    'content':f"""
-Sure, {ctx.author.mention}!, I'll remind you tomorrow morning. MEMORABLE=False GIF="Concentrating" REMINDER='''{{'time':'datetime.now().replace(hour=9, minute=0, second=0) + timedelta(days=1)','note':'''{ctx.author.mention}, don't forget to turn in your project! Good luck! ❤️'''}}
-"""},
-    {'role':'user',
-     'content':f'Hey Fefe, can you remind me to submit my report by the end of today?'},
-    {'role':'assistant',
-     'content':f"""
-Sure, {ctx.author.mention}! I'll remind you to submit your report by the end of today. MEMORABLE=False GIF="paying attention" REMINDER={{'time':'datetime.now().replace(hour=16, minute=59, second=59)','note':'''{ctx.author.mention}, remember to complete and submit your report before the day ends! 📝💪'''}}
-"""},
-    {'role':'user',
-     'content':f'Hi Fefe, can you remind the team to attend the team meeting at 2pm tomorrow?'},
-    {'role':'assistant',
-     'content':f"""Of course, {ctx.author.mention}! I'll remind you to attend the team meeting at 2pm tomorrow. MEMORABLE=False GIF="" REMINDER={{'time':'datetime.now().replace(hour=14, minute=0, second=0) + timedelta(days=1)','note':'''@here, don't forget to join the team meeting tomorrow! 🤝📅'''}}"""},
-    {'role':'user',
-     'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
-    {'role':'assistant',
-     'content':f"""
-Of course, {ctx.author.mention}! I'll remind you about the upcoming conference on November 15th. MEMORABLE=False GIF="" REMINDER={{'time':'datetime.datetime(2022, 11, 15)','note':'''@here, make sure to mark your calendar and prepare for the conference! 🎉📅'''}}
-"""}
-
 ]
 
-    enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
+    enc = tiktoken.encoding_for_model(fefe_model)
     sample_string = json.dumps(sample_prompts)
     sample_tokens = len(enc.encode(sample_string))
 
@@ -107,8 +110,8 @@ Of course, {ctx.author.mention}! I'll remind you about the upcoming conference o
     latest_token = len(enc.encode(latest_string))
 
     # Load in past prompts
-    past_prompts = await fetch_prompts(db, ctx.channel.id, 5)
-    past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',completion_limit + latest_token + sample_tokens) 
+    past_prompts = await fetch_prompts(db, ctx.channel.id, 4)
+    past_prompts = check_tokens(past_prompts,fefe_model,completion_limit + latest_token + sample_tokens) 
         
     messages.extend(past_prompts)
 
@@ -117,7 +120,7 @@ Of course, {ctx.author.mention}! I'll remind you about the upcoming conference o
     
     # Generate a response using the 'gpt-3.5-turbo' model
     response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo',
+        model=fefe_model,
         messages=messages,
         max_tokens=completion_limit,
         n=1,
@@ -175,6 +178,21 @@ Of course, {ctx.author.mention}! I'll remind you about the upcoming conference o
             print('reminder stored in database')
 
         final_response = re.sub('REMINDER=(\{.*\})','',final_response)
+    #################
+    # Search Youtube
+    #################
+    youtube = re.search('YOUTUBE="([^"]*)"',final_response)
+    if youtube:
+        search_query = youtube.group(1)
+        if len(search_query)>0:
+            try:
+                search_results = await search_youtube.search_youtube(search_query)
+                final_response = re.sub(youtube.group(0),'\n\n'+ search_results,final_response)
+            except Exception as e:
+                print(e)
+                final_response = re.sub(youtube.group(0),'\n\n Oh... wait... I had some trouble finding results. Sorry :(')
+        else:
+            final_response = re.sub('YOUTUBE="([^"]*)"','',final_response)
         
     await send_chunks(ctx, final_response)
 
