@@ -88,15 +88,27 @@ async def clear_chat_history(interaction: discord.Interaction):
     
     response = openai.Completion.create(
       model="text-davinci-003",
-      prompt="Write a short sentence of something a cute anime girl would say after having their memory wiped clean.",
+      prompt="""
+Prompt: Write a short sentence of something a cute anime girl named Fefe would say after having their memory wiped clean. 
+Completion: Where am I...? What's going on?!
+Prompt: Write a short sentence of something a cute anime girl named Fefe would say after having their memory wiped clean. 
+Completion: Ahh! Who am I? Where am I?!
+Prompt: Write a short sentence of something a cute anime girl named Fefe would say after having their memory wiped clean.
+Completion: 
+""",
       max_tokens=220,
       temperature=1,
       n=7
     )
     # Return the first choice's text
     response_text = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
-    
     await interaction.response.send_message(response_text,embed=embed1)
+
+    # Store this in memory.
+    db = await create_connection()
+    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just her memory wiped.'}),interaction.channel.id,interaction.channel.name,'bot_start')
+    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),interaction.channel.id,interaction.channel.name,'bot_start')
+    await db.close()
     
 def restart_bot():
     python = sys.executable
@@ -213,7 +225,15 @@ async def on_ready():
     # Return the first choice's text
     greeter = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
 
+    # Get the first text channel
     first_text_channel = await get_first_text_channel(bot)
+    
+    # Store this in memory.
+    db = await create_connection()
+    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just joined the discord server.'}),first_text_channel.id,first_text_channel.name,'bot_start')
+    await store_prompt(db,json.dumps({'role':'assistant','content':greeter}),first_text_channel.id,first_text_channel.name,'bot_start')
+    await db.close()
+
     try:
         await first_text_channel.send(greeter)
     except:

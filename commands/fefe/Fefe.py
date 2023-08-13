@@ -3,6 +3,7 @@ from commands.bot_functions import *
 from commands.fefe import search_youtube
 from commands.fefe import finetune_fefe
 from commands.datalle import Datalle
+
 async def talk_to_fefe(ctx,message):
     # Check if there is a .csv file attached. If so, run datalle
     if len(ctx.message.attachments)==1:
