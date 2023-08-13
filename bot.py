@@ -17,21 +17,21 @@ async def fefe(ctx,*,message:str):
     await Fefe.talk_to_fefe(ctx,message)
 
 from commands.datalle import Datalle
-@commands.has_permissions(administrator = True)
+@commands.has_permissions(use_application_commands = True)
 @bot.command()
 async def datalle(ctx,*,message:str):
     await Datalle.data_int(ctx,message)
 
 from commands.Exeggutor import Exeggutor
 @bot.command()
-@commands.has_permissions(administrator = True)
+@commands.has_permissions(use_application_commands = True)
 async def exeggutor(ctx,*,message: str):
     print("exegguting")
     await Exeggutor.Exeggute(ctx,message)
 
 from commands.discord_interpreter import discord_interpreter
 @bot.tree.command(name="interpreter")
-@app_commands.checks.has_permissions(administrator=True)
+@app_commands.checks.has_permissions(use_application_commands=True)
 async def interpreter(interaction: discord.Interaction, message: str):
     
     await interaction.response.defer(thinking = True)
@@ -49,7 +49,7 @@ help_text = """
 📝 Here's a quick rundown on how to use the app:
 
  1️⃣ Talk to Fefe
-- `!fefe <message>`: Chat with me. Ask me to set reminders, play music over the voice channel, or ask me questions about code or certain topics.
+- `!fefe <message>`: Chat with me. Ask me to set reminders, generate images, or ask me questions about code or certain topics.
 - `!datalle <message>`: Attach a `.csv` file and request charts be generated.
 - `!exeggutor <python>`: Run raw python code.
 
@@ -79,6 +79,7 @@ async def help(interaction: discord.Interaction):
     await interaction.response.send_message(help_text,embed=embed1)
 
 @bot.tree.command(name="wipe_memories")
+@app_commands.checks.has_permissions(administrator=True)
 async def wipe_memories(interaction: discord.Interaction):
     await clear_memory_db()
     embed1 = discord.Embed(
@@ -181,31 +182,6 @@ async def memory_leak(interaction: discord.Interaction):
     dat.to_csv(return_file,index=False,quoting=csv.QUOTE_ALL)
     await interaction.followup.send(files=[discord.File(return_file)],embed=embed1)
     await delete_files(interaction.user.name)
-
-@bot.tree.command(name="retrain_datalle")
-@app_commands.checks.has_permissions(administrator=True)
-async def retrain_datalle(interaction: discord.Interaction):
-    embed1 = discord.Embed(
-            color = discord.Color.gold()
-        )
-    embed1.set_author(name=f"{interaction.user.name} finetuned Datalle",icon_url=interaction.user.avatar)
-    
-    await interaction.response.defer(thinking = True)
-    await generate_dataviz_finetune_data(interaction)
-    # Finetune model
-    import subprocess
-
-    command = "openai"
-    args = ["api", "fine_tunes.create", "-t", "commands/finetune.jsonl", "-m", "gpt-4"]
-        
-    try:
-        result = subprocess.run([command] + args, stdout=subprocess.PIPE)
-    except Exception as e:
-        interaction.followup.send(f"Error: \n```\n{e}\n```",embed=embed1)
-        return
-    
-    output = result.stdout.decode("utf-8")
-    interaction.followup.send(output,embed = embed1)
 
 # '!clear_reminders` command 
 @bot.tree.command(name="clear_reminders")
