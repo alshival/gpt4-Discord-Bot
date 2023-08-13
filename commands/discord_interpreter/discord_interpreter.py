@@ -21,20 +21,19 @@ async def discord_interpreter(interaction,message):
         )
     embed1.set_author(name=f"{interaction.user.name} used the Discord Interpreter",icon_url=interaction.user.avatar)
     
-
-    # Random sample finetune_interpreter data.
-    interpreter_messages = await finetune_interpreter.finetune_interpreter(interaction.user.name)
-    interpreter_messages = [[interpreter_messages[i],interpreter_messages[i+1]] for i in [j for j in range(len(interpreter_messages)) if j%2==0]] 
-    interpreter_messages = random.sample(interpreter_messages,6)
-    interpreter_messages = [item for sublist in interpreter_messages for item in sublist]
     # Random sample finetune_datalle data.
     datalle_messages = await finetune_datalle.finetune_datalle(interaction.user.name)
     datalle_messages = [[datalle_messages[i],datalle_messages[i+1]] for i in [j for j in range(len(datalle_messages)) if j%2==0]] 
     datalle_messages = random.sample(datalle_messages,6)
     datalle_messages = [item for sublist in datalle_messages for item in sublist]
+    # Random sample finetune_interpreter data.
+    interpreter_messages = await finetune_interpreter.finetune_interpreter(interaction.user.name)
+    interpreter_messages = [[interpreter_messages[i],interpreter_messages[i+1]] for i in [j for j in range(len(interpreter_messages)) if j%2==0]] 
+    interpreter_messages = random.sample(interpreter_messages,6)
+    interpreter_messages = [item for sublist in interpreter_messages for item in sublist]
     # Combine and random sample again
     messages = interpreter_messages + datalle_messages
-    messages = random.sample(messages,4)
+    messages = random.sample(messages,8)
 
     # Pull last few DATALL-E & Interpreter interactions in. So that interpreter can continue processing data from DATALL-E.
     cursor = await db.cursor()
@@ -43,7 +42,7 @@ async def discord_interpreter(interaction,message):
     from (
         select jsonl, timestamp from chat_history
         where channel_id = ?
-        and source in ('interpreter','DATALL-E','fefe')
+        and source in ('interpreter','DATALL-E')
         order by timestamp desc
         limit ?
     ) as subquery
