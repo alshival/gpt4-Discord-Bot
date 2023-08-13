@@ -2,9 +2,21 @@
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
-This Discord bot harnesses the power of OpenAI's GPT-4 model and provides additional functionalities like setting reminders, writing and executing code, image generation, data visualizations from `.CSV` files 📊📈, search youtube, and more! Fefe was built as a productivity bot with a personality. Great for personal use or small study groups or data teams. It now also includes **Discord Interpreter**, which allows you to manage files on your computer or create financial charts using yfinance using natural language. This bot also includes a tool called, **DATALL-E**, which generates charts or maps using `.csv` data you upload as an attachment. The code used to generate the image is returned as well, so that the data on the charts can be vetted. 📈📉📊🔍
+🤩 Hi there, I'm Fefe, an AI bot powered by OpenAI's GPT-4 model. I come with a host of features designed to make your Discord experience more interactive and fun!
 
-Created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether it's for personal use, a group of friends, a study group, or project management, this bot has got you covered. 🌟🚀💻🎉
+🔔 I can set reminders for you, ensuring you never miss a deadline or forget about that important meeting. 
+
+💻 Need to write or execute some python code? No problem, I've got you covered, with help from **DATALL-E**, the **Discord Interpreter**, and **Exeggutor**.
+
+🎨 I can even generate images based on your descriptions. 
+
+📊 Have a .CSV file? Let me visualize the data for you with beautifully designed charts and graphs. 
+
+🎥 Want to watch a YouTube video? Just ask, and I'll find it for you.
+
+🧮 I also come with a handy tool called DATALL-E. It lets you generate charts or maps from .CSV data you upload as an attachment. Plus, I return the code used to generate the image, so you can vet the data on the charts.
+
+🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
