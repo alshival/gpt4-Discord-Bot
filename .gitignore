@@ -70,7 +70,7 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 *.db
-
+*.db.wal
 # Scrapy stuff:
 .scrapy
 

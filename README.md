@@ -29,14 +29,14 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 <html>
 <body>
     <table style="width: 100%;" cellspacing="0" cellpadding="0">
-<!--         <tr>
+        <tr>
             <td style="width: 50%;">
-                <img src="https://github.com/alshival/openAI-Discord-Bot/blob/main/app/Screenshot%202023-08-04%207.43.52%20AM.png?raw=True" alt="Image Description">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%203.39.24%20AM.png?raw=True" alt="Image Description">
             </td>
             <td style="width: 50%;">
-                <img src="https://github.com/alshival/openAI-Discord-Bot/blob/main/app/Screenshot%202023-08-04%207.43.58%20AM.png?raw=True" alt="Image Description">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%205.00.36%20AM.png?raw=True" alt="Image Description">
             </td>
-        </tr> -->
+        </tr>
         <tr>
             <td colspan="2" style="width: 100%;">
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-09%204.32.11%20AM.png?raw=True" alt="Data Interpreter">
