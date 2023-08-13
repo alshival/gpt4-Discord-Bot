@@ -8,7 +8,8 @@ async def data_int(ctx,message):
             color = discord.Color.magenta()
         )
     embed1.set_author(name=f"{ctx.author.name} used Datall-E",icon_url=ctx.message.author.avatar)
-    user_dir = f"app/downloads/{ctx.author.name}/"
+    # Create user directory if it does not exist.
+    user_dir = await create_user_dir(ctx.author.name)
     py_filename = user_dir + f"{ctx.author.name}.py"
     # Create a copy of the global variables and set the 'data' variable to the provided DataFrame
     vars = {}
@@ -19,9 +20,10 @@ async def data_int(ctx,message):
         url = ctx.message.attachments[0].url
         print(url)
         # get filename using regex
-        filename = re.search('([^\/]+$)',url).group(0)
-        filepath = user_dir + re.search('([^\/]+$)',url).group(0)
-        filetype = re.search('\.([^.]+$)',url).group(1)
+        file_info = re.search('([^\/]+$)',url)
+        filename = file_info.group(0)
+        filepath = user_dir + filename
+        filetype = re.search('\.(\w+)$',url).group(1)
         
         res = requests.get(url)
         # Extract file type
@@ -39,16 +41,17 @@ async def data_int(ctx,message):
     messages = random.sample(messages,7)
     messages = [item for sublist in messages for item in sublist]
     # Prepare the prompt for OpenAI by displaying the user message and the data column types
+    print(filetype)
     if filetype != 'csv':
         await ctx.send("Sorry, I can only handle data in `.csv` files at the moment.")
+        return
     data = pd.read_csv(filepath)
-    vars['data'] = data
     prompt_prep = f"""
 {message}
 
 filename:
 ```
-app/downloads/{filename}
+app/downloads/{ctx.author.name}/{filename}
 ```
 
 columns:

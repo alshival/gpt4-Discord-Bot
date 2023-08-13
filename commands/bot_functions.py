@@ -379,6 +379,16 @@ async def generate_image(text):
     image_url = response['data'][0]['url']
     return image_url
 
+# Create a user's directory
+async def create_user_dir(author_name):
+    dir_name = f'app/downloads/{author_name}/'
+    # Check if the directory exists
+    if not os.path.exists(dir_name):
+        # If the directory does not exist, create it
+        os.makedirs(dir_name)
+    return dir_name
+    
+# Delete files from a user's directory.
 async def delete_files(author_name):
     directory = f"app/downloads/{author_name}/"
 

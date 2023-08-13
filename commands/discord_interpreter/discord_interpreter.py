@@ -5,9 +5,10 @@ from commands.bot_functions import *
 
 async def discord_interpreter(interaction,message):
     # Create user directory if it does not exist.
-    # Define the directory name
-    dir_name = f'app/downloads/{interaction.user.name}/'
+    dir_name = await create_user_dir(interaction.user.name)
+    
     py_filename = dir_name + f"{interaction.user.name}.py"
+    
     # Check if the directory exists
     if not os.path.exists(dir_name):
         # If the directory does not exist, create it
