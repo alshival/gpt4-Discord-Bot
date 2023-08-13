@@ -105,12 +105,11 @@ First 3 rows:
               
         m = f'''
     ################################################################
-    Output:
-    {output}
-    ################################################################
-    ################################################################
-    Fine-tuning:
-    ################################################################
+Output:
+{output}
+################################################################
+Fine-tuning:
+################################################################
     {{'role':'user','content':"""\n{prompt_prep}\n"""}},
     {{'role':'assistant','content':"""\n{extracted_code}\n"""}}
     '''
@@ -119,7 +118,7 @@ First 3 rows:
             file.write(m)
         # Gather files to send
         files_to_send = await gather_files_to_send(ctx.author.name)
-        await ctx.send(files=files_to_send,embed=embed1)
+        await send_results(ctx,output,files_to_send,embed1)
         
         db = await create_connection()
         await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')

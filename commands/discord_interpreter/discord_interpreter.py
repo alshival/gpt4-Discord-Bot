@@ -132,9 +132,9 @@ Fine-tuning:
         files_to_send = await gather_files_to_send(interaction.user.name)
         # Send the .png file back
         await interaction.followup.send(f'''
-    ```
-    {output}
-    ```
+```
+{output}
+```
     ''',files=files_to_send,embed=embed1)
             
         await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name,'interpreter')

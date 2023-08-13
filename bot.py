@@ -78,9 +78,9 @@ async def help(interaction: discord.Interaction):
     
     await interaction.response.send_message(help_text,embed=embed1)
 
-@bot.tree.command(name="clear_chat_history")
-async def clear_chat_history(interaction: discord.Interaction):
-    await clear_chat_history_db()
+@bot.tree.command(name="wipe_memories")
+async def wipe_memories(interaction: discord.Interaction):
+    await clear_memory_db()
     embed1 = discord.Embed(
             color = discord.Color.orange()
         )
@@ -106,10 +106,39 @@ Completion:
 
     # Store this in memory.
     db = await create_connection()
-    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just her memory wiped.'}),interaction.channel.id,interaction.channel.name,'bot_start')
-    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),interaction.channel.id,interaction.channel.name,'bot_start')
+    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just her memory wiped.'}),interaction.channel.id,interaction.channel.name,'bot')
+    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),interaction.channel.id,interaction.channel.name,'bot')
     await db.close()
+
+
+@bot.tree.command(name="clear_chat_history")
+async def clear_chat_history(interaction: discord.Interaction):
+    await clear_chat_history_db()
+    embed1 = discord.Embed(
+            color = discord.Color.orange()
+        )
+    embed1.set_author(name=f"{interaction.user.name} cleared Fefe's chat history.",icon_url=interaction.user.avatar)
     
+    response = openai.Completion.create(
+      model="text-davinci-003",
+      prompt="""
+Prompt: Write a sentence of something a cute anime girl named Fefe would say before kicking butt at work. Decorate with emojis.
+Completion: 
+""",
+      max_tokens=220,
+      temperature=1,
+      n=7
+    )
+    # Return the first choice's text
+    response_text = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
+    await interaction.response.send_message(response_text,embed=embed1)
+
+    # Store this in memory.
+    db = await create_connection()
+    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just her memory wiped.'}),interaction.channel.id,interaction.channel.name,'bot')
+    await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),interaction.channel.id,interaction.channel.name,'bot')
+    await db.close()
+
 def restart_bot():
     python = sys.executable
     os.execl(python, python, *sys.argv)
@@ -119,6 +148,39 @@ def restart_bot():
 async def restart_fefe(interaction: discord.Interaction):
     await interaction.response.send_message("Restarting bot...")
     restart_bot()
+
+@bot.tree.command(name="memory_leak")
+@app_commands.checks.has_permissions(administrator=True)
+async def memory_leak(interaction: discord.Interaction):
+    await create_user_dir(interaction.user.name)
+    
+    await interaction.response.defer(thinking = True)
+    
+    embed1 = discord.Embed(
+            color = discord.Color.gold()
+        )
+    embed1.set_author(name=f"{interaction.user.name} checked Fefe's memories.",icon_url=interaction.user.avatar)
+    
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("select * from memories order by timestamp desc limit 50")
+    # Fetch and load the json data from the selected rows
+    rows = await cursor.fetchall()
+    prompts = []
+    for row in rows:
+        json_data = json.loads(row[0])
+        prompts.append(json_data)
+    await db.close()
+    # Group prompts
+    prompts = [[prompts[i],prompts[i+1]] for i in [j for j in range(len(prompts)) if j%2==0]] 
+    prompts = [{'user':x[1]['content'],'assistant':x[0]['content']} for x in prompts]
+    dat = pd.DataFrame.from_records(prompts)
+    print(dat.head)
+    return_file = f'app/downloads/{interaction.user.name}/{interaction.user.name}.csv'
+    import csv
+    dat.to_csv(return_file,index=False,quoting=csv.QUOTE_ALL)
+    await interaction.followup.send(files=[discord.File(return_file)],embed=embed1)
+    await delete_files(interaction.user.name)
 
 @bot.tree.command(name="retrain_datalle")
 @app_commands.checks.has_permissions(administrator=True)
@@ -230,8 +292,8 @@ async def on_ready():
     
     # Store this in memory.
     db = await create_connection()
-    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just joined the discord server.'}),first_text_channel.id,first_text_channel.name,'bot_start')
-    await store_prompt(db,json.dumps({'role':'assistant','content':greeter}),first_text_channel.id,first_text_channel.name,'bot_start')
+    await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just joined the discord server.'}),'bot','bot','bot')
+    await store_prompt(db,json.dumps({'role':'assistant','content':greeter}),'bot','bot','bot')
     await db.close()
 
     try:

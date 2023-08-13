@@ -7,10 +7,18 @@ from commands.datalle import Datalle
 async def talk_to_fefe(ctx,message):
     # Check if there is a .csv file attached. If so, run datalle
     if len(ctx.message.attachments)==1:
-        await Datalle.data_int(ctx,message)
-        return
+        url = ctx.message.attachments[0].url
+        print(url)
+        # get filename using regex
+        file_info = re.search('([^\/]+$)',url)
+        filename = file_info.group(0)
+        filepath = 'app/downloads/' + filename
+        filetype = re.search('\.(\w+)$',url).group(1)
+        if filetype == 'csv':
+            await Datalle.data_int(ctx,message)
+            return
     
-    fefe_model = openai_model # Or GPT-3.5-turbl
+    fefe_model = openai_model # Or GPT-3.5-turbo
     
     completion_limit = 1250
     db = await create_connection()
@@ -31,7 +39,7 @@ async def talk_to_fefe(ctx,message):
     latest_token = len(enc.encode(latest_string))
 
     # Load in past prompts
-    past_prompts = await fetch_prompts(db, ctx.channel.id, 4)
+    past_prompts = await fetch_prompts(db,str(ctx.channel.id), 4)
     past_prompts = check_tokens(past_prompts,fefe_model,completion_limit + latest_token + sample_tokens) 
         
     messages.extend(past_prompts)

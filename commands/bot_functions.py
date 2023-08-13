@@ -51,7 +51,19 @@ CREATE TABLE IF NOT EXISTS memories
     await db.commit()
     await db.close()
 
-# Function to store a prompt
+# clear memories
+async def clear_memory_db():
+    # Create a connection pool
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("DROP TABLE IF EXISTS memories")
+    await db.commit()
+    await db.close()
+
+    await create_memories()
+
+
+# Function to store a memory
 async def store_memory(db,jsonl):
     cursor = await db.cursor()
     await cursor.execute("""
@@ -67,7 +79,7 @@ async def fetch_prompts(db,channel_id,limit,source=None):
     select jsonl
     from (
         SELECT jsonl,timestamp FROM chat_history
-        WHERE channel_id = ?
+        WHERE channel_id in (?,'bot')
         ORDER BY timestamp DESC
         LIMIT ?
     ) AS subquery
@@ -248,7 +260,7 @@ async def gather_files_to_send(author_name):
     return files_to_send
 
 # Function to send response in chunks. Used to adhere to discord's 2000 character limit.
-async def send_results(ctx, output, embed=None, files_to_send=[]):
+async def send_results(ctx, output, files_to_send=[],embed=None):
     chunk_size = 2000  # Maximum length of each chunk
     
     response = f'''
@@ -259,18 +271,18 @@ async def send_results(ctx, output, embed=None, files_to_send=[]):
     
     if len(chunks) == 1:
         if embed:
-            await ctx.send(chunks[0],files = [discord.File(x) for x in files_to_send],embed=embed)
+            await ctx.send(chunks[0],files = files_to_send,embed=embed)
         else:
-            await ctx.send(chunks[0],files = [discord.File(x) for x in files_to_send])
+            await ctx.send(chunks[0],files = files_to_send)
     else:
         for chunk in chunks:
             if chunk != chunks[len(chunks)-1]:
                 await ctx.send(chunk)
             else:
                 if embed:
-                    await ctx.send(chunk,files = [discord.File(x) for x in files_to_send])
+                    await ctx.send(chunk,files = files_to_send)
                 else: 
-                    await ctx.send(chunk,files = [discord.File(x) for x in files_to_send],embed=embed)
+                    await ctx.send(chunk,files = files_to_send,embed=embed)
 
 # Function to clear the downloads folder
 async def delete_music_downloads(bot):
@@ -309,25 +321,31 @@ def check_tokens(jsonl, model,completion_limit):
     return jsonl
 
 # Used to abide by Discord's 2000 character limit.
-async def send_interactions(interaction, text,embed = None):
-    chunk_size = 2000  # Maximum length of each chunk
 
-    chunks = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+async def send_followups(interaction, output, files_to_send=[],embed=None):
+    chunk_size = 2000  # Maximum length of each chunk
+    
+    response = f'''
+{output}
+'''
+    
+    chunks = [response[i:i+chunk_size] for i in range(0, len(response), chunk_size)]
+    
     if len(chunks) == 1:
         if embed:
-            await interaction.followup.send(chunks[0],files=[discord.File(x) for x in files_to_send],embed=embed)
+            await interaction.followup.send(chunks[0],files = files_to_send,embed=embed)
         else:
-            await interaction.followup.send(chunks[0],files=[discord.File(x) for x in files_to_send],embed=embed)
+            await interaction.followup.send(chunks[0],files = files_to_send)
     else:
         for chunk in chunks:
-            if chunk != chunks[len(chunks)]:
+            if chunk != chunks[len(chunks)-1]:
                 await interaction.followup.send(chunk)
             else:
                 if embed:
-                    await interaction.followup.send(chunk,files = [discord.File(x) for x in files_to_send],embed=embed)
-                else:
-                    await interaction.followup.send(chunk,files = [discord.File(x) for x in files_to_send])
-                    
+                    await interaction.followup.send(chunk,files = files_to_send,embed=embed)
+                else: 
+                    await interaction.followup.send(chunk,files = files_to_send)
+            
 # Used to abide by Discord's 2000 character limit.
 async def send_chunks(ctx, text):
     chunk_size = 2000  # Maximum length of each chunk
@@ -357,8 +375,14 @@ async def gif_search(response_text):
         search_query = check_gif.group(1)
         
         if len(search_query)>0:
-            gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=12&rating=pg-13')
+            giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=6'
+            
+            if GIPHY_CONTENT_FILTER:
+                giphy_api_call = giphy_api_call + '&rating=pg-13'
+                
+            gif_response = requests.get(giphy_api_call)
             data = gif_response.json()
+            
             try:
                 gif = random.choice(data['data'])
                 gif_url = gif['images']['original']['url']
