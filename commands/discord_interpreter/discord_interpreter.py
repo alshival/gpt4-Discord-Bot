@@ -4,20 +4,31 @@ from commands.datalle import finetune_datalle
 from commands.bot_functions import *
 
 async def discord_interpreter(interaction,message):
+    # Create user directory if it does not exist.
+    # Define the directory name
+    dir_name = f'app/downloads/{interaction.user.name}/'
+    py_filename = dir_name + f"{interaction.user.name}.py"
+    # Check if the directory exists
+    if not os.path.exists(dir_name):
+        # If the directory does not exist, create it
+        os.makedirs(dir_name)
+        
     db = await create_connection()
     embed1 = discord.Embed(
             description = message,
             color = discord.Color.purple()
         )
     embed1.set_author(name=f"{interaction.user.name} used the Discord Interpreter",icon_url=interaction.user.avatar)
-    py_filename = f"app/downloads/{interaction.user.name}.py"
+    
 
     # Random sample finetune_interpreter data.
-    interpreter_messages = [[finetune_interpreter.finetune[i],finetune_interpreter.finetune[i+1]] for i in [j for j in range(len(finetune_interpreter.finetune)) if j%2==0]] 
+    interpreter_messages = await finetune_interpreter.finetune_interpreter(interaction.user.name)
+    interpreter_messages = [[interpreter_messages[i],interpreter_messages[i+1]] for i in [j for j in range(len(interpreter_messages)) if j%2==0]] 
     interpreter_messages = random.sample(interpreter_messages,6)
     interpreter_messages = [item for sublist in interpreter_messages for item in sublist]
     # Random sample finetune_datalle data.
-    datalle_messages = [[finetune_datalle.finetune[i],finetune_datalle.finetune[i+1]] for i in [j for j in range(len(finetune_datalle.finetune)) if j%2==0]] 
+    datalle_messages = await finetune_datalle.finetune_datalle(interaction.user.name)
+    datalle_messages = [[datalle_messages[i],datalle_messages[i+1]] for i in [j for j in range(len(datalle_messages)) if j%2==0]] 
     datalle_messages = random.sample(datalle_messages,6)
     datalle_messages = [item for sublist in datalle_messages for item in sublist]
     # Combine and random sample again
@@ -106,28 +117,29 @@ Here's the code:
         sys.stdout = original_stdout
         output = captured_output.getvalue()
         m = f'''
-    ################################################################
-    Fine-tuning:
-    ################################################################
-    {{'role':'user','content':"""{r'' +message}"""}},
-    {{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
+################################################################
+Fine-tuning:
+################################################################
+{{'role':'user','content':"""{r'' +message}"""}},
+{{'role':'assistant','content':"""\n{extracted_code}\n"""}}'''
         jsonl = {'role':'user','content':message}
-        strings =  [x for x in vars.values() if (type(x) is str)]
-        files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None]
-        files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
         # Send the zcode back to the user
         with open(py_filename, 'w') as file:
             file.write(m)
+            
+        # Gather files to send
+        files_to_send = await gather_files_to_send(interaction.user.name)
         # Send the .png file back
         await interaction.followup.send(f'''
     ```
     {output}
     ```
-    ''',files=[discord.File(x) for x in files_to_send] + [discord.File(py_filename)],embed=embed1)
+    ''',files=files_to_send,embed=embed1)
             
         await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name,'interpreter')
         await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),interaction.channel_id,interaction.channel.name,'interpreter')
         await db.close()
+        await delete_files(interaction.user.name)
     except Exception as e:
         print(message)
         print(e)
@@ -153,5 +165,6 @@ Here's the code:
         await store_prompt(db,json.dumps(jsonl),interaction.channel_id,interaction.channel.name,'interpreter')
         await store_prompt(db,json.dumps({'role':'assistant','content':'noted'}),interaction.channel_id,interaction.channel.name,'interpreter')
         await db.close()
+        await delete_files(interaction.user.name)
         return
         

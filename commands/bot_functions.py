@@ -221,6 +221,7 @@ async def get_first_text_channel(bot):
             if isinstance(channel, discord.TextChannel):  # If you want text channels only
                 return channel
     return None
+
 ############################################
 # Useful Functions
 ############################################
@@ -236,6 +237,15 @@ def extract_code(response_text):
         extracted_code = response_text
         print("No code found.")
     return extracted_code
+    
+async def gather_files_to_send(author_name):
+    reg_string = "^[^.][a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$"
+    user_dir = f"app/downloads/{author_name}/"
+    files = os.listdir(user_dir)
+    files_to_send = [user_dir + x for x in files if re.search(reg_string,x)]
+    files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
+    files_to_send = [discord.File(x) for x in files_to_send]
+    return files_to_send
 
 # Function to send response in chunks. Used to adhere to discord's 2000 character limit.
 async def send_results(ctx, output, embed=None, files_to_send=[]):
@@ -347,7 +357,7 @@ async def gif_search(response_text):
         search_query = check_gif.group(1)
         
         if len(search_query)>0:
-            gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=12')
+            gif_response = requests.get(f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={gify_api_token}&limit=12&rating=pg-13')
             data = gif_response.json()
             try:
                 gif = random.choice(data['data'])
@@ -368,3 +378,14 @@ async def generate_image(text):
     )
     image_url = response['data'][0]['url']
     return image_url
+
+async def delete_files(author_name):
+    directory = f"app/downloads/{author_name}/"
+
+    # Check if the directory exists
+    if os.path.exists(directory):
+        # Delete all files in the directory
+        shutil.rmtree(directory)
+        print(f"All files in {directory} have been deleted.")
+    else:
+        print("The directory does not exist.")

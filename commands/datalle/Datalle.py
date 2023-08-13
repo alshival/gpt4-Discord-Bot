@@ -8,8 +8,8 @@ async def data_int(ctx,message):
             color = discord.Color.magenta()
         )
     embed1.set_author(name=f"{ctx.author.name} used Datall-E",icon_url=ctx.message.author.avatar)
-
-    py_filename = f"app/downloads/{ctx.author.name}.py"
+    user_dir = f"app/downloads/{ctx.author.name}/"
+    py_filename = user_dir + f"{ctx.author.name}.py"
     # Create a copy of the global variables and set the 'data' variable to the provided DataFrame
     vars = {}
     
@@ -20,7 +20,7 @@ async def data_int(ctx,message):
         print(url)
         # get filename using regex
         filename = re.search('([^\/]+$)',url).group(0)
-        filepath = 'app/downloads/' + re.search('([^\/]+$)',url).group(0)
+        filepath = user_dir + re.search('([^\/]+$)',url).group(0)
         filetype = re.search('\.([^.]+$)',url).group(1)
         
         res = requests.get(url)
@@ -32,7 +32,8 @@ async def data_int(ctx,message):
         await ctx.send("Attach a file to continue",embed=embed1)
         return
     # For random prompts.
-    messages = [[finetune_datalle.finetune[i],finetune_datalle.finetune[i+1]] for i in [j for j in range(len(finetune_datalle.finetune)) if j%2==0]] 
+    messages = await finetune_datalle.finetune_datalle(ctx.author.name)
+    messages = [[messages[i],messages[i+1]] for i in [j for j in range(len(messages)) if j%2==0]] 
 
     # Random sample messages.
     messages = random.sample(messages,7)
@@ -113,16 +114,15 @@ First 3 rows:
          
         with open(py_filename, 'w') as file:
             file.write(m)
-        # check if there are any files
-        strings =  [x for x in vars.values() if (type(x) is str)]
-        files_to_send = [x  for x in strings if re.search("^app/downloads/.+\/?.+\.[a-zA-Z0-9]+$",x) is not None] + [py_filename]
-        files_to_send = [x for x in files_to_send if file_size_ok(x)==True]
-        await ctx.send(files=[discord.File(k) for k in files_to_send],embed=embed1)
+        # Gather files to send
+        files_to_send = await gather_files_to_send(ctx.author.name)
+        await ctx.send(files=files_to_send,embed=embed1)
         
         db = await create_connection()
         await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await db.close()
+        await delete_files(ctx.author.name)
     except Exception as e:
         print(message)
         print(e)
@@ -148,5 +148,6 @@ Here's the code:
         await store_prompt(db,json.dumps(jsonl),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await store_prompt(db,json.dumps({'role':'assistant','content':'Noted.'}),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await db.close()
+        await delete_files(ctx.author.name)
         return
             

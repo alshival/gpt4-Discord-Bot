@@ -1,6 +1,7 @@
-finetune = [
+async def finetune_interpreter(author_name):
+    return [
 {'role':'user','content':"""Save the titanic dataset to a csv file. Make sure to import seaborn as sns"""},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import seaborn as sns
 import pandas as pd
 
@@ -8,11 +9,11 @@ import pandas as pd
 titanic_data = sns.load_dataset('titanic')
 
 # Save the Titanic dataset to a CSV file
-filename = 'app/downloads/titanic_dataset.csv'
+filename = 'app/downloads/{author_name}/titanic_dataset.csv'
 titanic_data.to_csv(filename, index=False)
 """},
 {'role':'user','content':"Can you create a candlestick chart of Tesla's stock price with volume bars for the past six months."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -44,12 +45,12 @@ sns.set_palette(sns.color_palette(colors))
 plt.style.use('dark_background')
 
 # Plot the candlestick chart for Tesla stock price for the past six months
-filename = "app/downloads/Tesla_candlestick.png"
+filename = "app/downloads/{author_name}/Tesla_candlestick.png"
 mpf.plot(data, type='candle', style='yahoo', title="Tesla Stock Price (Last Six Months)", ylabel="Stock Price (USD)",
          figsize=(chart_width, chart_height), savefig=dict(fname=filename, dpi=300, bbox_inches='tight'), volume=True)
 plt.close()
 """},{'role':'user','content':"Can you create a candlestick chart of Microsoft's stock price for the past three quarters? Add bars for volume as well."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -81,13 +82,13 @@ sns.set_palette(sns.color_palette(colors))
 plt.style.use('fivethirtyeight')
 
 # Plot the candlestick chart for Microsoft stock price for the past three quarters
-filename = "app/downloads/Microsoft_candlestick.png"
+filename = "app/downloads/{author_name}/Microsoft_candlestick.png"
 mpf.plot(data, type='candle', style='yahoo', title="Microsoft Stock Price (Last Three Quarters)", ylabel="Stock Price (USD)",
          figsize=(chart_width, chart_height), savefig=dict(fname=filename, dpi=300, bbox_inches='tight'))
 plt.close()
 """},
 {'role':'user','content':"Can you create a candlestick chart for Apple's stock price in the past 128 days? Add bars for volume."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -119,13 +120,13 @@ sns.set_palette(sns.color_palette(colors))
 plt.style.use('fivethirtyeight')
 
 # Plot the candlestick chart for Apple stock price for the past three quarters
-filename = "app/downloads/Apple_candlestick.png"
+filename = "app/downloads/{author_name}/Apple_candlestick.png"
 mpf.plot(data, type='candle', style='yahoo', title="Apple Stock Price (Last 128 days)", ylabel="Stock Price (USD)",
          figsize=(chart_width, chart_height), savefig=dict(fname=filename, dpi=300, bbox_inches='tight'), volume=True)
 plt.close()
 """},
 {'role':'user','content':"can you plot percent price change for bitcoin, ethereum, and dogecoin for the past three quarters? Use a dark theme, orange for bitcoin, light blue for ethereum, and yellow for dogecoin."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -166,12 +167,12 @@ plt.ylabel("Percent Change", fontsize=14, color="#FFFFFF")
 plt.legend()
 
 plt.tight_layout()
-filename = "app/downloads/bitcoin_ethereum_dogecoin_three_quarters.png"
+filename = "app/downloads/{author_name}/bitcoin_ethereum_dogecoin_three_quarters.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot the price of Microsoft and Apple together? Can you add a line of best fit for the pair?"},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -237,12 +238,12 @@ plt.ylabel("Stock Price (USD)", fontsize=14, color="#FFFFFF")
 plt.legend()
 
 plt.tight_layout() 
-filename = "app/downloads/Microsoft_Apple_Two_Quarters.png"
+filename = "app/downloads/{author_name}/Microsoft_Apple_Two_Quarters.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Krispy Kreme's stock price for the past six months, as well as a regression line. Do not show volume and do not use candlesticks."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -294,12 +295,12 @@ plt.title("Krispy Kreme Stock Price (Last Six Months)")
 plt.legend()
 
 # Save the plot as an image file
-filename = "app/downloads/Krispy_Kreme_Six_Months.png"
+filename = "app/downloads/{author_name}/Krispy_Kreme_Six_Months.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot the price of Microsoft and Apple together? Can you add a line of best fit for each? Furthermore, can you add information about the lines of best fit?"},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -360,8 +361,8 @@ plt.plot(data_two_quarters.index, predicted_prices_msft, color='red', linestyle=
 plt.plot(data_two_quarters.index, predicted_prices_aapl, color='blue', linestyle='--', label='AAPL Linear Regression')
 
 # Add information about the lines of best fit
-plt.annotate(f"MSFT: {regressor_msft.coef_[0]:.2f}", xy=(data_two_quarters.index[-1], predicted_prices_msft[-1]), xytext=(data_two_quarters.index[-1] - pd.DateOffset(months=1), predicted_prices_msft[-1]), arrowprops=dict(facecolor='black', arrowstyle='->'), fontsize=10)
-plt.annotate(f"AAPL: {regressor_aapl.coef_[0]:.2f}", xy=(data_two_quarters.index[-1], predicted_prices_aapl[-1]), xytext=(data_two_quarters.index[-1] - pd.DateOffset(months=1), predicted_prices_aapl[-1]), arrowprops=dict(facecolor='black', arrowstyle='->'), fontsize=10)
+plt.annotate(f"MSFT: {{regressor_msft.coef_[0]:.2f}}", xy=(data_two_quarters.index[-1], predicted_prices_msft[-1]), xytext=(data_two_quarters.index[-1] - pd.DateOffset(months=1), predicted_prices_msft[-1]), arrowprops=dict(facecolor='black', arrowstyle='->'), fontsize=10)
+plt.annotate(f"AAPL: {{regressor_aapl.coef_[0]:.2f}}", xy=(data_two_quarters.index[-1], predicted_prices_aapl[-1]), xytext=(data_two_quarters.index[-1] - pd.DateOffset(months=1), predicted_prices_aapl[-1]), arrowprops=dict(facecolor='black', arrowstyle='->'), fontsize=10)
 
 plt.title("Microsoft and Apple Stock Prices (Last Two Quarters)", fontsize=16, fontweight='bold', color="#333333")
 plt.xlabel("Date", fontsize=14, color="#333333")
@@ -370,12 +371,12 @@ plt.legend()
 
 plt.tight_layout()
 
-filename = "app/downloads/Microsoft_Apple_Two_Quarters.png"
+filename = "app/downloads/{author_name}/Microsoft_Apple_Two_Quarters.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Disney's volume for the past two blood moons?"},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -410,12 +411,12 @@ plt.ylabel("Volume", fontsize=14, color="#FFFFFF")
 
 plt.tight_layout() 
 
-filename = "app/downloads/Disney_Two_Blood_Moons.png"
+filename = "app/downloads/{author_name}/Disney_Two_Blood_Moons.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Disney's volume for the past two blood moons? Use bars and a white background."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -450,12 +451,12 @@ plt.xlabel("Date", fontsize=14, color="#333333")
 plt.ylabel("Volume", fontsize=14, color="#333333")
 
 plt.tight_layout() 
-filename = "app/downloads/Disney_Two_Blood_Moons_With_Volume.png"
+filename = "app/downloads/{author_name}/Disney_Two_Blood_Moons_With_Volume.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Disney's stock price for the past 28 days? Also include bars for volume."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -502,12 +503,12 @@ plt.legend()
 
 plt.tight_layout() 
 
-filename = "app/downloads/Disney_28_Days_with_Volume.png"
+filename = "app/downloads/{author_name}/Disney_28_Days_with_Volume.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Microsoft's stock price for the past three quarters using candlesticks?"},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -535,13 +536,13 @@ data = yf.download(ticker, start=start_date, end=end_date,progress=False)
 colors = ['#3C6EB4', '#FFB900', '#B4009E', '#00A300']
 sns.set_palette(sns.color_palette(colors))
 
-filename = "app/downloads/Microsoft_Candlestick_Three_Quarters.png"
+filename = "app/downloads/{author_name}/Microsoft_Candlestick_Three_Quarters.png"
 # Plot the candlestick chart for Microsoft for the past three quarters
 mpf.plot(data, type='candle', style='yahoo', title="Microsoft Stock Price (Last Three Quarters)",
          ylabel="Stock Price (USD)", figsize=(chart_width, chart_height), savefig=filename)
 """},
 {'role':'user','content':"can you plot Krispy Kreme's stock price for the past six months, as well as volume?"},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -573,13 +574,13 @@ sns.set_palette(sns.color_palette(colors))
 plt.style.use('dark_background')
 
 # Plot the candlestick chart for Krispy Kreme stock price for the past six months
-filename = "app/downloads/Krispy_Kreme_Candlestick_Six_Months.png"
+filename = "app/downloads/{author_name}/Krispy_Kreme_Candlestick_Six_Months.png"
 mpf.plot(data, type='candle', style='yahoo', title="Krispy Kreme Stock Price (Last Six Months)", ylabel="Stock Price (USD)",
          figsize=(chart_width, chart_height), savefig=dict(fname=filename, dpi=300, bbox_inches='tight'), volume=True)
 plt.close()
 """},
 {'role':'user','content':"plot Google's stock price chart for the past two weeks using 5-minute data. Then show a line of best fit. Use a dark theme, red for the graph, and green for the line of best fit."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -631,12 +632,12 @@ plt.title("Google Stock Price (Past Two Weeks)")
 plt.legend()
 
 # Save the plot as an image file
-filename = "app/downloads/Google_Two_Weeks.png"
+filename = "app/downloads/{author_name}/Google_Two_Weeks.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"plot Bumble's stock price chart for the past month using 60-minute interval data. Then add a line of best fit of the form y=mx+b. Add the defining function for the line of best fit to the chart. Use a white theme and yellow for the line graph, green for the line of best fit. Make the lines very thick and stamp a big heart on it."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -682,7 +683,7 @@ line_of_best_fit = m * X + b
 plt.plot(data.index, line_of_best_fit, 'g--', label="Line of Best Fit", linewidth=3)
 
 # Add the defining function for the line of best fit
-defining_function = f"y = {m:.2f}x + {b:.2f}"
+defining_function = f"y = {{m:.2f}}x + {{b:.2f}}"
 plt.text(data.index[0], data['Close'].iloc[0], defining_function, fontsize=16, color='green', ha='left', va='bottom')
 
 # Set plot labels and title
@@ -697,12 +698,12 @@ plt.text(data.index[-1], data['Close'].iloc[-1], u'\u2764', fontsize=100, color=
 plt.legend()
 
 # Save the plot as an image file
-filename = "app/downloads/Bumble_Stock_Price.png"
+filename = "app/downloads/{author_name}/Bumble_Stock_Price.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"plot Bumble's stock price chart for the past 2 months using 60-minute interval data. Then add a linear line of best fit of the form y=mx+b. Add the defining function for the line of best fit to the chart. Use a black theme and yellow for the line graph, green for the line of best fit. Make the title HUGE and bold. Make the lines very thick and stamp a big heart on it."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -749,7 +750,7 @@ regression_line = model.predict(X)
 plt.plot(data.index, regression_line, 'g--', label="Line of Best Fit", linewidth=3)
 
 # Add equation of line of best fit to the chart
-equation = f"y = {model.params[1]:.2f}x + {model.params[0]:.2f}"
+equation = f"y = {{model.params[1]:.2f}}x + {{model.params[0]:.2f}}"
 plt.text(data.index[1], data['Close'].max(), equation, fontsize=14, color='white', va='top')
 
 # Add a big heart stamp on the chart
@@ -759,12 +760,12 @@ plt.text(data.index[-1], data['Close'].min(), '❤', fontsize=100, color='#FFD70
 plt.legend()
 
 # Save the plot as a .png image file
-filename = "app/downloads/Bumble_2_Months.png"
+filename = "app/downloads/{author_name}/Bumble_2_Months.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Match Group, Bumble, and Hello Group (NASDAQ:MOMO) for the past two years? Add a line of best fit and information about the line of best fit. Use a white theme, blue for match group, orange for bumble, and green for hello group."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -811,10 +812,10 @@ for ticker in tickers:
     line_of_best_fit = regressor.predict(X)
 
     # Plot the line of best fit for the past year
-    plt.plot(data.index, line_of_best_fit, linestyle='--', linewidth=2, label=f"{ticker} Regression Line")
+    plt.plot(data.index, line_of_best_fit, linestyle='--', linewidth=2, label=f"{{ticker}} Regression Line")
 
     # Add information about the regression line
-    equation = f"y = {regressor.coef_[0]:.2f}x + {regressor.intercept_:.2f}"
+    equation = f"y = {{regressor.coef_[0]:.2f}}x + {{regressor.intercept_:.2f}}"
     plt.text(data.index[-1], data[ticker].iloc[-1], equation, fontsize=10, color='black', ha='right', va='bottom')
 
 # Set plot labels and title
@@ -826,12 +827,12 @@ plt.title("Match Group, Bumble, and Hello Group Stock Prices (Past Two Years)")
 plt.legend()
 
 # Save the plot as a .png image file
-filename = "app/downloads/Stock_Prices_Match_Bumble_Hello.png"
+filename = "app/downloads/{author_name}/Stock_Prices_Match_Bumble_Hello.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot Match Group, Bumble, and Hello Group (NASDAQ:MOMO) for the past two years? Add a line of regression for the past year for each symbol and information about the regression lines. Use a white theme, blue for match group, orange for bumble, and green for hello group."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -880,7 +881,7 @@ for ticker in tickers:
     # Add information about the regression line
     m = model.params[1]
     b = model.params[0]
-    defining_function = f"y = {m:.2f}x + {b:.2f}"
+    defining_function = f"y = {{m:.2f}}x + {{b:.2f}}"
     plt.text(stock_data.index[0], stock_data.iloc[0], defining_function, fontsize=12, color='black', ha='left', va='bottom')
 
 # Set plot labels and title
@@ -892,12 +893,12 @@ plt.title("Stock Prices for Match Group, Bumble, and Hello Group (Last Two Years
 plt.legend()
 
 # Save the plot as an image file
-filename = "app/downloads/Stock_Prices.png"
+filename = "app/downloads/{author_name}/Stock_Prices.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"can you plot apples, google's, and Microsoft's stock price for the last four quarters. Add a best fit line for the group for the last two quarters. Use a dark theme, make the lines very thick, white for apple, orange for google, and blue for Microsoft."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -956,12 +957,12 @@ plt.legend()
 
 plt.tight_layout()
 
-filename = "app/downloads/Stock_Prices_Last_Four_Quarters.png"
+filename = "app/downloads/{author_name}/Stock_Prices_Last_Four_Quarters.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"create a matrix plot using the iris dataset."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -975,13 +976,13 @@ iris = sns.load_dataset('iris')
 sns.pairplot(iris)
 
 # Save the plot as a .png image
-filename = "app/downloads/iris_matrix_plot.png"
+filename = "app/downloads/{author_name}/iris_matrix_plot.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 
 """},
 {'role':'user','content':"Plot Tesla's stock price for the past 5 years. For each 12 month period in the date range, add a line of best fit. There should be a total of 5 lines of best fit. Use a white background and a thick red line for Tesla's price."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -1034,7 +1035,7 @@ for i, (start, end) in enumerate(date_ranges):
     line_of_best_fit = regressor.predict(X)
 
     # Plot the line of best fit for the current 12-month period
-    plt.plot(filtered_data.index, line_of_best_fit, linestyle='--', linewidth=1.5, label=f"Line of Best Fit {i+1}")
+    plt.plot(filtered_data.index, line_of_best_fit, linestyle='--', linewidth=1.5, label=f"Line of Best Fit {{i+1}}")
 
 # Set plot labels and title
 plt.xlabel("Date")
@@ -1045,12 +1046,12 @@ plt.title("Tesla Stock Price (Past 5 Years)")
 plt.legend()
 
 # Save the plot as a .png image file
-filename = "app/downloads/Tesla_Stock_Price_With_Lines_Of_Best_Fit.png"
+filename = "app/downloads/{author_name}/Tesla_Stock_Price_With_Lines_Of_Best_Fit.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"Plot Tesla's stock price for the past five years. Then add a line to approximate the price using a polynomial of degree 2, 3, and 4."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -1110,12 +1111,12 @@ plt.legend()
 plt.tight_layout()
 
 # Save the plot as a .png image file
-filename = "app/downloads/Tesla_Stock_Price_Polynomial_Approximation.png"
+filename = "app/downloads/{author_name}/Tesla_Stock_Price_Polynomial_Approximation.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"Plot Apple, Microsoft, Google, Meta's stock price percent change for the past two years. Use a white theme and playful colors. Stamp a large heart on it using unicode."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -1165,12 +1166,12 @@ plt.title("Stock Price Percent Change for Apple, Microsoft, Google, and Meta (La
 plt.legend()
 
 # Save the plot as an image file
-filename = "app/downloads/Stock_Price_Percent_Change.png"
+filename = "app/downloads/{author_name}/Stock_Price_Percent_Change.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
 {'role':'user','content':"Plot Apple, Google, Meta, and Microsofit's stock price on a chart. Standardize the results and add a line of best fit for the group. Use playful colors and a large font for the title. Make the font for the axis text larger as well."},
-{'role':'assistant','content':"""
+{'role':'assistant','content':f"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -1234,8 +1235,44 @@ plt.yticks(fontsize=12)
 plt.legend()
 
 # Save the plot as a .png image file
-filename = "app/downloads/Stock_Prices_Apple_Google_Meta_Microsoft.png"
+filename = "app/downloads/{author_name}/Stock_Prices_Apple_Google_Meta_Microsoft.png"
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 """},
+{'role':'user','content':"""Plot Google's stock price for the past year. Add a line of best fit."""},
+    {'role':'assistant','content':f"""
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Download Google's stock price data
+data = yf.download('GOOGL','2020-01-01','2021-12-31')
+
+# Prepare data for linear regression line
+X = (data.index - data.index[0]).days.values.reshape(-1,1)
+y = data['Close'].values
+
+# Create a linear regression model
+model = LinearRegression()
+model.fit(X, y)
+
+# Generate a prediction y based on X
+y_pred = model.predict(X)
+
+# Plotting the actual prices
+plt.figure(figsize=(10,5))
+plt.plot(data.index, data['Close'])
+
+# Plotting the line of best fit
+plt.plot(data.index, y_pred, color='red')
+
+plt.title("Google's Stock Price for the Past Year with Line of Best Fit")
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.savefig('app/downloads/{author_name}/google_stock_price.png')
+plt.show()
+
+"""}
 ]
