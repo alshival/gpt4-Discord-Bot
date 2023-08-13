@@ -236,7 +236,7 @@ async def upgrade_fefe(interaction: discord.Interaction):
 {result.stdout}
 ```
 """
-    await interaction.followup.send("Restarting bot...",jsonl,embed=embed1)
+    await interaction.followup.send("Restarting bot...\n" + jsonl,embed=embed1)
     restart_bot()
     
 
