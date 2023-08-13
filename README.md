@@ -53,7 +53,7 @@ Note that choropleth map are quite difficult to generate. Fefe currently only su
 - Use the command prefix `!` to interact with the bot:
 
   - `!fefe <message>`: Ask Fefe to write or debug code from `DATALL-E` and `Discord Interpreter`, or answer questions. She can also set reminders, generate images, and search youtube.
-  - `!datalle`: Attach a .CSV file and ask Fefe to generate charts or maps. Then ask `!fefe` to go over the code with you.
+  - `!datalle`: (Admin) Attach a .CSV file and ask Fefe to generate charts or maps. Then ask `!fefe` to go over the code with you.
   - `!exeggutor`: (Admin) Exeggute raw python code. Ask `!fefe` to go over the code or any errors with you.
 - The bot also includes the following slash commands:
   - `/interpreter <message>`: Use the Discord Interpreter to move files around on your PC or raspberry pi, or to generate financial charts. Then ask `!fefe` to go over the code with you.
