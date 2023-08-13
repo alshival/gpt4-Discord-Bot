@@ -38,45 +38,32 @@ async def interpreter(interaction: discord.Interaction, message: str):
     
     await discord_interpreter.discord_interpreter(interaction,message)
 
-help_text = """
-👋 Hi, I'm Fefe! I live on this server. 🍓🦄✨
 
-🤖 I am an AI-powered Discord bot with market research analysis capabilities created by [Alshival's Data Service](https://www.alshival.com/ai-discord-bots)! 💖⭐️
-
-🎶 Ask me to play music for you over voice channels and set reminders! ⏰🎵
-
-
-📝 Here's a quick rundown on how to use the app:
-
- 1️⃣ Talk to Fefe
-- `!fefe <message>`: Chat with me. Ask me to set reminders, generate images, or ask me questions about code or certain topics.
-- `!datalle <message>`: Attach a `.csv` file and request charts be generated.
-- `!exeggutor <python>`: Run raw python code.
-
-2️⃣ There are also some slash commands that help:
-- `/interpreter`: Use the Discord interpreter to execute Python code.
-- `/upgrade_fefe`: Upgrade me.
-- `/restart_fefe`: Restart me.
-
-💼 If you're into finance, try using the Discord Interpreter at `/plugins Interpreter <message>` to generate stock market charts! 📈📉
-
-You can ask me questions about code produced by `!datalle`, `!exeggutor`, and the Discord interpreter at `/plugins Interpreter` using `!fefe`. I will be happy to provide further assistance and explanations.
-
-📚 You can grab the code and instructions needed to install me on your server by visiting our site. We can also customize the app and the AI for your server.
-
-🚀 Join the fun and make the most of your Discord experience! If you have any questions or need help, feel free to reach out. 😄
-
-Experience the power of data with Alshival's Data Service. 🍉🌟💕
-"""
+from commands.help import help_prompts    
 
 @bot.tree.command(name="help")
 async def help(interaction: discord.Interaction):
+    await interaction.response.defer(thinking = True)
     embed1 = discord.Embed(
             color = discord.Color.orange()
         )
     embed1.set_author(name=f"{interaction.user.name} asked for help.",icon_url=interaction.user.avatar)
+    messages = await help_prompts.help_prompts(interaction.user.mention)
+    response = openai.ChatCompletion.create(
+        model='gpt-3.5-turbo',
+        messages=messages,
+        max_tokens=data_viz_completion_limit,
+        n=1,
+        temperature=0.6,
+        top_p=1,
+        frequency_penalty=0.0,
+        presence_penalty=0.6,
+        user = interaction.user.name
+        )
+
+    help_text = response['choices'][0]['message']['content']
     
-    await interaction.response.send_message(help_text,embed=embed1)
+    await interaction.followup.send(help_text,embed=embed1)
 
 @bot.tree.command(name="wipe_memories")
 @app_commands.checks.has_permissions(administrator=True)
