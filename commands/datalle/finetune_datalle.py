@@ -4,7 +4,7 @@ async def finetune_datalle(author_name):
 
 filename:
 ```
-app/downloads/{author_name}/sample_database_2.csv
+app/downloads/sample_database_2.csv
 ```
 
 columns:
@@ -46,7 +46,7 @@ import geopandas as gpd
 import folium
 
 # Load the dataset
-data = pd.read_csv(app/downloads/{author_name}/sample_database_2.csv)
+data = pd.read_csv(app/downloads/sample_database_2.csv)
 
 # Load the us-states.json file into a GeoDataFrame
 gdf = gpd.read_file('app/geojsons/us-states.json')
@@ -87,7 +87,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/iris_dataset.csv
+app/downloads/iris_dataset.csv
 ```
 
 columns:
@@ -122,7 +122,7 @@ import matplotlib.pyplot as plt
 plt.style.use('dark_background')
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/iris_dataset.csv')
+data = pd.read_csv('app/downloads/iris_dataset.csv')
 
 # Create a pair plot
 sns.pairplot(data, hue='species')
@@ -136,7 +136,7 @@ plt.savefig(filename)
 
 filename:
 ```
-app/downloads/{author_name}/titanic_dataset.csv
+app/downloads/titanic_dataset.csv
 ```
 
 columns:
@@ -177,7 +177,7 @@ Who are the youngest passengers who died?
 import pandas as pd
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/titanic_dataset.csv')
+data = pd.read_csv('app/downloads/titanic_dataset.csv')
 
 # Filter the dataset to get the youngest passengers who died
 youngest_passengers_died = data[data['survived'] == 0].sort_values('age').head()
@@ -192,7 +192,7 @@ print(youngest_passengers_died.to_string())
 
 filename:
 ```
-app/downloads/{author_name}/sample_database_2.csv
+app/downloads/sample_database_2.csv
 ```
 
 columns:
@@ -233,7 +233,7 @@ Who has blue eyes?
 import pandas as pd
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/sample_database_2.csv')
+data = pd.read_csv('app/downloads/sample_database_2.csv')
 
 # Filter the dataset to get the people with blue eyes
 people_with_blue_eyes = data[data['Eye Color'] == 'Blue']
@@ -248,7 +248,7 @@ print(people_with_blue_eyes.to_string())
 
 filename:
 ```
-app/downloads/{author_name}/titanic_dataset.csv
+app/downloads/titanic_dataset.csv
 ```
 
 columns:
@@ -290,7 +290,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/titanic_dataset.csv')
+data = pd.read_csv('app/downloads/titanic_dataset.csv')
 
 # Set the dark theme using plotly
 px.defaults.template = "plotly_dark"
@@ -308,7 +308,7 @@ fig.show()
 
 filename:
 ```
-app/downloads/{author_name}/sample_database_2.csv
+app/downloads/sample_database_2.csv
 ```
 
 columns:
@@ -342,7 +342,7 @@ import geopandas as gpd
 import folium
 
 # Load the dataset
-data = pd.read_csv("app/downloads/{author_name}/sample_database_2.csv")
+data = pd.read_csv("app/downloads/sample_database_2.csv")
 # Load the us-states.json file into a GeoDataFrame
 gdf = gpd.read_file('app/geojsons/us-states.json')
 
@@ -424,7 +424,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/titanic_dataset.csv')
+data = pd.read_csv('app/downloads/titanic_dataset.csv')
 
 # Set the dark theme using matplotlib
 import matplotlib.pyplot as plt
@@ -446,7 +446,7 @@ fig.show()
 
 filename:
 ```
-app/downloads/{author_name}/sample_dataset.csv
+app/downloads/sample_dataset.csv
 ```
 
 columns:
@@ -476,7 +476,7 @@ import pandas as pd
 import folium
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/sample_dataset.csv')
+data = pd.read_csv('app/downloads/sample_dataset.csv')
 
 # Create a folium map centered on the first latitude and longitude
 m = folium.Map(location=[data['Latitude'].iloc[0], data['Longitude'].iloc[0]], zoom_start=10)
@@ -505,7 +505,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/sample_dataset.csv
+app/downloads/sample_dataset.csv
 ```
 
 columns:
@@ -535,7 +535,7 @@ import pandas as pd
 import folium
 
 # Load the dataset
-data = pd.read_csv('app/downloads/{author_name}/sample_dataset.csv')
+data = pd.read_csv('app/downloads/sample_dataset.csv')
 
 # Create a folium map centered at the mean latitude and longitude
 m = folium.Map(location=[data['Latitude'].mean(), data['Longitude'].mean()], zoom_start=4)
@@ -565,7 +565,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/state_population_counts.csv
+app/downloads/state_population_counts.csv
 ```
 
 columns:
@@ -595,7 +595,7 @@ import geopandas as gpd
 import folium
 
 # Load the state population counts
-state_population = pd.read_csv('app/downloads/{author_name}/state_population_counts.csv')
+state_population = pd.read_csv('app/downloads/state_population_counts.csv')
 
 # Load the us-states.json file into a GeoDataFrame
 gdf = gpd.read_file('app/geojsons/us-states.json')
@@ -633,7 +633,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/state_population_counts.csv
+app/downloads/state_population_counts.csv
 ```
 
 columns:
@@ -662,7 +662,7 @@ import pandas as pd
 
 # Assuming your data is in a DataFrame called `data`
 # Load the state population counts
-data = pd.read_csv('app/downloads/{author_name}/state_population_counts.csv')
+data = pd.read_csv('app/downloads/state_population_counts.csv')
 
 # Create a dictionary to map states to regions
 region_mapping = {{
@@ -693,7 +693,7 @@ total_population_by_region
 
 filename:
 ```
-app/downloads/{author_name}/business_listings.csv
+app/downloads/business_listings.csv
 ```
 
 columns:
@@ -726,7 +726,7 @@ import folium
 
 # Assuming your data is in a DataFrame called `data`
 # Load the business listings dataset
-data = pd.read_csv('app/downloads/{author_name}/business_listings.csv')
+data = pd.read_csv('app/downloads/business_listings.csv')
 
 # Create a folium map centered at the mean latitude and longitude
 m = folium.Map(location=[data['Latitude'].mean(), data['Longitude'].mean()], zoom_start=10)
@@ -757,7 +757,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/chicago_homicide_data_1.csv
+app/downloads/chicago_homicide_data_1.csv
 ```
 
 columns:
@@ -806,7 +806,7 @@ import pandas as pd
 import folium
 
 # Load the Chicago homicide dataset
-data = pd.read_csv('app/downloads/{author_name}/chicago_homicide_data_1.csv')
+data = pd.read_csv('app/downloads/chicago_homicide_data_1.csv')
 
 # Create a folium map centered at the mean latitude and longitude
 m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()], zoom_start=10)
@@ -836,7 +836,7 @@ webbrowser.open(filename)
 
 filename:
 ```
-app/downloads/{author_name}/state_population_counts.csv
+app/downloads/state_population_counts.csv
 ```
 
 columns:
@@ -867,7 +867,7 @@ import geopandas as gpd
 import folium
 
 # Load the dataset
-data = pd.read_csv("app/downloads/{author_name}/state_population_counts.csv")
+data = pd.read_csv("app/downloads/state_population_counts.csv")
 
 # Load the us-states.json file into a GeoDataFrame
 gdf = gpd.read_file('app/geojsons/us-states.json')
@@ -923,7 +923,7 @@ take `customer_statement-10_24_2021.txt` and save to `customer_statement.txt`, b
 
 filename:
 ```
-app/downloads/{author_name}/customer_statement-10_24_2021.txt
+app/downloads/customer_statement-10_24_2021.txt
 ```
 
 filetype:
@@ -937,7 +937,7 @@ filetype:
 import textwrap
 
 # Read the content of the file
-with open('app/downloads/{author_name}/customer_statement-10_24_2021.txt', 'r') as file:
+with open('app/downloads/customer_statement-10_24_2021.txt', 'r') as file:
     content = file.read()
 
 # Wrap the text to text width 65

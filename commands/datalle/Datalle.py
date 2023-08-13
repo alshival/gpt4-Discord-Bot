@@ -22,7 +22,7 @@ async def data_int(ctx,message):
         # get filename using regex
         file_info = re.search('([^\/]+$)',url)
         filename = file_info.group(0)
-        filepath = user_dir + filename
+        filepath = 'app/downloads/' + filename
         filetype = re.search('\.(\w+)$',url).group(1)
         
         res = requests.get(url)
@@ -51,7 +51,7 @@ async def data_int(ctx,message):
 
 filename:
 ```
-app/downloads/{ctx.author.name}/{filename}
+app/downloads/{filename}
 ```
 
 columns:

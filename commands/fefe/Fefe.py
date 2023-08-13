@@ -2,8 +2,12 @@ from app.config import *
 from commands.bot_functions import *
 from commands.fefe import search_youtube
 from commands.fefe import finetune_fefe
-
+from commands.datalle import Datalle
 async def talk_to_fefe(ctx,message):
+    # Check if there is a .csv file attached. If so, run datalle
+    if len(ctx.message.attachments)==1:
+        await Datalle.data_int(ctx,message)
+        return
     
     fefe_model = openai_model # Or GPT-3.5-turbl
     
