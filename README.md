@@ -80,7 +80,7 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
    - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
-   - google_api_key for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
+   - `google_api_key` for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
      
 ### Clone Repository
 - Clone the repository:
