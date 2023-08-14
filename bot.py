@@ -231,22 +231,22 @@ async def on_message(message):
         sample_prompts = [
             {
                 'role':'user',
-                'content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/kiss-gif-22640695'
+                'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/kiss-gif-22640695'
             },
             {
                 'role':'assistant',
-                'content':'GIF={anime kiss}'
+                'content':'GIF={anime girl kiss}'
             },
             {
                 'role':'user',
-                'content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+                'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
             },
             {
                 'role':'assistant',
                 'content':'HAHAHA! GIF={anime girl laugh}'
             },
             {
-                'role':'user','content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
+                'role':'user','content':'  https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
             },
             {
                 'role':'assistant',
@@ -260,18 +260,21 @@ async def on_message(message):
         
         # Load in past few conversations for context
         db = await create_connection()
-        past_prompts = await fetch_prompts(db,message.channel.id,3)
+        past_prompts = await fetch_prompts(db,message.channel.id,2)
         await db.close()
         # Check token limit for past prompts
         past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',1000+sample_prompt_tokens,)
         
         new_prompt = {
-            'role':'user','content':f"{link}"
+            'role':'user','content':link
+        }
+        new_instruct = {
+            'role':'user',
+            'content':f"Return a response of the form `<response> GIF={{anime girl <expression>}}: {link}"
         }
         
-        past_prompts = sample_prompts + past_prompts + [new_prompt]
+        past_prompts = sample_prompts + past_prompts + [new_instruct]
 
-        
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
@@ -284,11 +287,10 @@ async def on_message(message):
             presence_penalty=0.5,
         )
         response_text = response['choices'][0]['message']['content']
-        
-        final_response = await gif_search(response_text)
-        print(response_text)
-        print("AFTER GIPHY:")
-        print(final_response)
+        if re.search(gif_regex_string,response_text):
+            final_response = await gif_search(response_text)
+        else:
+            final_response = response_text
         # store in chat_history
         db = await create_connection()
         await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')

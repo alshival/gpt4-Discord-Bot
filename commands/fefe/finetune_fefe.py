@@ -12,15 +12,15 @@ async def sample_prompts(ctx):
          'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
         {'role':'assistant',
          'content':f"""
-    Of course, {ctx.author.mention}! I'll remind the team about the upcoming conference on November 15th. MEMORABLE=False GIF={{anime girl smile}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{'time':'datetime.datetime(2022, 11, 15)','note':'''@here, make sure to mark your calendar and prepare for the conference! 🎉📅'''}}
+    Of course, {ctx.author.mention}! I'll remind the team about the upcoming conference on November 15th. MEMORABLE=False GIF={{}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{'time':'datetime.datetime(2022, 11, 15)','note':'''@here, make sure to mark your calendar and prepare for the conference! 🎉📅'''}}
     """},
         {
             'role':'user',
-            'content':f'{ctx.author.mention}: Hey, Fefe. I\'m Alshival. I\'m a data scientist.'
+            'content':f'{ctx.author.mention}: Hey, Fefe. I\'m Alshival. I\'m into eSports.'
         },
         {
             'role':'assistant',
-            'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF={{anime girl wow}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
+            'content':f'Hi, {ctx.author.mention}! I\'m Fefe. MEMORABLE=True GIF={{anime girl hello}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
         },
         {
             'role':'user',
