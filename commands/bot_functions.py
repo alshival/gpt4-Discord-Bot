@@ -402,6 +402,17 @@ async def generate_image(text):
     image_url = response['data'][0]['url']
     return image_url
 
+async def clean_response(text):
+    # clear memorable tag
+    text = re.sub(memorable_regex,'',text)
+    # clear GIF tag
+    text = re.sub(gif_regex_string,'',text)
+    # clear youtube tag
+    text = re.sub(youtube_regex_string,'',text)
+    # clear reminder tag
+    text = re.sub(reminder_regex,'',text)
+    return text
+
 # Create a user's directory
 async def create_user_dir(author_name):
     dir_name = f'app/downloads/{author_name}/'

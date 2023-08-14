@@ -71,3 +71,6 @@ google_api_key = os.environ.get("google_api_key")
 
 # Set up the YouTube Data API client
 youtube = build("youtube", "v3", developerKey=google_api_key)
+
+memorable_regex = "MEMORABLE=(True|False)"
+reminder_regex = "REMINDER=(\{[^}]*\})"

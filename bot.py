@@ -290,6 +290,9 @@ async def on_message(message):
         db = await create_connection()
         await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')
         await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),message.channel.id,message.channel.name,'fefe')
+
+        # Remove regex matches from Fefe's training data.
+        final_response = await clean_response(final_response)
         
         await message.channel.send(final_response)
         await db.close()
