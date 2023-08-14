@@ -266,7 +266,7 @@ async def on_message(message):
         past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',1000+sample_prompt_tokens,)
         
         new_prompt = {
-            'role':'user','content':link
+            'role':'user','content':link 
         }
         new_instruct = {
             'role':'user',

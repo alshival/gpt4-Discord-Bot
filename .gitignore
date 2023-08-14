@@ -71,6 +71,7 @@ instance/
 .webassets-cache
 *.db
 *.db.wal
+
 # Scrapy stuff:
 .scrapy
 
