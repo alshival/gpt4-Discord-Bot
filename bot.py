@@ -222,7 +222,7 @@ async def reminders(bot):
 
 @bot.event
 async def on_message(message):
-    if 'tenor.com' in message.content:
+    if 'https://tenor.com' in message.content or 'media2.giphy.com' in message.content:
         link = message.content
         db = await create_connection()
         sample_prompts = [
