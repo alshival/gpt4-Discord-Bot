@@ -222,7 +222,10 @@ async def reminders(bot):
 
 @bot.event
 async def on_message(message):
-    if 'https://tenor.com' in message.content or 'media2.giphy.com' in message.content:
+    # Check if the message author is the bot itself
+    if message.author == bot.user:
+        return
+    if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content):
         link = message.content
         db = await create_connection()
         sample_prompts = [
@@ -293,7 +296,7 @@ async def on_message(message):
 
         # Remove regex matches from Fefe's training data.
         final_response = await clean_response(final_response)
-        
+        print(final_response)
         await message.channel.send(final_response)
         await db.close()
         return
