@@ -130,7 +130,8 @@ Fine-tuning:
         # Gather files to send
         files_to_send = await gather_files_to_send(interaction.user.name)
         # Send the .png file back
-        await interaction.followup.send(f'''
+        await send_followups(interaction,f'''
+output: \n
 ```
 {output}
 ```

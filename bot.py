@@ -38,7 +38,6 @@ async def interpreter(interaction: discord.Interaction, message: str):
     
     await discord_interpreter.discord_interpreter(interaction,message)
 
-
 from commands.help import help_prompts    
 
 @bot.tree.command(name="help")
@@ -220,6 +219,77 @@ async def reminders(bot):
         await send_reminders(bot)
     except Exception as e:
         print(f"Error in send_reminders: {e}")
+
+@bot.event
+async def on_message(message):
+    if 'tenor.com' in message.content:
+        link = message.content
+
+        db = await create_connection()
+        sample_prompts = [
+            {
+                'role':'user',
+                'content':'https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+            },
+            {
+                'role':'assistant',
+                'content':'HAHAHA! GIF={anime girl laugh}'
+            },
+            {
+                'role':'user','content':'https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
+            },
+            {
+                'role':'assistant',
+                'content':'Thank you! GIF={anime girl bow}'
+            },
+            {
+                'role':'user','content':'https://tenor.com/view/kawaii-anime-tongue-bleh-gif-5018411'
+            },
+            {
+                'role':'assistant',
+                'content':'What did I do to you? GIF={anime girl sorry}'
+            }
+        ]
+        # Get token count for sample messages
+        enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
+        sample_prompt_string = json.dumps(sample_prompts)
+        sample_prompt_tokens = len(enc.encode(sample_prompt_string))
+        
+        # Load in past few conversations for context
+        db = await create_connection()
+        past_prompts = await fetch_prompts(db,message.channel.id,5)
+        await db.close()
+        
+        # Check token limit for past prompts
+        past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',1000+sample_prompt_tokens,)
+        
+        
+        past_prompts = past_prompts + sample_prompts
+        past_prompts = past_prompts + [{
+            'role':'user','content':link
+        }]
+        # Generate a response using the 'gpt-3.5-turbo' model
+        response = openai.ChatCompletion.create(
+            model='gpt-3.5-turbo',
+            messages=past_prompts,
+            max_tokens=1000,
+            n=1,
+            temperature=0.7,
+            top_p=1,
+            frequency_penalty=0.0,
+            presence_penalty=0.5,
+        )
+        response_text = response['choices'][0]['message']['content']
+        print('\nBefore: \n')
+        print(response_text)
+        response_text = await gif_search(response_text)
+        print('\nAfter: \n')
+        print(response_text)
+        
+        await message.channel.send(response_text)
+        return
+    if message.content.startswith('!'):
+        await bot.process_commands(message)  # Add this line
         
 @bot.event
 async def on_ready():

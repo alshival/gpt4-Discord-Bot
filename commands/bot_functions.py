@@ -322,7 +322,7 @@ def check_tokens(jsonl, model,completion_limit):
 
 # Used to abide by Discord's 2000 character limit.
 
-async def send_followups(interaction, output, files_to_send=[],embed=None):
+async def send_followups(interaction, output, files=[],embed=None):
     chunk_size = 2000  # Maximum length of each chunk
     
     response = f'''
@@ -333,18 +333,18 @@ async def send_followups(interaction, output, files_to_send=[],embed=None):
     
     if len(chunks) == 1:
         if embed:
-            await interaction.followup.send(chunks[0],files = files_to_send,embed=embed)
+            await interaction.followup.send(chunks[0],files = files,embed=embed)
         else:
-            await interaction.followup.send(chunks[0],files = files_to_send)
+            await interaction.followup.send(chunks[0],files = files)
     else:
         for chunk in chunks:
             if chunk != chunks[len(chunks)-1]:
                 await interaction.followup.send(chunk)
             else:
                 if embed:
-                    await interaction.followup.send(chunk,files = files_to_send,embed=embed)
+                    await interaction.followup.send(chunk,files = files,embed=embed)
                 else: 
-                    await interaction.followup.send(chunk,files = files_to_send)
+                    await interaction.followup.send(chunk,files = files)
             
 # Used to abide by Discord's 2000 character limit.
 async def send_chunks(ctx, text):
