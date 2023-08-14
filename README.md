@@ -12,9 +12,9 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 📊 Have a .CSV file? Pass it to me and I'll pass it to DATALL-E so that you can visualize the data with beautifully designed charts and graphs. 
 
-🎥 Want to watch a YouTube video? Just ask, and I'll find it for you.
-
 🧮 DATALL-E lets you generate charts or maps from .CSV data you upload as an attachment. Plus, I return the code used to generate the image, so you can vet the data on the charts.
+
+🎥 Want to watch a YouTube video? Just ask, and I'll find it for you.
 
 🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
@@ -46,6 +46,8 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 </body>
 
 </html>
+
+<img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.03.25%20AM.png?raw=True">
 
 Note that choropleth map are quite difficult to generate. Fefe currently only supports state-level data. She hasn't learned how to convert between long state name and state abbreviation yet. She currently does well with long names, e.g. `New Jersey`.
 ## Usage
@@ -80,7 +82,7 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
    - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
-   - google_api_key for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
+   - `google_api_key` for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
      
 ### Clone Repository
 - Clone the repository:
