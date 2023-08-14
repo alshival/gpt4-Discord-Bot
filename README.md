@@ -10,11 +10,11 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 🎨 I can even generate images based on your descriptions. 
 
-📊 Have a .CSV file? Let me visualize the data for you with beautifully designed charts and graphs. 
+📊 Have a .CSV file? Pass it to me and I'll pass it to DATALL-E so that you can visualize the data with beautifully designed charts and graphs. 
 
 🎥 Want to watch a YouTube video? Just ask, and I'll find it for you.
 
-🧮 I also come with a handy tool called DATALL-E. It lets you generate charts or maps from .CSV data you upload as an attachment. Plus, I return the code used to generate the image, so you can vet the data on the charts.
+🧮 DATALL-E lets you generate charts or maps from .CSV data you upload as an attachment. Plus, I return the code used to generate the image, so you can vet the data on the charts.
 
 🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
