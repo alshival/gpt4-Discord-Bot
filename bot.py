@@ -13,9 +13,12 @@ asyncio.get_event_loop().run_until_complete(create_reminders())
 
 from commands.fefe import Fefe
 @bot.command()
-async def fefe(ctx,*,message:str):
-    await Fefe.talk_to_fefe(ctx,message)
-
+async def fefe(ctx, *, message):
+    if message is None:
+        await ctx.send("You didn't say anything to Fefe!")
+    else:
+        await Fefe.talk_to_fefe(ctx, message)
+        
 from commands.datalle import Datalle
 @commands.has_permissions(use_application_commands = True)
 @bot.command()
@@ -260,20 +263,16 @@ async def on_message(message):
         
         # Load in past few conversations for context
         db = await create_connection()
-        past_prompts = await fetch_prompts(db,message.channel.id,2)
+        past_prompts = await fetch_prompts(db,message.channel.id,3)
         await db.close()
         # Check token limit for past prompts
-        past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',1000+sample_prompt_tokens,)
+        past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',(1000+sample_prompt_tokens)/1.5,)
         
         new_prompt = {
             'role':'user','content':link 
         }
-        new_instruct = {
-            'role':'user',
-            'content':f"Return a response of the form `<response> GIF={{anime girl <expression>}}: {link}"
-        }
         
-        past_prompts = sample_prompts + past_prompts + [new_instruct]
+        past_prompts = sample_prompts + past_prompts + [new_prompt]
 
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
@@ -302,9 +301,14 @@ async def on_message(message):
         await message.channel.send(final_response)
         await db.close()
         return
-    if message.content.startswith('!'):
-        await bot.process_commands(message)  # Add this line
-        
+
+    if re.search('.*fefe.*',message.content.lower()):
+        ctx = await bot.get_context(message)
+        fefe_command = bot.get_command('fefe')
+        await ctx.invoke(fefe_command,message=message.content)
+    # if message.content.startswith('!'):
+    #     await bot.process_commands(message)  # Add this line
+
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
