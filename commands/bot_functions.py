@@ -370,10 +370,9 @@ def file_size_ok(file_path):
 # Get GIF
 async def gif_search(response_text):
     check_gif = re.search(gif_regex_string,response_text)
-    print(check_gif.group(0))
     if check_gif:
         search_query = check_gif.group(1)
-        
+        print('GIF search query: '+search_query)
         if len(search_query)>0:
             giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=6'
             

@@ -224,30 +224,30 @@ async def reminders(bot):
 async def on_message(message):
     if 'tenor.com' in message.content:
         link = message.content
-
         db = await create_connection()
         sample_prompts = [
             {
                 'role':'user',
-                'content':'https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+                'content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/kiss-gif-22640695'
+            },
+            {
+                'role':'assistant',
+                'content':'GIF={anime kiss}'
+            },
+            {
+                'role':'user',
+                'content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
             },
             {
                 'role':'assistant',
                 'content':'HAHAHA! GIF={anime girl laugh}'
             },
             {
-                'role':'user','content':'https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
+                'role':'user','content':'Respond to this with GIF={GIF DESCRIPTION}: https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
             },
             {
                 'role':'assistant',
                 'content':'Thank you! GIF={anime girl bow}'
-            },
-            {
-                'role':'user','content':'https://tenor.com/view/kawaii-anime-tongue-bleh-gif-5018411'
-            },
-            {
-                'role':'assistant',
-                'content':'What did I do to you? GIF={anime girl sorry}'
             }
         ]
         # Get token count for sample messages
@@ -257,17 +257,18 @@ async def on_message(message):
         
         # Load in past few conversations for context
         db = await create_connection()
-        past_prompts = await fetch_prompts(db,message.channel.id,5)
+        past_prompts = await fetch_prompts(db,message.channel.id,3)
         await db.close()
-        
         # Check token limit for past prompts
         past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',1000+sample_prompt_tokens,)
         
+        new_prompt = {
+            'role':'user','content':f"{link}"
+        }
         
-        past_prompts = past_prompts + sample_prompts
-        past_prompts = past_prompts + [{
-            'role':'user','content':link
-        }]
+        past_prompts = sample_prompts + past_prompts + [new_prompt]
+
+        
         # Generate a response using the 'gpt-3.5-turbo' model
         response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
@@ -280,13 +281,18 @@ async def on_message(message):
             presence_penalty=0.5,
         )
         response_text = response['choices'][0]['message']['content']
-        print('\nBefore: \n')
-        print(response_text)
-        response_text = await gif_search(response_text)
-        print('\nAfter: \n')
-        print(response_text)
         
-        await message.channel.send(response_text)
+        final_response = await gif_search(response_text)
+        print(response_text)
+        print("AFTER GIPHY:")
+        print(final_response)
+        # store in chat_history
+        db = await create_connection()
+        await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')
+        await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),message.channel.id,message.channel.name,'fefe')
+        
+        await message.channel.send(final_response)
+        await db.close()
         return
     if message.content.startswith('!'):
         await bot.process_commands(message)  # Add this line
