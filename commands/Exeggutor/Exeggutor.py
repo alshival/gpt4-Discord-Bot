@@ -35,7 +35,7 @@ and here's the code:
 ```
 """
         pack = {"role":"user","content":m}
-        await send_results(ctx,m,embed1)
+        await send_results(ctx,m,[],embed1)
         print(f"Error: {type(e).__name__} - {e}")
         sys.stdout = original_stdout
         db = await create_connection()

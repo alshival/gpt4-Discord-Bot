@@ -108,7 +108,7 @@ fig.write_html(filename)
 # Show the plot
 fig.show()
 """},
-{'role':'user','content':"""Use mathematics to create a .png of a fractal. Save the fractal in app/downloads/alshival/"""},
+{'role':'user','content':"""Use mathematics to create a .png of a fractal."""},
 {'role':'assistant','content':f"""
 import numpy as np
 import matplotlib.pyplot as plt
