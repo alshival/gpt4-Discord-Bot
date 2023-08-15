@@ -1,5 +1,82 @@
 async def finetune_datalle(author_name): 
     return [
+    {'role':'user','content':"""
+
+Actually... Fefe, can you handle this one?
+
+This is MODIS data from the past 7 days. I need an interactive leaflet with a black background. Plot latitude and longitude using red circle markers. Color by confidence, red being the highest confidence.
+
+filename:
+```
+app/downloads/MODIS_C6_1_USA_contiguous_and_Hawaii_7d_-_MODIS_C6_1_USA_contiguous_and_Hawaii_7d.csv
+```
+
+columns:
+```
+latitude      float64
+longitude     float64
+brightness    float64
+scan          float64
+track         float64
+acq_date       object
+acq_time        int64
+satellite      object
+confidence      int64
+version        object
+bright_t31    float64
+frp           float64
+daynight       object
+dtype: object
+```
+
+First 3 rows:
+```
+   latitude  longitude  brightness  scan  track    acq_date  acq_time satellite  confidence version  bright_t31    frp daynight
+0  33.44087  -88.57142      311.73  1.46   1.20  2023-08-08       355         T          83  6.1NRT      294.71  16.66        N
+1  33.68032  -94.25559      316.89  1.01   1.01  2023-08-08       355         T          93  6.1NRT      294.09  12.80        N
+2  33.68918  -94.25751      309.09  1.01   1.01  2023-08-08       355         T          73  6.1NRT      293.92   6.96        N
+```
+
+"""},
+    {'role':'assistant','content':f"""
+
+import pandas as pd
+import folium
+
+# Load the MODIS dataset
+data = pd.read_csv('app/downloads/MODIS_C6_1_USA_contiguous_and_Hawaii_7d_-_MODIS_C6_1_USA_contiguous_and_Hawaii_7d.csv')
+
+# Create a folium map centered at the mean latitude and longitude
+m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()], zoom_start=4, tiles='cartodbpositron')
+
+# Add red circle markers to the map
+for index, row in data.iterrows():
+    # Set color based on confidence
+    if row['confidence'] <= 33:
+        color = 'green'
+    elif row['confidence'] <= 66:
+        color = 'orange'
+    else:
+        color = 'red'
+    
+    folium.CircleMarker(
+        location=[row['latitude'], row['longitude']],
+        radius=6,
+        color=color,
+        fill=True,
+        fill_color=color,
+        fill_opacity=0.6
+    ).add_to(m)
+
+# Set variable filename (required)
+filename = "app/downloads/{author_name}/modis_map.html"
+# Save the map as an HTML file
+m.save(filename)
+
+# Open the HTML file in a web browser to view the map
+import webbrowser
+webbrowser.open(filename)
+"""},
 {'role':'user','content':f"""
 
 filename:

@@ -5,7 +5,18 @@ async def filter(bot,message):
         return
     # Get fefe message mode
     fefe_mode_value = await get_fefe_mode()
-    
+
+    # Here, we ignore all comments with unsupported file types.
+    if message.attachments:
+        url = ctx.message.attachments[0].url
+        file_info = re.search('([^\/]+$)',url)
+        filename = file_info.group(0)
+        filepath = 'app/downloads/' + filename
+        filetype = re.search('\.(\w+)$',url).group(1)
+
+        if filetype != 'csv':
+            return
+            
     # Check if exegguting.
     if re.search('!exeggutor.*',message.content.lower()):
         ctx = await bot.get_context(message)
@@ -87,24 +98,16 @@ async def filter(bot,message):
             final_response = await clean_response(final_response)
             print(final_response)
             await message.channel.send(final_response)
-            await db.close()
             return
+            
         # Respond if called
         elif re.search('(^[!]?fe.*)|(.*\sfe.*)',message.content.lower()):
             ctx = await bot.get_context(message)
             fefe_command = bot.get_command('fefe')
             await ctx.invoke(fefe_command,message=message.content)
         else: # Otherwise, store in the database as 'listening'.
-            ctx = await bot.get_context(message)
-            db = await create_connection()
-            await store_prompt(db,
-                               json.dumps(
-                                   {
-                                       'role':'user',
-                                       'content':f"'{ctx.author.mention}': {message.content}"}),
-                               message.channel.id,
-                               message.channel.name,
-                               'listening')
+            await store_listening(bot,message)
+            
     elif fefe_mode_value == 'every_message':
             ctx = await bot.get_context(message)
             fefe_command = bot.get_command('fefe')

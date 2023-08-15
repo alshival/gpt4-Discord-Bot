@@ -76,7 +76,18 @@ and source = 'listening'
     """)
     await db.commit()
     await db.close()
-    
+
+# Store listening
+async def store_listening(bot,message):
+    ctx = await bot.get_context(message)
+    db = await create_connection()
+    await store_prompt(db,json.dumps({
+        'role':'user',
+        'content':f"'{ctx.author.mention}': {message.content}"}),
+                               message.channel.id,
+                               message.channel.name,
+                               'listening')
+    await db.close()
 # Function to store a prompt
 async def store_prompt(db_conn,jsonl,channel_id,channel_name,source):
     cursor = await db_conn.cursor()
@@ -420,7 +431,7 @@ async def gif_search(response_text):
         print('GIF search query: '+search_query)
         if len(search_query)>0:
 
-            giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=6'
+            giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=3'
             
             if GIPHY_CONTENT_FILTER:
                 giphy_api_call = giphy_api_call + '&rating=pg-13'
@@ -449,7 +460,8 @@ async def gif_translate(response_text):
             base_url = "https://api.giphy.com/v1/gifs/translate"
             params = {
                 "api_key": giphy_api_token,
-                "s": search_query
+                "s": search_query,
+                'wierdness':10
             }
         
             response = requests.get(base_url, params=params)

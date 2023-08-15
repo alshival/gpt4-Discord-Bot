@@ -100,7 +100,6 @@ Completion:
     await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),interaction.channel.id,interaction.channel.name,'bot')
     await db.close()
 
-
 @bot.tree.command(name="clear_chat_history")
 async def clear_chat_history(interaction: discord.Interaction):
     await clear_chat_history_db()
