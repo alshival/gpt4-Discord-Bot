@@ -1,3 +1,7 @@
+# Edit this line in commands/fefe/finetune_fefe.py so that Fefe learns the name of the server owner.
+
+# server_owner_name = "Alshival"
+
 import discord
 from discord.ext import commands,tasks
 from discord import app_commands
@@ -55,7 +59,7 @@ async def generate_dataviz_finetune_data(interaction):
 ############################################
 # GIFY API config 
 ############################################
-GIPHY_CONTENT_FILTER = 'pg-13' # Possible options are None, 'g','pg','pg-13', and 'r'. None allows gifs from all 
+GIPHY_CONTENT_FILTER = 'g' # Possible options are None, 'g','pg','pg-13', and 'r'. None allows gifs from all 
 
 giphy_api_token = os.environ.get("GIPHY_API_KEY")
 gif_regex_string = 'GIF=\{([^}]*)\}'

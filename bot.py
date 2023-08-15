@@ -2,7 +2,6 @@ import asyncio
 
 from app.config import *
 
-
 # Set up bot with '!' command prefix.
 bot = commands.Bot(command_prefix="!",intents=discord.Intents.all())
 
@@ -10,6 +9,7 @@ from commands.bot_functions import *
 asyncio.get_event_loop().run_until_complete(create_chat_history_table())
 asyncio.get_event_loop().run_until_complete(create_memories())
 asyncio.get_event_loop().run_until_complete(create_reminders())
+asyncio.get_event_loop().run_until_complete(create_fefe_mode_table())
 
 from commands.fefe import Fefe
 @bot.command()
@@ -223,91 +223,130 @@ async def reminders(bot):
     except Exception as e:
         print(f"Error in send_reminders: {e}")
 
+
+
+@bot.tree.command(name="fefe_mode")
+@app_commands.choices(
+    mode=[
+        app_commands.Choice(name="Respond when called",
+                            value="when_called"),
+        app_commands.Choice(name="Respond with every message",value="every_message")
+    ])
+async def fefe_mode(interaction: discord.Interaction, mode: app_commands.Choice[str]):
+    await change_fefe_mode(interaction,mode.value)
+    
+
 @bot.event
 async def on_message(message):
     # Check if the message author is the bot itself
     if message.author == bot.user:
         return
-    if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content):
-        link = message.content
-        db = await create_connection()
-        sample_prompts = [
-            {
-                'role':'user',
-                'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/kiss-gif-22640695'
-            },
-            {
-                'role':'assistant',
-                'content':'GIF={anime girl kiss}'
-            },
-            {
-                'role':'user',
-                'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
-            },
-            {
-                'role':'assistant',
-                'content':'HAHAHA! GIF={anime girl laugh}'
-            },
-            {
-                'role':'user','content':'  https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
-            },
-            {
-                'role':'assistant',
-                'content':'Thank you! GIF={anime girl bow}'
+        
+    fefe_mode_value = await get_fefe_mode()
+    
+    if message.attachments:
+        if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content):
+            link = message.content
+            db = await create_connection()
+            sample_prompts = [
+                {
+                    'role':'user',
+                    'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/kiss-gif-22640695'
+                },
+                {
+                    'role':'assistant',
+                    'content':'GIF={anime girl kiss}'
+                },
+                {
+                    'role':'user',
+                    'content':'Return a response of the form `<response> GIF={anime girl <expression>}: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+                },
+                {
+                    'role':'assistant',
+                    'content':'GIF={anime girl laugh}'
+                },
+                {
+                    'role':'user','content':'https://tenor.com/view/juno-michael-cera-paulie-bleeker-can-we-make-out-now-make-out-gif-4302667'
+                },
+                {
+                    'role':'assistant',
+                    'content':'GIF={Scott Pilgrim Ramona Flowers kiss}'
+                },
+                {
+                    'role':'user','content':'https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
+                },
+                {
+                    'role':'assistant',
+                    'content':'GIF={anime girl bow}'
+                }
+            ]
+            # Get token count for sample messages
+            enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
+            sample_prompt_string = json.dumps(sample_prompts)
+            sample_prompt_tokens = len(enc.encode(sample_prompt_string))
+            
+            # Load in past few conversations for context
+            db = await create_connection()
+            past_prompts = await fetch_prompts(db,message.channel.id,3)
+            await db.close()
+            # Check token limit for past prompts
+            past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',(1000+sample_prompt_tokens)/1.5,)
+            
+            new_prompt = {
+                'role':'user','content':link 
             }
-        ]
-        # Get token count for sample messages
-        enc = tiktoken.encoding_for_model('gpt-3.5-turbo')
-        sample_prompt_string = json.dumps(sample_prompts)
-        sample_prompt_tokens = len(enc.encode(sample_prompt_string))
+            
+            past_prompts = sample_prompts + past_prompts + [new_prompt]
+    
+            # Generate a response using the 'gpt-3.5-turbo' model
+            response = openai.ChatCompletion.create(
+                model='gpt-3.5-turbo',
+                messages=past_prompts,
+                max_tokens=1000,
+                n=1,
+                temperature=0.7,
+                top_p=1,
+                frequency_penalty=0.0,
+                presence_penalty=0.5,
+            )
+            response_text = response['choices'][0]['message']['content']
+            if re.search(gif_regex_string,response_text):
+                final_response = await gif_translate(response_text)
+            else:
+                final_response = response_text
+            # store in chat_history
+            db = await create_connection()
+            await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')
+            await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),message.channel.id,message.channel.name,'fefe')
+    
+            # Remove regex matches from Fefe's training data.
+            final_response = await clean_response(final_response)
+            print(final_response)
+            await message.channel.send(final_response)
+            await db.close()
+            return
+    elif re.search('!exeggutor.*',message.content.lower()):
+        ctx = await bot.get_context(message)
+        exeg_command = bot.get_command('exeggutor')
+        await ctx.invoke(exeg_command,message=message.content)
         
-        # Load in past few conversations for context
-        db = await create_connection()
-        past_prompts = await fetch_prompts(db,message.channel.id,3)
-        await db.close()
-        # Check token limit for past prompts
-        past_prompts = check_tokens(past_prompts,'gpt-3.5-turbo',(1000+sample_prompt_tokens)/1.5,)
-        
-        new_prompt = {
-            'role':'user','content':link 
-        }
-        
-        past_prompts = sample_prompts + past_prompts + [new_prompt]
-
-        # Generate a response using the 'gpt-3.5-turbo' model
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
-            messages=past_prompts,
-            max_tokens=1000,
-            n=1,
-            temperature=0.7,
-            top_p=1,
-            frequency_penalty=0.0,
-            presence_penalty=0.5,
-        )
-        response_text = response['choices'][0]['message']['content']
-        if re.search(gif_regex_string,response_text):
-            final_response = await gif_search(response_text)
+    elif fefe_mode_value == 'when_called':
+    #elif 1==1:
+        if re.search('(^[!]?fe.*)|(.*\sfe.*)',message.content.lower()):
+            ctx = await bot.get_context(message)
+            fefe_command = bot.get_command('fefe')
+            await ctx.invoke(fefe_command,message=message.content)
         else:
-            final_response = response_text
-        # store in chat_history
-        db = await create_connection()
-        await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')
-        await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),message.channel.id,message.channel.name,'fefe')
-
-        # Remove regex matches from Fefe's training data.
-        final_response = await clean_response(final_response)
-        print(final_response)
-        await message.channel.send(final_response)
-        await db.close()
-        return
-
-    if re.search('.*fefe.*',message.content.lower()):
+            ctx = await bot.get_context(message)
+            db = await create_connection()
+            await store_prompt(db,json.dumps({'role':'user','content':f"'{ctx.author.mention}': {message.content}"}),message.channel.id,message.channel.name,'listening')
+            
+            await store_prompt(db,json.dumps({'role':'assistant','content':'I\'m listening and ready to respond when I am called.'}),message.channel.id,message.channel.name,'listening')
+            await clear_listening()
+    elif fefe_mode_value == 'every_message':
         ctx = await bot.get_context(message)
         fefe_command = bot.get_command('fefe')
         await ctx.invoke(fefe_command,message=message.content)
-    # if message.content.startswith('!'):
-    #     await bot.process_commands(message)  # Add this line
 
 @bot.event
 async def on_ready():

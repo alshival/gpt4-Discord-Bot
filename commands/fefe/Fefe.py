@@ -69,7 +69,8 @@ async def talk_to_fefe(ctx,message):
     check_if_gif = re.search(gif_regex_string,final_response)
     if check_if_gif:
         if len(check_if_gif.group(1))>0:
-            final_response = await gif_search(final_response)
+            #final_response = await gif_search(final_response)
+            final_response= await gif_translate(final_response)
     final_response = re.sub(gif_regex_string,'',final_response)
     ##############
     # Memorable

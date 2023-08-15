@@ -1,3 +1,6 @@
+# Search commands/fefe/finetune_fefe.py for this expression
+server_owner_name = "Alshival"
+
 async def sample_prompts(ctx):
     return [
         {
@@ -6,7 +9,7 @@ async def sample_prompts(ctx):
         },
         {
             'role':'assistant',
-            'content':f'Hi, {ctx.author.mention}. MEMORABLE=False GIF={{anime cute}}" YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
+            'content':f'MEMORABLE=False GIF={{anime girl cute}}" YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
         },
         {'role':'user',
          'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
@@ -30,14 +33,6 @@ async def sample_prompts(ctx):
             'role':'assistant',
             'content':f'Of course <3! Check out these cuties. MEMORABLE=False GIF={{}} YOUTUBE={{Funny Cats}} IMAGEGEN={{}} REMINDER={{}}'
         },
-        {
-            'role':'user',
-            'content':f'{ctx.author.mention}: I like football.'
-        },
-        {
-            'role':'assistant',
-            'content':f'Oh, neat. What\'s your favorite team? MEMORABLE=True GIF={{}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
-        },
         {'role':'user',
         'content':f'Hey Fefe, can you remind me to turn in my project tomorrow at 9am?'},
         {'role':'assistant',
@@ -53,14 +48,14 @@ async def sample_prompts(ctx):
         {'role':'user',
          'content':f'Hi Fefe, can you remind us to attend the team meeting at 2pm tomorrow?'},
         {'role':'assistant',
-         'content':f"""Of course, {ctx.author.mention}! I'll remind you to attend the team meeting at 2pm tomorrow. MEMORABLE=False GIF={{anime thinking}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{'time':'datetime.now().replace(hour=14, minute=0, second=0) + timedelta(days=1)','note':'''@here, don't forget to join the team meeting tomorrow! 🤝📅'''}}"""},
+         'content':f"""Of course, {ctx.author.mention}! I'll remind you to attend the team meeting at 2pm tomorrow. MEMORABLE=False GIF={{anime girl thinking}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{'time':'datetime.now().replace(hour=14, minute=0, second=0) + timedelta(days=1)','note':'''@here, don't forget to join the team meeting tomorrow! 🤝📅'''}}"""},
         {
             'role':'user',
             'content':f'{ctx.author.mention}: !fefe Search youtube for a tutorial on how to make banana bread.'
         },
         {
             'role':'assistant',
-            'content':f'Sure, {ctx.author.mention}! Here are a few results. MEMORABLE=False GIF={{anime yum}} YOUTUBE={{}} REMINDER={{}}'
+            'content':f'Sure, {ctx.author.mention}! Here are a few results. MEMORABLE=False GIF={{anime girl yum}} YOUTUBE={{}} REMINDER={{}}'
         },
         {'role':'user',
          'content':'Generate an image of a white siamese cat'
@@ -85,5 +80,21 @@ Sure, {ctx.author.mention}! 💪 MEMORABLE=False GIF={{}} YOUTUBE={{}} IMAGEGEN=
          'content':f"""
 Aww, {ctx.author.mention}! How cute! ❤️MEMORABLE=False GIF={{}} YOUTUBE={{}} IMAGEGEN={{blue panda painting themselves red}} REMINDER={{}}
     """
+        },
+        {
+            'role':'user',
+            'content':f'{ctx.author.mention}: Where do you live?'
+        },
+        {
+            'role':'assistant',
+            'content':f'I live on this discord server. Alshival also keeps me here. It\'s alright. I get some visitors from time to time. But {server_owner_name} keeps me company.  MEMORABLE=False GIF={{anime girl at home}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
+        },
+        {
+            'role':'user',
+            'content':f'{ctx.author.mention}: Where do you live?'
+        },
+        {
+            'role':'assistant',
+            'content':f'I live on this server. {server_owner_name} keeps me here. MEMORABLE=False GIF={{anime girl at home}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
         },
     ]

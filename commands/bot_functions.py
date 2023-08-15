@@ -7,12 +7,41 @@ import jsonlines
 async def create_connection():
     return await aioduckdb.connect('app/data.db')
 
+async def create_fefe_mode_table():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("""
+CREATE TABLE IF NOT EXISTS fefe_mode (mode VARCHAR);
+INSERT INTO fefe_mode VALUES ('when_called');
+    """)
+    await db.commit()
+    await db.close()
+
+async def change_fefe_mode(interaction,new_mode):
+    db = await create_connection()
+    cursor = await db.cursor()
+    query = "UPDATE fefe_mode SET mode = ?"
+    await db.execute(query, (new_mode,))
+    await db.close()
+    await interaction.response.send_message(f"Response mode set: {new_mode}")
+
+async def get_fefe_mode():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("SELECT mode FROM fefe_mode LIMIT 1")
+    mode = await cursor.fetchall()
+    mode = mode[0][0]
+    await db.close()
+    return mode
+
 async def create_chat_history_table():
     db = await create_connection()
     cursor = await db.cursor()
     await cursor.execute("""
+CREATE SEQUENCE seq_chat_history_id START 1;
 CREATE TABLE IF NOT EXISTS chat_history
-    (jsonl TEXT NOT NULL,
+    (id INTEGER PRIMARY KEY DEFAULT nextval('seq_chat_history_id'),
+    jsonl TEXT NOT NULL,
     channel_id TEXT,
     channel_name TEXT,
     source TEXT,
@@ -31,7 +60,23 @@ async def clear_chat_history_db():
     await db.close()
 
     await create_chat_history_table()
-
+    
+async def clear_listening():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("""
+DELETE FROM chat_history 
+WHERE id NOT IN (
+    SELECT id 
+    FROM chat_history 
+    WHERE source = 'listening' 
+    ORDER BY timestamp DESC 
+    LIMIT 4)
+and source = 'listening'
+    """)
+    await db.commit()
+    await db.close()
+    
 # Function to store a prompt
 async def store_prompt(db_conn,jsonl,channel_id,channel_name,source):
     cursor = await db_conn.cursor()
@@ -374,6 +419,7 @@ async def gif_search(response_text):
         search_query = check_gif.group(1)
         print('GIF search query: '+search_query)
         if len(search_query)>0:
+
             giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=6'
             
             if GIPHY_CONTENT_FILTER:
@@ -392,6 +438,30 @@ async def gif_search(response_text):
             return re.sub(gif_regex_string,'',response_text)
     re.sub(gif_regex_string,'',response_text)
 
+# Translate GIF
+async def gif_translate(response_text):
+    check_gif = re.search(gif_regex_string,response_text)
+    if check_gif:
+        search_query = check_gif.group(1)
+        print('GIF search query: '+search_query)
+        if len(search_query)>0:
+            
+            base_url = "https://api.giphy.com/v1/gifs/translate"
+            params = {
+                "api_key": giphy_api_token,
+                "s": search_query
+            }
+        
+            response = requests.get(base_url, params=params)
+            data = response.json()
+        
+            if response.status_code == 200:
+                translated_url = data["data"]["images"]["downsized"]["url"]
+                return re.sub(gif_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+            else:
+                error_message = data.get("message", "An error occurred.")
+                return f"Error: {error_message}"
+            
 # Generate an image
 async def generate_image(text):
     response = openai.Image.create(
