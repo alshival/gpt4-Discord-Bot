@@ -27,12 +27,17 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
             </td>
         </tr>
         <tr>
-            <td style="width: 50%;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.40.00%20PM.png?raw=True" alt="Image Description">
-            </td>
-            <td style="width: 50%;">
+            <td style="width: 100%;" colspan="2">
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-15%201.04.52%20AM.png?raw=True" alt="Image Description">
             </td>
+        </tr>
+        <tr>
+            <td style="width: 40%;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.40.00%20PM.png?raw=True" alt="Image Description">
+            </td>
+        <td style="width: 60%">
+            <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.03.25%20AM.png?raw=True">
+        </td>
         </tr>
     </table>
 </body>
@@ -50,20 +55,25 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 <body>
     <table style="width: 100%;" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="width: 50%;">
+            <td style="width: 100%;" colspan="2;">
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%203.39.24%20AM.png?raw=True" alt="Image Description">
             </td>
-            <td style="width: 50%;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%205.00.36%20AM.png?raw=True" alt="Image Description">
+        </tr>
+        <tr>
+            <td style="width: 50%">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-10%202.51.03%20PM.png?raw=True">
             </td>
         </tr>
+        <tr>
+            <td style="width: 100%;" colspan="2;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%207.09.46%20PM.png?raw=True">
+            </td>
+        </tr>
+    </table>
 </body>
-
 </html>
 
-<img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.03.25%20AM.png?raw=True">
-
-<img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-10%202.51.03%20PM.png?raw=True">
+<img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%205.00.36%20AM.png?raw=True" alt="Image Description">
 
 Note that choropleth map are quite difficult to generate. Fefe currently only supports state-level data. She hasn't learned how to convert between long state name and state abbreviation yet. She currently does well with long names, e.g. `New Jersey`.
 
