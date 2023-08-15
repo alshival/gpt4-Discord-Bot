@@ -18,6 +18,26 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
+<html>
+<body>
+    <table style="width: 100%;" cellspacing="0" cellpadding="0">
+                <tr>
+            <td colspan="2" style="width: 100%;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/fractal%20(1).png?raw=True" alt="Data Interpreter">
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.40.00%20PM.png?raw=True" alt="Image Description">
+            </td>
+            <td style="width: 50%;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-15%201.04.52%20AM.png?raw=True" alt="Image Description">
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-04%204.48.30%20PM%20(1).png?raw=True">
