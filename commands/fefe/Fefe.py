@@ -72,6 +72,7 @@ async def talk_to_fefe(ctx,message):
             #final_response = await gif_search(final_response)
             final_response= await gif_translate(final_response)
     final_response = re.sub(gif_regex_string,'',final_response)
+    
     ##############
     # Memorable
     ##############
