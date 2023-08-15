@@ -38,7 +38,7 @@ async def create_chat_history_table():
     db = await create_connection()
     cursor = await db.cursor()
     await cursor.execute("""
-CREATE SEQUENCE seq_chat_history_id START 1;
+CREATE SEQUENCE IF NOT EXISTS seq_chat_history_id START 1;
 CREATE TABLE IF NOT EXISTS chat_history
     (id INTEGER PRIMARY KEY DEFAULT nextval('seq_chat_history_id'),
     jsonl TEXT NOT NULL,
