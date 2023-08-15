@@ -314,16 +314,10 @@ async def on_message(message):
                 final_response = await gif_translate(response_text)
             else:
                 final_response = response_text
-            # store in chat_history
-            db = await create_connection()
-            await store_prompt(db,json.dumps(new_prompt),message.channel.id,message.channel.name,'fefe')
-            await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),message.channel.id,message.channel.name,'fefe')
-    
             # Remove regex matches from Fefe's training data.
             final_response = await clean_response(final_response)
             print(final_response)
             await message.channel.send(final_response)
-            await db.close()
             return
     elif re.search('!exeggutor.*',message.content.lower()):
         ctx = await bot.get_context(message)
