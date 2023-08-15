@@ -2,7 +2,7 @@
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
-🤩 Hi there, I'm Fefe, an AI bot powered by OpenAI's GPT-4 model. I come with a host of features designed to make your Discord experience more interactive and fun!
+🤩 Hi there, I'm Fefe, an Ai-powered scientific calculator that also blows you kisses, powered by OpenAI's GPT-4 model. I come with a host of features designed to make your Discord experience more interactive and fun!
 
 🔔 I can set reminders for you, ensuring you never miss a deadline or forget about that important meeting. 
 
