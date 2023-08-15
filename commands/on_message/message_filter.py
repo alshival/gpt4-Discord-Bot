@@ -8,6 +8,7 @@ async def filter(bot,message):
 
     # Here, we ignore all comments with unsupported file types.
     if message.attachments:
+        ctx = await bot.get_context(message)
         url = ctx.message.attachments[0].url
         file_info = re.search('([^\/]+$)',url)
         filename = file_info.group(0)
@@ -101,7 +102,7 @@ async def filter(bot,message):
             return
             
         # Respond if called
-        elif re.search('(^[!]?fe.*)|(.*\sfe.*)',message.content.lower()):
+        elif re.search('(^[!]?fefe.*)|(.*\sfefe.*)',message.content.lower()):
             ctx = await bot.get_context(message)
             fefe_command = bot.get_command('fefe')
             await ctx.invoke(fefe_command,message=message.content)
