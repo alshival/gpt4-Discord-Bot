@@ -46,7 +46,7 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-04%204.48.30%20PM%20(1).png?raw=True">
-<img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-16%204.10.08%20PM.png?raw=True">
+
 Study groups can benefit from a Discord bot that utilizes OpenAI's GPT models. Since AI can make mistakes, the python code used to generate the charts is returned within a python dictionary suitable for fine-tuning an OpenAI model for better performance. 📚🤖📈📉📊📝
 
 Feel free to use this code as inspiration for utilizing othe models, or reach out to us at [support@alshival.com](mailto:support@alshival.com) 🌟📩🚀💻
