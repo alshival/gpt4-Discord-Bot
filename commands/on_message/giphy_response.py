@@ -5,6 +5,7 @@ async def gif_search(response_text):
     check_gif = re.search(giphy_regex_string,response_text)
     if check_gif:
         search_query = check_gif.group(1)
+        print('search: ' + search_query)
         print('GIF search query: '+search_query)
         if len(search_query)>0:
 
@@ -19,18 +20,23 @@ async def gif_search(response_text):
             try:
                 gif = random.choice(data['data'])
                 gif_url = gif['images']['original']['url']
-                return re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({gif_url})',response_text)
+                response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({gif_url})',response_text)
             except Exception as E:
-                return re.sub(giphy_regex_string,'',response_text)
+                response_text = re.sub(giphy_regex_string,'',response_text)
         else:
-            return re.sub(giphy_regex_string,'',response_text)
-    re.sub(giphy_regex_string,'',response_text)
+            response_text =  re.sub(giphy_regex_string,'',response_text)
+                
+    else:
+        response_text = re.sub(giphy_regex_string,'',response_text)
+
+    return response_text
 
 # Translate GIF
 async def gif_translate(response_text):
     check_gif = re.search(giphy_regex_string,response_text)
     if check_gif:
         search_query = check_gif.group(1)
+        print('search: ' + search_query)
         print('GIF search query: '+search_query)
         if len(search_query)>0:
             
@@ -38,24 +44,29 @@ async def gif_translate(response_text):
             params = {
                 "api_key": giphy_api_token,
                 "s": search_query,
-                'wierdness':10
+                'wierdness':6
             }
         
             response = requests.get(base_url, params=params)
             data = response.json()
-        
-            if response.status_code == 200:
+            try:
                 translated_url = data["data"]["images"]["downsized"]["url"]
-                return re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
-            else:
-                error_message = data.get("message", "An error occurred.")
-                return f"Error: {error_message}"
+                response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+            except Exception as e:
+                print("message", "An error occurred: {e}")
+                response_text =  re.sub(giphy_regex_string,'',response_text)
+        else:
+            response_text =  re.sub(giphy_regex_string,'',response_text)
+    else:
+        response_text =  re.sub(giphy_regex_string,'',response_text)
+    return response_text
 
 # Sticker search
 async def sticker_search(response_text):
     check_sticker = re.search(giphy_regex_string,response_text)
     if check_sticker:
         search_query = check_sticker.group(1)
+        print('search: ' + search_query)
         print('Sticker search query: '+ search_query)
         if len(search_query)>0:
             base_url = "http://api.giphy.com/v1/stickers/search"
@@ -66,54 +77,61 @@ async def sticker_search(response_text):
             }
             response = requests.get(base_url,params=params)
             status_code = response.status_code
-            if status_code == 200:
-                data = response.json()
-                translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
-                print(translated_url)
-                response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
-    return re.sub(giphy_regex_string,'',response_text)
+            data = response.json()
+            if len(data["data"])>0:
+                    translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
+                    print(translated_url)
+                    response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+            else:
+                response_text = re.sub(giphy_regex_string,'',response_text)
+    else:
+        response_text = re.sub(giphy_regex_string,'',response_text)
+    return response_text
 
 async def giphy_response(response_text):
     roll = random.choice([0,1,2])
     if roll == 0:
+        print('gif_search')
         return await gif_search(response_text)
     elif roll == 1:
+        print('gif_translate')
         return await gif_translate(response_text)
     elif roll == 2:
+        print('sticker_search')
         return await sticker_search(response_text)
 
 async def gif_reply(ctx,message):
-    if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content):
+    if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content) or len(message.stickers)>0:
         sample_prompts = [
                 {
                     'role':'user',
-                    'content':'Return a response of the form `GIF={anime girl <expression>}`: https://tenor.com/view/kiss-gif-22640695'
+                    'content':'Return a response of the form `GIPHY={anime girl <expression>}`: https://tenor.com/view/kiss-gif-22640695'
                 },
                 {
                     'role':'assistant',
-                    'content':'GIF={anime girl kiss}'
+                    'content':'GIPHY={anime girl kiss}'
                 },
                 {
                     'role':'user',
-                    'content':'Return a response of the form `GIF={anime girl <expression>}`: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+                    'content':'Return a response of the form `GIPHY={anime girl <expression>}`: https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
                 },
                 {
                     'role':'assistant',
-                    'content':'GIF={anime girl laugh}'
+                    'content':'GIPHY={anime girl laugh}'
                 },
                 {
                     'role':'user','content':'https://tenor.com/view/juno-michael-cera-paulie-bleeker-can-we-make-out-now-make-out-gif-4302667'
                 },
                 {
                     'role':'assistant',
-                    'content':'GIF={Scott Pilgrim Ramona Flowers kiss}'
+                    'content':'GIPHY={Scott Pilgrim Ramona Flowers kiss}'
                 },
                 {
                     'role':'user','content':'https://tenor.com/view/leonardo-dicaprio-clapping-clap-applause-amazing-gif-16384995'
                 },
                 {
                     'role':'assistant',
-                    'content':'GIF={anime girl bow}'
+                    'content':'GIPHY={anime girl bow}'
                 }
             ]
         # Get token count for sample messages

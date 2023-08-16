@@ -222,8 +222,6 @@ async def reminders(bot):
     except Exception as e:
         print(f"Error in send_reminders: {e}")
 
-
-
 @bot.tree.command(name="fefe_mode")
 @app_commands.choices(
     mode=[

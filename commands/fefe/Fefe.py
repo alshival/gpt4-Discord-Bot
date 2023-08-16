@@ -71,12 +71,7 @@ async def talk_to_fefe(ctx,message):
     #Check to see if it is a gif.
     check_if_gif = re.search(giphy_regex_string,final_response)
     if check_if_gif:
-        if len(check_if_gif.group(1))>0:
-            #final_response = await gif_search(final_response)
-            choice = random.choice([0, 1])
-            
-            final_response = await giphy_response.giphy_response(final_response)
-    
+        final_response = await giphy_response.giphy_response(final_response)
     ##############
     # Memorable
     ##############
