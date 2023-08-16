@@ -1,5 +1,86 @@
 from app.config import *
 from commands.bot_functions import *
+# Get GIF
+async def gif_search(response_text):
+    check_gif = re.search(giphy_regex_string,response_text)
+    if check_gif:
+        search_query = check_gif.group(1)
+        print('GIF search query: '+search_query)
+        if len(search_query)>0:
+
+            giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=3'
+            
+            if GIPHY_CONTENT_FILTER:
+                giphy_api_call = giphy_api_call + '&rating=pg-13'
+                
+            gif_response = requests.get(giphy_api_call)
+            data = gif_response.json()
+            
+            try:
+                gif = random.choice(data['data'])
+                gif_url = gif['images']['original']['url']
+                return re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({gif_url})',response_text)
+            except Exception as E:
+                return re.sub(giphy_regex_string,'',response_text)
+        else:
+            return re.sub(giphy_regex_string,'',response_text)
+    re.sub(giphy_regex_string,'',response_text)
+
+# Translate GIF
+async def gif_translate(response_text):
+    check_gif = re.search(giphy_regex_string,response_text)
+    if check_gif:
+        search_query = check_gif.group(1)
+        print('GIF search query: '+search_query)
+        if len(search_query)>0:
+            
+            base_url = "https://api.giphy.com/v1/gifs/translate"
+            params = {
+                "api_key": giphy_api_token,
+                "s": search_query,
+                'wierdness':10
+            }
+        
+            response = requests.get(base_url, params=params)
+            data = response.json()
+        
+            if response.status_code == 200:
+                translated_url = data["data"]["images"]["downsized"]["url"]
+                return re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+            else:
+                error_message = data.get("message", "An error occurred.")
+                return f"Error: {error_message}"
+
+# Sticker search
+async def sticker_search(response_text):
+    check_sticker = re.search(giphy_regex_string,response_text)
+    if check_sticker:
+        search_query = check_sticker.group(1)
+        print('Sticker search query: '+ search_query)
+        if len(search_query)>0:
+            base_url = "http://api.giphy.com/v1/stickers/search"
+            params = {
+                "api_key": giphy_api_token,
+                "q": search_query,
+                "limit": 4
+            }
+            response = requests.get(base_url,params=params)
+            status_code = response.status_code
+            if status_code == 200:
+                data = response.json()
+                translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
+                print(translated_url)
+                response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+    return re.sub(giphy_regex_string,'',response_text)
+
+async def giphy_response(response_text):
+    roll = random.choice([0,1,2])
+    if roll == 0:
+        return await gif_search(response_text)
+    elif roll == 1:
+        return await gif_translate(response_text)
+    elif roll == 2:
+        return await sticker_search(response_text)
 
 async def gif_reply(ctx,message):
     if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content):
@@ -66,13 +147,7 @@ async def gif_reply(ctx,message):
         )
         final_response = response['choices'][0]['message']['content']
 
-        choice = random.choice([0, 1])
-
-        if choice == 0:
-            final_response = await gif_search(final_response)
-        else:
-            final_response = await gif_translate(final_response)
-        final_response = re.sub(gif_regex_string,'',final_response)
+        final_response = await giphy_response(final_response)
         await ctx.send(final_response)
         
 async def sticker_reply(ctx,message):
@@ -80,33 +155,33 @@ async def sticker_reply(ctx,message):
         sample_prompts = [
                 {
                     'role':'user',
-                    'content':'Return a response of the form `STICKER={anime girl <expression>}`: [<StickerItem id=796140638093443092 name=\'Sad\' format=StickerFormatType.lottie>]'
+                    'content':'Return a response of the form `GIPHY={anime girl <expression>}`: [<StickerItem id=796140638093443092 name=\'Sad\' format=StickerFormatType.lottie>]'
                 },
                 {
                     'role':'assistant',
-                    'content':'STICKER={anime girl kiss}'
+                    'content':'GIPHY={anime girl kiss}'
                 },
                 {
                     'role':'user',
-                    'content':'Return a response of the form `STICKER={anime girl <expression>}`: [<StickerItem id=816086581509095424 name=\'Heya\' format=StickerFormatType.lottie>]'
+                    'content':'Return a response of the form `GIPHY={anime girl <expression>}`: [<StickerItem id=816086581509095424 name=\'Heya\' format=StickerFormatType.lottie>]'
                 },
                 {
                     'role':'assistant',
-                    'content':'STICKER={anime girl hello}'
+                    'content':'GIPHY={anime girl hello}'
                 },
                 {
                     'role':'user','content':'[<StickerItem id=749046077629399122 name=\'Hungry\' format=StickerFormatType.lottie>]'
                 },
                 {
                     'role':'assistant',
-                    'content':'STICKER={anime girl eating}'
+                    'content':'GIPHY={anime girl eating}'
                 },
                 {
                     'role':'user','content':'[<StickerItem id=1022134923206856714 name=\'Link\' format=StickerFormatType.png>]'
                 },
                 {
                     'role':'assistant',
-                    'content':'STICKER={zelda}'
+                    'content':'GIPHY={zelda}'
                 }
             ]
         # Get token count for sample messages
@@ -139,28 +214,8 @@ async def sticker_reply(ctx,message):
         )
         final_response = response['choices'][0]['message']['content']
         print(final_response)
-        check_sticker = re.search(sticker_regex_string,final_response)
-        if check_sticker:
-            search_query = check_sticker.group(1)
-            print('Sticker search query: '+ search_query)
-            if len(search_query)>0:
-                base_url = "http://api.giphy.com/v1/stickers/search"
-                params = {
-                    "api_key": giphy_api_token,
-                    "q": search_query,
-                    "limit": 5
-                }
-                response = requests.get(base_url,params=params)
-                status_code = response.status_code
-                if status_code == 200:
-                    data = response.json()
-                    translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
-                    print(translated_url)
-                    final_response = re.sub(sticker_regex_string,f'\n[Powered by GIPHY]({translated_url})',final_response)
-                else:
-                    error_message = data.get("message","An error occured.")
-                    return f"Error: {error_message}"
-                final_response = re.sub(sticker_regex_string,'',final_response)
-                await ctx.send(final_response)
+        
+        final_response = await sticker_search(final_response)
+        await ctx.send(final_response)
                         
                     

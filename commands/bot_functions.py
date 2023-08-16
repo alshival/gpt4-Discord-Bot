@@ -421,59 +421,8 @@ def file_size_ok(file_path):
     if file_size_mb < 25:
         return True
     else:
-        return False
-
-# Get GIF
-async def gif_search(response_text):
-    check_gif = re.search(gif_regex_string,response_text)
-    if check_gif:
-        search_query = check_gif.group(1)
-        print('GIF search query: '+search_query)
-        if len(search_query)>0:
-
-            giphy_api_call = f'https://api.giphy.com/v1/gifs/search?q={search_query}&api_key={giphy_api_token}&limit=3'
+        return False    
             
-            if GIPHY_CONTENT_FILTER:
-                giphy_api_call = giphy_api_call + '&rating=pg-13'
-                
-            gif_response = requests.get(giphy_api_call)
-            data = gif_response.json()
-            
-            try:
-                gif = random.choice(data['data'])
-                gif_url = gif['images']['original']['url']
-                return re.sub(gif_regex_string,f'\n[Powered by GIPHY]({gif_url})',response_text)
-            except Exception as E:
-                return re.sub(gif_regex_string,'',response_text)
-        else:
-            return re.sub(gif_regex_string,'',response_text)
-    re.sub(gif_regex_string,'',response_text)
-
-# Translate GIF
-async def gif_translate(response_text):
-    check_gif = re.search(gif_regex_string,response_text)
-    if check_gif:
-        search_query = check_gif.group(1)
-        print('GIF search query: '+search_query)
-        if len(search_query)>0:
-            
-            base_url = "https://api.giphy.com/v1/gifs/translate"
-            params = {
-                "api_key": giphy_api_token,
-                "s": search_query,
-                'wierdness':10
-            }
-        
-            response = requests.get(base_url, params=params)
-            data = response.json()
-        
-            if response.status_code == 200:
-                translated_url = data["data"]["images"]["downsized"]["url"]
-                return re.sub(gif_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
-            else:
-                error_message = data.get("message", "An error occurred.")
-                return f"Error: {error_message}"
-                
 # Generate an image
 async def generate_image(text):
     response = openai.Image.create(

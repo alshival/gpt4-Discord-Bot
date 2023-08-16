@@ -59,11 +59,10 @@ async def generate_dataviz_finetune_data(interaction):
 ############################################
 # GIFY API config 
 ############################################
-GIPHY_CONTENT_FILTER = 'g' # Possible options are None, 'g','pg','pg-13', and 'r'. None allows gifs from all 
+GIPHY_CONTENT_FILTER = None # Possible options are None, 'g','pg','pg-13', and 'r'. None allows gifs from all 
 
 giphy_api_token = os.environ.get("GIPHY_API_KEY")
-gif_regex_string = 'GIF=\{([^}]*)\}'
-sticker_regex_string = 'STICKER=\{([^}]*)\}'
+giphy_regex_string = 'GIPHY=\{([^}]*)\}'
 ############################################
 # Youtube Data API config
 ############################################

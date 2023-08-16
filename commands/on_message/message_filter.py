@@ -1,7 +1,7 @@
 from commands.bot_functions import *
 from commands.on_message import giphy_response
-async def filter(bot,message):
 
+async def filter(bot,message):
     # Ignore messages from the bot
     if message.author == bot.user:
         return

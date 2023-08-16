@@ -1,5 +1,7 @@
 from app.config import *
 from commands.bot_functions import *
+from commands.on_message import giphy_response
+
 from commands.fefe import search_youtube
 from commands.fefe import finetune_fefe
 from commands.datalle import Datalle
@@ -67,17 +69,13 @@ async def talk_to_fefe(ctx,message):
     # GIF
     ############
     #Check to see if it is a gif.
-    check_if_gif = re.search(gif_regex_string,final_response)
+    check_if_gif = re.search(giphy_regex_string,final_response)
     if check_if_gif:
         if len(check_if_gif.group(1))>0:
             #final_response = await gif_search(final_response)
             choice = random.choice([0, 1])
             
-            if choice == 0:
-                final_response = await gif_search(final_response)
-            else:
-                final_response = await gif_translate(final_response)
-    final_response = re.sub(gif_regex_string,'',final_response)
+            final_response = await giphy_response.giphy_response(final_response)
     
     ##############
     # Memorable
