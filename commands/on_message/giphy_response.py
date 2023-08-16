@@ -63,6 +63,7 @@ async def gif_translate(response_text):
 
 # Sticker search
 async def sticker_search(response_text):
+    print('sticker_request: \n ' + response_text)
     check_sticker = re.search(giphy_regex_string,response_text)
     if check_sticker:
         search_query = check_sticker.group(1)
@@ -79,13 +80,17 @@ async def sticker_search(response_text):
             status_code = response.status_code
             data = response.json()
             if len(data["data"])>0:
-                    translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
-                    print(translated_url)
-                    response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
+                translated_url = random.choice(data["data"])["images"]["downsized"]["url"]
+                print(translated_url)
+                response_text =  re.sub(giphy_regex_string,f'\n[Powered by GIPHY]({translated_url})',response_text)
             else:
-                response_text = re.sub(giphy_regex_string,'',response_text)
+                roll = random.choice([0,1])
+                if roll == 0:
+                    response_text = await gif_search(response_text)
+                elif roll == 1:
+                    response_text = await gif_translate(response_text)
     else:
-        response_text = re.sub(giphy_regex_string,'',response_text)
+        response_text = re.sub(giphy_regex_string,'test2',response_text)
     return response_text
 
 async def giphy_response(response_text):

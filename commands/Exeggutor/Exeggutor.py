@@ -73,3 +73,4 @@ and here's the output:
     await store_prompt(db,json.dumps(pack),ctx.channel.id,ctx.channel.name,'exeggutor')
     await store_prompt(db,json.dumps({'role':'assistant','content':'Noted'}),ctx.channel.id,ctx.channel.name,'exeggutor')
     await db.close()
+    await delete_files(ctx.author.name)
