@@ -63,7 +63,7 @@ GIPHY_CONTENT_FILTER = 'g' # Possible options are None, 'g','pg','pg-13', and 'r
 
 giphy_api_token = os.environ.get("GIPHY_API_KEY")
 gif_regex_string = 'GIF=\{([^}]*)\}'
-
+sticker_regex_string = 'STICKER=\{([^}]*)\}'
 ############################################
 # Youtube Data API config
 ############################################

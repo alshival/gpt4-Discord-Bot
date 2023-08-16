@@ -473,7 +473,7 @@ async def gif_translate(response_text):
             else:
                 error_message = data.get("message", "An error occurred.")
                 return f"Error: {error_message}"
-            
+                
 # Generate an image
 async def generate_image(text):
     response = openai.Image.create(
