@@ -1,9 +1,9 @@
 from app.config import *
-from commands.discord_interpreter import finetune_interpreter
+from commands.fefe_interpreter import finetune_interpreter
 from commands.datalle import finetune_datalle
 from commands.bot_functions import *
 
-async def discord_interpreter(interaction,message):
+async def fefe_interpreter(interaction,message):
     # Create user directory if it does not exist.
     dir_name = await create_user_dir(interaction.user.name)
     
@@ -19,7 +19,7 @@ async def discord_interpreter(interaction,message):
             description = message,
             color = discord.Color.purple()
         )
-    embed1.set_author(name=f"{interaction.user.name} used the Discord Interpreter",icon_url=interaction.user.avatar)
+    embed1.set_author(name=f"{interaction.user.name} used the Fefe Interpreter",icon_url=interaction.user.avatar)
     
     # Random sample finetune_datalle data.
     datalle_messages = await finetune_datalle.finetune_datalle(interaction.user.name)

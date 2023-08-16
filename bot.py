@@ -32,14 +32,14 @@ async def exeggutor(ctx,*,message: str):
     print("exegguting")
     await Exeggutor.Exeggute(ctx,message)
 
-from commands.discord_interpreter import discord_interpreter
+from commands.fefe_interpreter import fefe_interpreter
 @bot.tree.command(name="interpreter")
 @app_commands.checks.has_permissions(use_application_commands=True)
 async def interpreter(interaction: discord.Interaction, message: str):
     
     await interaction.response.defer(thinking = True)
     
-    await discord_interpreter.discord_interpreter(interaction,message)
+    await fefe_interpreter.fefe_interpreter(interaction,message)
 
 from commands.help import help_prompts    
 
