@@ -5,7 +5,7 @@ NOTE: GIPHY API HAS BEEN SABOTAGED. Bot is returning garbage not related to the 
 
 WE LOVE YOU GIPHY! But get it together. If this SIMPLE ALGORITHM is not reliable, then your API is garbage.
 Somehow there was an adversarial attack on my code. The OUTPUT changed. Not the input.
-The quality of the GIFS slowly degraded. If you use it, you'll see what I mean.
+The quality of the GIFS slowly degraded.
 ```
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
