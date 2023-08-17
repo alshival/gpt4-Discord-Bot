@@ -1,7 +1,7 @@
 # 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀
 
 ```
-NOTE: GIPHY ALGORITHM HAS BEEN SABOTAGED. Bot is returning garbage not related to the query. Researchers, beware. 
+NOTE: GIPHY API HAS BEEN SABOTAGED. Bot is returning garbage not related to the query. Researchers, beware. 
 
 WE LOVE YOU GIPHY! But get it together. If this SIMPLE ALGORITHM is not reliable, then your API is garbage. I'm sorry to say it, but somehow there was an adversarial attack on my code. The OUTPUT changed. Not the input. The quality of the GIFS slowly degraded. If you use it, you'll see what I mean.
 ```
