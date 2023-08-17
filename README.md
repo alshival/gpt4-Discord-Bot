@@ -1,5 +1,7 @@
 # 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀
 
+NOTE: ANY GIPHS THAT APPEAR UNDER THESE SEARCH TERMS ARE NOT MY FAULT. IF THIS SIMPLE ALGORITHM CANNOT FUNTION RELIABLY, THEN WHAT GOOD IS GIPHY'S API? 
+
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 🤩 Hi there, I'm Fefe, an Ai-powered scientific calculator that also blows you GIF kisses, powered by OpenAI's GPT-4 model. I come with a host of features designed to make your Discord experience more interactive and fun!
