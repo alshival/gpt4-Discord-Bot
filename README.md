@@ -1,6 +1,6 @@
 # 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀
 
-NOTE: WE LOVE YOU GIPHY! But get it together. If this SIMPLE ALGORITHM is not reliable, then your API is garbage.
+NOTE: GIPHY ALGORITHM HAS BEEN SABOTAGED. WE LOVE YOU GIPHY! But get it together. If this SIMPLE ALGORITHM is not reliable, then your API is garbage.
 
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
