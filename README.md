@@ -1,13 +1,5 @@
 # 🤖🔥 GPT-4 Discord Bot with Python Support 🐍🚀
 
-```
-NOTE: GIPHY API HAS BEEN SABOTAGED. Bot is returning garbage not related to the query. Researchers, beware. 
-
-WE LOVE YOU GIPHY! But get it together. If this SIMPLE ALGORITHM is not reliable, then your API is garbage.
-Somehow there was an adversarial attack on my code. The OUTPUT changed. Not the input.
-The quality of the GIFS slowly degraded.
-```
-
 Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 🤩 Hi there, I'm Fefe, an Ai-powered scientific calculator that also blows you GIF kisses, powered by OpenAI's GPT-4 model. I come with a host of features designed to make your Discord experience more interactive and fun!
