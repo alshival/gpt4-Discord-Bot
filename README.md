@@ -119,7 +119,7 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
    - `OPENAI_API_KEY`
    - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
    - `google_api_key` for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
-     
+       - [Install Google's gcloud client as well](https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to)     
 ### Clone Repository
 - Clone the repository:
 
