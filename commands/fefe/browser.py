@@ -17,14 +17,17 @@ async def browse_urls(text):
     # Excluding tenor 
     urls = re.findall(r'\b((?!https://media.tenor\.com)(?:https?://|www\.)\S+)\b', text)
     if len(urls) > 0:
-        url_dict = {}
         for url in urls:
-            url_text = await get_text(url)
-            url_text = url_text[0:min(2000,len(url_text))]
-            url_dict[url] = url_text
-        return url_dict
+            try:
+                url_text = await get_text(url)
+                url_text = url_text[0:min(2000,len(url_text))]
+                # Substitute the URL with its content in the text
+                text = text.replace(url, url_text)
+            except Exception as e:
+                print(f'error downloading URL [{url}]')
+        return text
     else:
-        return None
+        return text
 
 async def browser_response(response_text):
     browse = re.search(browse_regex_string,response_text)

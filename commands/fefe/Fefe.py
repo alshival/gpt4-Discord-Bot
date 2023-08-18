@@ -21,6 +21,9 @@ async def talk_to_fefe(ctx,message):
         if filetype == 'csv':
             await Datalle.data_int(ctx,message)
             return
+    # Pull URL content
+    message = await browser.browse_urls(message)
+
     
     fefe_model = openai_model # Or GPT-3.5-turbo
     

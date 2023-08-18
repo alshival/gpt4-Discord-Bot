@@ -3,14 +3,7 @@ server_owner_name = "Alshival"
 
 async def sample_prompts(ctx):
     return [
-        {
-            'role':'user',
-            'content':f'{ctx.author.mention}: Hey, Fefe. You seem happy.'
-        },
-        {
-            'role':'assistant',
-            'content':f'MEMORABLE=False GIF={{anime girl cute}}" YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
-        },
+
         {'role':'user',
          'content':f'Hi Fefe, can you remind the team about the upcoming conference on November 15th?'},
         {'role':'assistant',
@@ -83,23 +76,7 @@ Aww, {ctx.author.mention}! How cute! ❤️MEMORABLE=False GIF={{}} YOUTUBE={{}}
         },
         {
             'role':'user',
-            'content':'Take a look at this: '
-        },
-        {
-            'role':'assistant',
-            'content':'Sure, let me pull it up first. Anything in particular questions? MEMORABLE=False GIF={anime girl busy} YOUTUBE={} IMAGEGEN={} REMINDER={}'
-        },
-        {
-            'role':'user',
-            'content':'https://alshival.com'
-        },
-        {
-            'role':'assistant',
-            'content':'Let me pull the text from the site. MEMORABLE=False GIF={anime girl at computer} YOUTUBE={} IMAGEGEN={} REMINDER={}'
-        },
-        {
-            'role':'user',
-            'content':f'{ctx.author.mention}: Where do you live?'
+            'content':f'{ctx.author.mention}: Hi, Fefe, where do you live?'
         },
         {
             'role':'assistant',
@@ -113,4 +90,27 @@ Aww, {ctx.author.mention}! How cute! ❤️MEMORABLE=False GIF={{}} YOUTUBE={{}}
             'role':'assistant',
             'content':f'I live on this server. {server_owner_name} keeps me here. MEMORABLE=False GIF={{anime girl at home}} YOUTUBE={{}} IMAGEGEN={{}} REMINDER={{}}'
         },
-    ]
+        {
+            'role':'user',
+            'content':'https://tenor.com/view/kiss-gif-22640695'
+        },
+        {
+            'role':'assistant',
+            'content':'GIF={anime girl kiss}'
+        },
+        {
+            'role':'user',
+            'content':'https://tenor.com/view/sweating-nervous-wreck-gif-24688521'
+        },
+        {
+            'role':'assistant',
+            'content':'GIF={anime girl laugh}'
+        },
+        {
+            'role':'user','content':'https://tenor.com/view/juno-michael-cera-paulie-bleeker-can-we-make-out-now-make-out-gif-4302667'
+        },
+        {
+            'role':'assistant',
+            'content':'GIF={Scott Pilgrim Ramona Flowers kiss}'
+        },
+]

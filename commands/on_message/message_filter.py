@@ -11,7 +11,6 @@ async def filter(bot,message):
     fefe_mode_value = await get_fefe_mode()
     ctx = await bot.get_context(message)
     # Download content for any non-Tenor urls:
-    urls = await browser.browse_urls(message_content)
 
     # # Here, we ignore all comments with unsupported file types.
     # if message.attachments:
@@ -37,10 +36,6 @@ async def filter(bot,message):
         exeg_command = bot.get_command('exeggutor')
         await ctx.invoke(exeg_command,message=message_content)
         return
-    if urls:
-        print('downloading urls')
-        for key, value in urls.items():
-            message_content = re.sub(key,value,message_content)
         
         # Action for response_mode = 'when_called'
     if fefe_mode_value == 'when_called':
@@ -53,9 +48,5 @@ async def filter(bot,message):
             await store_listening(bot,message)
             
     elif fefe_mode_value == 'every_message':
-            # Run through Tenor response
-        if re.search('https://tenor.com',message.content) or len(message.stickers)>0:
-            await gif_response.gif_reply(ctx,message)
-        else:
-            fefe_command = bot.get_command('fefe')
-            await ctx.invoke(fefe_command,message=message.content)
+        fefe_command = bot.get_command('fefe')
+        await ctx.invoke(fefe_command,message=message.content)
