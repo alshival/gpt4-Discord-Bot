@@ -1,7 +1,7 @@
 from app.config import *
 from commands.bot_functions import *
 import aiohttp
-import folium
+
 async def download_modis_data(period,region,interaction):
     author_name = interaction.user.name
     embed1 = discord.Embed(
@@ -63,47 +63,51 @@ async def download_modis_data(period,region,interaction):
             if resp.status == 200:
                 data = await resp.read()
                 # Save in downloads for interpreter. This copy is kept until the next session.
-                modis_file_path = os.path.join('app/downloads/', 'MODIS_C6_1_Global_48h.csv')
+                modis_file_path = f'app/downloads/{period}.csv'
                 with open(modis_file_path, 'wb') as f:
                     f.write(data)
-                # import to pandas and remove nan latitude and longitude values
-                data = pd.read_csv(modis_file_path)
-                data = data.dropna(subset=['latitude', 'longitude'])
-                data.to_csv(modis_file_path,index=False)
-                # Copy in user directory. This copy is removed after sending.
+
                 user_dir = await create_user_dir(interaction.user.name)
-                modis_user_file_path = os.path.join(user_dir, period+'.csv')
+                
+                return_script = f"""
+Here's the code for the MODIS map:
+```
+import pandas as pd
+import folium
+from folium.plugins import HeatMap
+
+# Load the fire map dataset
+data = pd.read_csv('{modis_file_path}')
+
+# Create a folium map centered at the mean latitude and longitude with a dark map layer
+m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()],
+               zoom_start=4, tiles='CartoDB dark_matter')
+
+# Add a heatmap to the map with radius set to 18
+HeatMap(data[['latitude', 'longitude', 'brightness']].values.tolist(), radius=18).add_to(m)
+
+# Set variable filename (required)
+filename = "app/downloads/{interaction.user.name}/fire_heatmap_dark.html"
+# Save the map as an HTML file
+m.save(filename)
+
+# Open the HTML file in a web browser to view the map
+import webbrowser
+webbrowser.open(filename)
+```
+                """
+                vars = {'modis_file_path':modis_file_path}
+                response_compiled = extract_code(return_script)
+                response_compiled = compile(response_compiled,"<string>","exec")
+                exec(response_compiled, vars,vars)
+                # import to pandas and remove nan latitude and longitude values
+                # Copy in user directory. This copy is removed after sending.
+                modis_user_file_path = f"app/downloads/{interaction.user.name}/fire_map_data.csv"
+                data = vars['data']
                 data.to_csv(modis_user_file_path,index=False)
-                # Generate map to return to the user.
-                # Create a leaflet map with a black background
-                m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()], zoom_start=2, tiles='CartoDB dark_matter')
-                
-                # Add circle markers to the map
-                for index, row in data.iterrows():
-                    # Set the color of the marker based on the confidence level
-                    if row['confidence'] < 50:
-                        color = 'lightred'
-                    else:
-                        color = 'darkred'
-                    
-                    folium.CircleMarker(
-                        location=[row['latitude'], row['longitude']],
-                        radius=6,
-                        color=color,
-                        fill=True,
-                        fill_color=color,
-                        fill_opacity=0.6
-                    ).add_to(m)
-                
-                # Set variable filename (required)
-                filename = f"app/downloads/{interaction.user.name}/fires_map.html"
-                # Save the map as an HTML file
-                m.save(filename)
-                
-                # Open the HTML file in a web browser to view the map
-                import webbrowser
-                webbrowser.open(filename)
-                
+                db = await create_connection()
+                await store_prompt(db,json.dumps({'role':'user','content':return_script}),interaction.channel_id,interaction.channel.name,'MODIS')
+                await db.close()
                 files_to_send = await gather_files_to_send(interaction.user.name)
                 await send_followups(interaction,'[MODIS Fire Datasource](https://firms.modaps.eosdis.nasa.gov/active_fire/#firms-txt)',files=files_to_send,embed=embed1)
                 await delete_files(interaction.user.name)

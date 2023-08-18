@@ -3,10 +3,12 @@ from commands.bot_functions import *
 from commands.on_message import gif_response
 
 from commands.fefe import search_youtube
+from commands.fefe import browser
 from commands.fefe import finetune_fefe
 from commands.datalle import Datalle
 
 async def talk_to_fefe(ctx,message):
+    print('talk to fefe')
     # Check if there is a .csv file attached. If so, run datalle
     if len(ctx.message.attachments)==1:
         url = ctx.message.attachments[0].url
@@ -113,7 +115,6 @@ async def talk_to_fefe(ctx,message):
                 print(e)
                 final_response = re.sub(youtube.group(0),'\n\n Oh... wait... I had some trouble finding results. Sorry :(',final_response)
     final_response = re.sub(youtube_regex_string,'',final_response)
-
     #################
     # Generate Image
     #################
@@ -130,9 +131,10 @@ async def talk_to_fefe(ctx,message):
                 final_response = re.sub(imagegen.group(0),'\n\n Oh... wait... I had some trouble finding results. Sorry :(')
         else:
             final_response = re.sub(imagegen_regex_string,'',final_response)
+
     final_response = await clean_response(final_response)
     await send_chunks(ctx, final_response)
-
+        
     # store the prompt
     await store_prompt(db,json.dumps(new_prompt),ctx.channel.id,ctx.channel.name,'fefe')
     await store_prompt(db,json.dumps({'role':'assistant','content':response_text}),ctx.channel.id,ctx.channel.name,'fefe')

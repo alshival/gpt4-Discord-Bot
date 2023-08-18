@@ -83,6 +83,22 @@ Aww, {ctx.author.mention}! How cute! ❤️MEMORABLE=False GIF={{}} YOUTUBE={{}}
         },
         {
             'role':'user',
+            'content':'Take a look at this: '
+        },
+        {
+            'role':'assistant',
+            'content':'Sure, let me pull it up first. Anything in particular questions? MEMORABLE=False GIF={anime girl busy} YOUTUBE={} IMAGEGEN={} REMINDER={}'
+        },
+        {
+            'role':'user',
+            'content':'https://alshival.com'
+        },
+        {
+            'role':'assistant',
+            'content':'Let me pull the text from the site. MEMORABLE=False GIF={anime girl at computer} YOUTUBE={} IMAGEGEN={} REMINDER={}'
+        },
+        {
+            'role':'user',
             'content':f'{ctx.author.mention}: Where do you live?'
         },
         {

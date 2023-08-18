@@ -13,6 +13,7 @@ asyncio.get_event_loop().run_until_complete(create_fefe_mode_table())
 
 from commands.fefe import Fefe
 @bot.command()
+@commands.has_permissions(use_application_commands = True)
 async def fefe(ctx, *, message):
     if message is None:
         await ctx.send("You didn't say anything to Fefe!")

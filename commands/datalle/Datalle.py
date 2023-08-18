@@ -125,6 +125,7 @@ Fine-tuning:
         await store_prompt(db,json.dumps({'role':'assistant','content':extracted_code}),ctx.channel.id,ctx.channel.name,'DATALL-E')
         await db.close()
         await delete_files(ctx.author.name)
+        return
     except Exception as e:
         print(message)
         print(e)

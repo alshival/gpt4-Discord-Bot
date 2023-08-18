@@ -72,6 +72,7 @@ youtube = build("youtube", "v3", developerKey=google_api_key)
 
 memorable_regex = "MEMORABLE=(True|False)"
 reminder_regex = "REMINDER=(\{[^}]*\})"
+browse_regex_string = 'BROWSE=\{([^}]*)\}'
 
 async def clean_response(text):
     regex_strings = [
@@ -79,7 +80,8 @@ async def clean_response(text):
         memorable_regex,
         reminder_regex,
         imagegen_regex_string,
-        youtube_regex_string
+        youtube_regex_string,
+        browse_regex_string
     ]
     for regex_string in regex_strings:
         text = re.sub(regex_string, '', text)
