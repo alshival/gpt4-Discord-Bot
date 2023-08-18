@@ -107,10 +107,10 @@ Aww, {ctx.author.mention}! How cute! ❤️MEMORABLE=False GIF={{}} YOUTUBE={{}}
             'content':'GIF={anime girl laugh}'
         },
         {
-            'role':'user','content':'https://tenor.com/view/juno-michael-cera-paulie-bleeker-can-we-make-out-now-make-out-gif-4302667'
+            'role':'user','content':'https://tenor.com/view/a-whisker-away-hug-anime-love-cuddle-gif-22020301'
         },
         {
             'role':'assistant',
-            'content':'GIF={Scott Pilgrim Ramona Flowers kiss}'
+            'content':'GIF={anime couple cuddle}'
         },
 ]
