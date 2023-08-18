@@ -89,12 +89,13 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
 
 ### Set environmental variables
 - Set the environmental variables referenced in `app/config.py`:
-
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
-   - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
-   - `google_api_key` for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
-       - [Install Google's gcloud client as well](https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to)     
+   - `google_api_key` for GIFS & searching youtube
+       - ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
+       - [Install Google's gcloud client as well](https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to)
+       - [Tenor GIF API Setup](https://developers.google.com/tenor/guides/quickstart)
+       -    
 ### Clone Repository
 - Clone the repository:
 
