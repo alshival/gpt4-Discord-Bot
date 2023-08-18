@@ -28,16 +28,16 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
         </tr>
         <tr>
             <td style="width: 100%;" colspan="2">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-15%201.04.52%20AM.png?raw=True" alt="Image Description">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-15%201.04.52%20AM.png?raw=True">
             </td>
         </tr>
         <tr>
             <td style="width: 50%;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.40.00%20PM.png?raw=True" alt="Image Description">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-17%208.40.42%20PM.png?raw=True">
             </td>
-        <td style="width: 50%">
-            <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.03.25%20AM.png?raw=True">
-        </td>
+            <td style="width: 50%;">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-17%208.51.14%20PM.png?raw=True">
+            </td>
         </tr>
     </table>
 </body>
@@ -54,16 +54,6 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 <html>
 <body>
     <table style="width: 100%;" cellspacing="0" cellpadding="0">
-        <tr>
-            <td style="width: 100%;" colspan="2;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%203.39.24%20AM.png?raw=True" alt="Image Description">
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-10%202.51.03%20PM.png?raw=True">
-            </td>
-        </tr>
         <tr>
             <td style="width: 100%;" colspan="2;">
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%207.09.46%20PM.png?raw=True">
@@ -107,12 +97,13 @@ Admin can also utilize the `!exeggutor` function to run raw python code. Useful 
 
 ### Set environmental variables
 - Set the environmental variables referenced in `app/config.py`:
-
    - `DISCORD_BOT_TOKEN`
    - `OPENAI_API_KEY`
-   - `GIFY_API_KEY` (Get from [GIFY Developers](https://developers.giphy.com/) by creating an App)
-   - `google_api_key` for searching youtube ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
-       - [Install Google's gcloud client as well](https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to)     
+   - `google_api_key` for GIFS & searching youtube
+       - ([YouTube Data API](https://developers.google.com/youtube/v3/getting-started))
+       - [Install Google's gcloud client as well](https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to)
+       - [Tenor GIF API Setup](https://developers.google.com/tenor/guides/quickstart)
+       -    
 ### Clone Repository
 - Clone the repository:
 
