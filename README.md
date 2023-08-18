@@ -31,14 +31,6 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-15%201.04.52%20AM.png?raw=True" alt="Image Description">
             </td>
         </tr>
-        <tr>
-            <td style="width: 50%;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.40.00%20PM.png?raw=True" alt="Image Description">
-            </td>
-        <td style="width: 50%">
-            <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%209.03.25%20AM.png?raw=True">
-        </td>
-        </tr>
     </table>
 </body>
 
