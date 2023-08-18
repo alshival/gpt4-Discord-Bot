@@ -48,16 +48,6 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
     <table style="width: 100%;" cellspacing="0" cellpadding="0">
         <tr>
             <td style="width: 100%;" colspan="2;">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%203.39.24%20AM.png?raw=True" alt="Image Description">
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%">
-                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-10%202.51.03%20PM.png?raw=True">
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 100%;" colspan="2;">
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-14%207.09.46%20PM.png?raw=True">
             </td>
         </tr>
