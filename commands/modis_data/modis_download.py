@@ -70,32 +70,33 @@ async def download_modis_data(period,region,interaction):
                 user_dir = await create_user_dir(interaction.user.name)
                 
                 return_script = f"""
-Here's the code for the MODIS map:
-```
 import pandas as pd
 import folium
 from folium.plugins import HeatMap
 
 # Load the fire map dataset
 data = pd.read_csv('{modis_file_path}')
-
-# Create a folium map centered at the mean latitude and longitude with a dark map layer
-m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()],
-               zoom_start=4, tiles='CartoDB dark_matter')
-
-# Add a heatmap to the map with radius set to 18
-HeatMap(data[['latitude', 'longitude', 'brightness']].values.tolist(), radius=18).add_to(m)
-
-# Set variable filename (required)
-filename = "app/downloads/{interaction.user.name}/fire_heatmap_dark.html"
-# Save the map as an HTML file
-m.save(filename)
-
-# Open the HTML file in a web browser to view the map
-import webbrowser
-webbrowser.open(filename)
-```
+data = data.dropna(subset=['latitude', 'longitude'])
+if len(data)>0:
+    # remove NAN values
+    # Create a folium map centered at the mean latitude and longitude with a dark map layer
+    m = folium.Map(location=[data['latitude'].mean(), data['longitude'].mean()],
+                   zoom_start=4, tiles='CartoDB dark_matter')
+    
+    # Add a heatmap to the map with radius set to 15
+    HeatMap(data[['latitude', 'longitude', 'brightness']].values.tolist(), radius=15).add_to(m)
+    
+    # Set variable filename (required)
+    filename = "app/downloads/{interaction.user.name}/fire_heatmap_dark.html"
+    # Save the map as an HTML file
+    m.save(filename)
+    
+    # Open the HTML file in a web browser to view the map
+    import webbrowser
+    webbrowser.open(filename)
                 """
+                with open(f'app/downloads/{interaction.user.name}/modis_map_python_code.py', 'w') as file:
+                    file.write(return_script)
                 vars = {'modis_file_path':modis_file_path}
                 response_compiled = extract_code(return_script)
                 response_compiled = compile(response_compiled,"<string>","exec")

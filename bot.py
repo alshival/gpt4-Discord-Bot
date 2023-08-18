@@ -164,11 +164,10 @@ async def memory_leak(interaction: discord.Interaction):
     # Group prompts
     prompts = [[prompts[i],prompts[i+1]] for i in [j for j in range(len(prompts)) if j%2==0]] 
     prompts = [{'user':x[1]['content'],'assistant':x[0]['content']} for x in prompts]
-    dat = pd.DataFrame.from_records(prompts)
-    print(dat.head)
-    return_file = f'app/downloads/{interaction.user.name}/{interaction.user.name}.csv'
-    import csv
-    dat.to_csv(return_file,index=False,quoting=csv.QUOTE_ALL)
+    return_file = f'app/downloads/{interaction.user.name}/{interaction.user.name}.txt'
+    with open(return_file, 'w') as f:
+        for prompt in prompts:
+            f.write(f"User: {prompt['user']}\nAssistant: {prompt['assistant']}\n\n")
     await interaction.followup.send(files=[discord.File(return_file)],embed=embed1)
     await delete_files(interaction.user.name)
 
