@@ -22,6 +22,7 @@ async def help_prompts(author_name):
 - `/interpreter`: Use the Discord interpreter to run Python code and create stock market charts. 🚀📉🍑 (Requires `use_application_commands` permission)
 
 🎮🍇 Other commands at your disposal:
+- `/modis_data`: Pull the latest MODIS fire data and generate a visualization. Great for keeping up with fire activity globally and by region. Provides support for 24hr global data and 24hr, 48hr, and 7d data by region. 
 - `/clear_chat_history`: Start our conversation from scratch. 🔄🍒
 - `/upgrade_fefe`: Boost my powers! 💪🚀 (Requires `Admin` permission)
 - `/restart_fefe`: Reboot me if necessary. 🔄 (Requires `Admin` permission)

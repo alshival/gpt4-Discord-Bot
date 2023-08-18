@@ -1,5 +1,5 @@
 from commands.bot_functions import *
-from commands.on_message import giphy_response
+from commands.on_message import gif_response
 
 async def filter(bot,message):
     # Ignore messages from the bot
@@ -43,9 +43,9 @@ async def filter(bot,message):
             await store_listening(bot,message)
             
     elif fefe_mode_value == 'every_message':
-            # Run through GIPHY response
-        if re.search('https://tenor.com',message.content) or re.search('.*media[0-9]*\.giphy.com/.*', message.content) or len(message.stickers)>0:
-            await giphy_response.gif_reply(ctx,message)
+            # Run through Tenor response
+        if re.search('https://tenor.com',message.content) or len(message.stickers)>0:
+            await gif_response.gif_reply(ctx,message)
         else:
             fefe_command = bot.get_command('fefe')
             await ctx.invoke(fefe_command,message=message.content)

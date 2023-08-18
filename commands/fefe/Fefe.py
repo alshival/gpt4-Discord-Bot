@@ -1,11 +1,10 @@
 from app.config import *
 from commands.bot_functions import *
-from commands.on_message import giphy_response
+from commands.on_message import gif_response
 
 from commands.fefe import search_youtube
 from commands.fefe import finetune_fefe
 from commands.datalle import Datalle
-from commands.on_message import giphy_response 
 
 async def talk_to_fefe(ctx,message):
     # Check if there is a .csv file attached. If so, run datalle
@@ -69,9 +68,9 @@ async def talk_to_fefe(ctx,message):
     # GIF
     ############
     #Check to see if it is a gif.
-    check_if_gif = re.search(giphy_regex_string,final_response)
+    check_if_gif = re.search(gif_regex_string,final_response)
     if check_if_gif:
-        final_response = await giphy_response.giphy_response(final_response)
+        final_response = await gif_response.gif_search(final_response)
     ##############
     # Memorable
     ##############
@@ -131,7 +130,7 @@ async def talk_to_fefe(ctx,message):
                 final_response = re.sub(imagegen.group(0),'\n\n Oh... wait... I had some trouble finding results. Sorry :(')
         else:
             final_response = re.sub(imagegen_regex_string,'',final_response)
-        
+    final_response = await clean_response(final_response)
     await send_chunks(ctx, final_response)
 
     # store the prompt

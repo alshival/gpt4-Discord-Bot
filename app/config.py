@@ -57,18 +57,13 @@ async def generate_dataviz_finetune_data(interaction):
     await interaction.followup.send("DATALL-E finetune data generation complete",file=discord.File(filename))
 
 ############################################
-# GIFY API config 
-############################################
-GIPHY_CONTENT_FILTER = None # Possible options are None, 'g','pg','pg-13', and 'r'. None allows gifs from all 
-
-giphy_api_token = os.environ.get("GIPHY_API_KEY")
-giphy_regex_string = 'GIPHY=\{([^}]*)\}'
-############################################
 # Youtube Data API config
 ############################################
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
 youtube_regex_string = 'YOUTUBE=\{([^}]*)\}'
+gif_regex_string = 'GIF=\{([^}]*)\}'
 # Set up the Google Youtube Data API key. For youtube searching and playback.
 google_api_key = os.environ.get("google_api_key")
 
@@ -77,3 +72,15 @@ youtube = build("youtube", "v3", developerKey=google_api_key)
 
 memorable_regex = "MEMORABLE=(True|False)"
 reminder_regex = "REMINDER=(\{[^}]*\})"
+
+async def clean_response(text):
+    regex_strings = [
+        gif_regex_string,
+        memorable_regex,
+        reminder_regex,
+        imagegen_regex_string,
+        youtube_regex_string
+    ]
+    for regex_string in regex_strings:
+        text = re.sub(regex_string, '', text)
+    return text

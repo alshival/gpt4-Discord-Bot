@@ -231,6 +231,58 @@ async def reminders(bot):
     ])
 async def fefe_mode(interaction: discord.Interaction, mode: app_commands.Choice[str]):
     await change_fefe_mode(interaction,mode.value)
+
+#### Pull MODIS data
+from commands.modis_data import modis_download
+@bot.tree.command(name="modis_data")
+@app_commands.choices(
+    period=[
+        # global
+        app_commands.Choice(name="Global 24hr",value="global-24hr"),
+        # US
+        app_commands.Choice(name="US 24hr",value="us-24hr"),
+        app_commands.Choice(name="US 48hr",value="us-48hr"),
+        app_commands.Choice(name="US 7d",value="us-7d"),
+        # Central America
+        app_commands.Choice(name="Central America 24hr",value="central-america-24hr"),
+        app_commands.Choice(name="Central America 48hr",value="central-america-48hr"),
+        app_commands.Choice(name="Central America 7d",value="central-america-7d"),
+        # South America
+        app_commands.Choice(name="South America 24hr",value="south-america-24hr"),
+        app_commands.Choice(name="South America 48hr",value="south-america-48hr"),
+        app_commands.Choice(name="South America 7d",value="south-america-7d"),
+        # Europe
+        app_commands.Choice(name="Europe 24hr", value = "europe-24hr"),
+        app_commands.Choice(name="Europe 48hr", value="europe-48hr"),
+        app_commands.Choice(name="Europe 7d", value="europe-7d"),
+        # Africa (North & Central)
+        app_commands.Choice(name="Africa (North & Central) 24hr",value="africa-north-central-24hr"),
+        app_commands.Choice(name="Africa (North & Central) 48hr",value="africa-north-central-48hr"),
+        # app_commands.Choice(name="Africa (North & Central) 7d",value="africa-north-central-7d"),
+        # Africa (South)
+        app_commands.Choice(name="Africa (South) 24hr",value="africa-south-24hr"),
+        app_commands.Choice(name="Africa (South) 48hr",value="africa-south-48hr"),
+        # app_commands.Choice(name="Africa (South) 7d",value="africa-south-7d"),
+        # Russia & Asia
+        app_commands.Choice(name="Russia & Asia 24hr",value="russia-asia-24hr"),
+        app_commands.Choice(name="Russia & Asia 48hr",value="russia-asia-48hr"),
+        # app_commands.Choice(name="Russia & Asia 7d",value="russia-asia-7d"),
+        # South Asia
+        app_commands.Choice(name="South Asia 24hr",value="south-asia-24hr"),
+        app_commands.Choice(name="South Asia 48hr",value="south-asia-48hr"),
+        # app_commands.Choice(name="South Asia 7d",value="south-asia-7d"),
+        # South East Asia
+        app_commands.Choice(name="South East Asia 24hr",value="south-east-asia-24hr"),
+        app_commands.Choice(name="South East Asia 48hr",value="south-east-asia-48hr"),
+        # app_commands.Choice(name="South East Asia 7d",value="south-east-asia-7d"),
+        # Australia & New Zealand
+        app_commands.Choice(name="Australia & New Zealand 24hr",value="australia-new-zealand-24hr"),
+        app_commands.Choice(name="Australia & New Zealand 48hr",value="australia-new-zealand-48hr"),
+        # app_commands.Choice(name="Australia & New Zealand 7d",value="australia-new-zealand-7d")
+    ])
+async def modis_data(interaction: discord.Interaction,period: app_commands.Choice[str]):
+    await interaction.response.defer(thinking=True)
+    await modis_download.download_modis_data(period.value,period.name,interaction)
     
 from commands.on_message import message_filter
 @bot.event
