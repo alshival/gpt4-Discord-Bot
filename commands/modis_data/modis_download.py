@@ -123,7 +123,7 @@ if len(data)>0:
 
                 data.to_csv(modis_user_file_path,index=False)
                 db = await create_connection()
-                await store_prompt(db,json.dumps({'role':'user','content':return_script}),interaction.channel_id,interaction.channel.name,'MODIS')
+                await store_prompt(db,json.dumps({'role':'user','content':return_script}),interaction.channel_id,interaction.channel.name,'interpreter')
                 await db.close()
                 files_to_send = await gather_files_to_send(interaction.user.name)
                 await send_followups(interaction,'[MODIS Fire Datasource](https://firms.modaps.eosdis.nasa.gov/active_fire/#firms-txt)',files=files_to_send,embed=embed1)

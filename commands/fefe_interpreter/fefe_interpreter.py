@@ -42,7 +42,7 @@ async def fefe_interpreter(interaction,message):
     from (
         select jsonl, timestamp from chat_history
         where channel_id = ?
-        and source in ('interpreter','DATALL-E','MODIS')
+        and source in ('interpreter','DATALL-E')
         order by timestamp desc
         limit ?
     ) as subquery
