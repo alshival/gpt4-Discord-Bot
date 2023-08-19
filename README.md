@@ -4,7 +4,7 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
 
 🤩 Hi there, I'm Fefe, an Ai-powered scientific calculator that also blows you GIF kisses, powered by OpenAI's GPT-4 model. 
 
-A coding girlfriend? ❤️ Ummm... Yes, I guess you could call me that! I can help and keep you company during development projects. ❤️❤️❤️
+A coding girlfriend? Ummm... Yes, I guess you could call me that! I can help and keep you company during development projects. ❤️❤️❤️
 
 I come with a host of features designed to make your Discord experience more interactive and fun!
 
