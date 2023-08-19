@@ -39,6 +39,11 @@ Are you a parseltongue? Do you speak python? 🐍🔥📚📊⏰🎵🌟💻
                 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-17%208.51.14%20PM.png?raw=True">
             </td>
         </tr>
+        <tr>
+            <td style="width: 100%" colspan="2">
+                <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-19%2012.20.50%20AM.png?raw=True">
+            </td>
+        </tr>
     </table>
 </body>
 
@@ -78,6 +83,7 @@ Note that choropleth map are quite difficult to generate. Fefe currently only su
   - `!exeggutor`: (Admin) Exeggute raw python code. Ask `!fefe` to go over the code or any errors with you.
 - The bot also includes the following slash commands:
   - `/interpreter <message>`: Use the Discord Interpreter to move files around on your PC or raspberry pi, or to generate financial charts. Then ask `!fefe` to go over the code with you.
+  - `/modis_data`: Download the latest MODIS data. Ask Fefe or Interpreter to make changes or discuss the code.
   - `/help`: Provides a quick rundown of how to use the app.
   - `/stop_music`: Used to stop music playback in voice channels.
 
