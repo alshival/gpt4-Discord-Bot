@@ -86,7 +86,8 @@ Note that choropleth map are quite difficult to generate. Fefe currently only su
   - `/fefe_mode`: Fefe can reply to every message or when called. If the mode is set to `when called`, she walks into a conversation with a bit of contextual information, e.g. the last 4 messages posted on the discord. If the mode is set to `every message`, Fefe will reply to GIFs and Stickers.
   - `/modis_data`: Download the latest MODIS data. Ask Fefe or Interpreter to make changes or discuss the code.
   - `/help`: Provides a quick rundown of how to use the app.
-  - `/stop_music`: Used to stop music playback in voice channels.
+  - `/upgrade_fefe`: Pull the latest Github changes.
+  - `/restart_fefe`: Restart the bot from within discord.
 
 ## Features
 
