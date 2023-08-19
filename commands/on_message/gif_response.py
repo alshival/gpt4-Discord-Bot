@@ -17,7 +17,7 @@ async def gif_search(response_text):
         'media_format': "gif,",
         'key': google_api_key,
         'client_key': 'fefe',
-        'limit': 5
+        'limit': 10
     }      
     r = requests.get(base_url, params=params)    
     if r.status_code == 200:

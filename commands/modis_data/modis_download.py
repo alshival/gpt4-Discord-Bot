@@ -3,12 +3,6 @@ from commands.bot_functions import *
 import aiohttp
 
 async def download_modis_data(period,region,interaction):
-    author_name = interaction.user.name
-    embed1 = discord.Embed(
-        description = '**Region**: '+region,
-            color = discord.Color.dark_red()
-        )
-    embed1.set_author(name=f"{interaction.user.name} pulled the latest MODIS data",icon_url=interaction.user.avatar)
     # Create app/downloads/{author_name} and return the path
 
     url_dict = {
@@ -72,7 +66,7 @@ async def download_modis_data(period,region,interaction):
                 return_script = f"""
 import pandas as pd
 import folium
-from folium.plugins import HeatMap
+from folium.plugins import HeatMap, Fullscreen
 
 # Load the fire map dataset
 data = pd.read_csv('{modis_file_path}')
@@ -85,7 +79,8 @@ if len(data)>0:
     
     # Add a heatmap to the map with radius set to 15
     HeatMap(data[['latitude', 'longitude', 'brightness']].values.tolist(), radius=15).add_to(m)
-    
+    # Add fullscreen button
+    Fullscreen(position='topright').add_to(m)
     # Set variable filename (required)
     filename = "app/downloads/{interaction.user.name}/fire_heatmap_dark.html"
     # Save the map as an HTML file
@@ -105,6 +100,27 @@ if len(data)>0:
                 # Copy in user directory. This copy is removed after sending.
                 modis_user_file_path = f"app/downloads/{interaction.user.name}/fire_map_data.csv"
                 data = vars['data']
+                # Convert acq_date to datetime and combine it with acq_time
+                data['datetime'] = pd.to_datetime(data['acq_date'] + ' ' + data['acq_time'].astype(str).str.zfill(4), format='%Y-%m-%d %H%M')
+                # Get the maximum date and time
+                max_datetime = data['datetime'].max()
+                # Get the minimum date and time
+                min_datetime = data['datetime'].min()
+
+                # Grab the author name
+                author_name = interaction.user.name
+                # Create embed for discord response
+                embed1 = discord.Embed(
+                    title = f"MODIS Data - {region}",
+                    color = discord.Color.dark_red()
+                    )
+                embed1.set_author(name=f"{interaction.user.name} pulled MODIS data.",
+                                  icon_url=interaction.user.avatar)
+                # embed1.add_field(name="Region: ", value=region, inline=False)
+                embed1.add_field(name="Start Time: ", value=str(min_datetime), inline=True)
+                embed1.add_field(name="End Time: ", value=str(max_datetime), inline=True)
+                embed1.set_footer(text=f"Data Source: https://firms.modaps.eosdis.nasa.gov/active_fire/#firms-txt")
+
                 data.to_csv(modis_user_file_path,index=False)
                 db = await create_connection()
                 await store_prompt(db,json.dumps({'role':'user','content':return_script}),interaction.channel_id,interaction.channel.name,'MODIS')
