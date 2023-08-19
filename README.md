@@ -84,7 +84,7 @@ Note that choropleth map are quite difficult to generate. Fefe currently only su
 - The bot also includes the following slash commands:
   - `/interpreter <message>`: Use the Discord Interpreter to move files around on your PC or raspberry pi, or to generate financial charts. Then ask `!fefe` to go over the code with you.
   - `/fefe_mode`: Fefe can reply to every message or when called. If the mode is set to `when called`, she walks into a conversation with a bit of contextual information, e.g. the last 4 messages posted on the discord. If the mode is set to `every message`, Fefe will reply to GIFs and Stickers.
-  - `/modis_data`: Download the latest MODIS data. Ask Fefe or Interpreter to make changes or discuss the code.
+  - `/modis_data`: Download the latest MODIS data. Ask Fefe or Interpreter to make changes or discuss the code. If you do not see your region available, it is due to Discord's limit of 25 slash command choices. Comment out a region and uncomment your region in `commands/modis_data/modis_download.py`.
   - `/help`: Provides a quick rundown of how to use the app.
   - `/upgrade_fefe`: Pull the latest Github changes.
   - `/restart_fefe`: Restart the bot from within discord.
