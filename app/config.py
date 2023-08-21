@@ -27,7 +27,11 @@ discord_bot_token = os.environ.get("DISCORD_BOT_TOKEN")
 import openai
 import tiktoken
 # Set up the OpenAI API. The key is stored as an environment variable for security reasons.
-openai_model = 'gpt-4'
+openai_model = 'gpt-4' # Used with Datalle & Fefe Interpreter
+
+fefe_model = 'gpt-3.5-turbo' # Used by Fefe to cut expenses.
+# For a pure GPT-4 experience, comment the above line and uncomment this one:
+# fefe_model = 'gpt-4'
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 imagegen_regex_string = 'IMAGEGEN=\{([^}]*)\}'
