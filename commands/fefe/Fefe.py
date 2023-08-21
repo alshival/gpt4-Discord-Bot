@@ -25,7 +25,7 @@ async def talk_to_fefe(ctx,message):
     message = await browser.browse_urls(message)
 
     
-    fefe_model = openai_model # Or GPT-3.5-turbo
+    fefe_model = 'gpt-3.5-turbo' # Or GPT-3.5-turbo
     
     completion_limit = 1250
     db = await create_connection()
