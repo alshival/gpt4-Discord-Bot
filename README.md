@@ -59,6 +59,7 @@ fefe_model = 'gpt-4'
     </table>
 </body>
 Note: You can ask to save in `my user directory` instead of specifying a path. When a user calls Fefe, DATALL-E, or the fefe interpreter, a user directory is created. Any files that are placed in that directory are sent back to the user. You can ask Fefe Interpreter to `store the iris dataset in my user directory`, for example.
+    
 </html>
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
