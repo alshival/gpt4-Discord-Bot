@@ -8,7 +8,9 @@ from commands.fefe import finetune_fefe
 from commands.datalle import Datalle
 
 async def talk_to_fefe(ctx,message):
-    print('talk to fefe')
+    fefe_model = await get_fefe_model()
+    print(fefe_model)
+    
     # Check if there is a .csv file attached. If so, run datalle
     if len(ctx.message.attachments)==1:
         url = ctx.message.attachments[0].url

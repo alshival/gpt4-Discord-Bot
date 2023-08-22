@@ -6,10 +6,12 @@ from app.config import *
 bot = commands.Bot(command_prefix="!",intents=discord.Intents.all())
 
 from commands.bot_functions import *
+# Set up database tables
 asyncio.get_event_loop().run_until_complete(create_chat_history_table())
 asyncio.get_event_loop().run_until_complete(create_memories())
 asyncio.get_event_loop().run_until_complete(create_reminders())
 asyncio.get_event_loop().run_until_complete(create_fefe_mode_table())
+asyncio.get_event_loop().run_until_complete(create_fefe_model_table())
 
 from commands.fefe import Fefe
 @bot.command()
@@ -43,7 +45,6 @@ async def interpreter(interaction: discord.Interaction, message: str):
     await fefe_interpreter.fefe_interpreter(interaction,message)
 
 from commands.help import help_prompts    
-
 @bot.tree.command(name="help")
 async def help(interaction: discord.Interaction):
     await interaction.response.defer(thinking = True)
@@ -67,6 +68,14 @@ async def help(interaction: discord.Interaction):
     help_text = response['choices'][0]['message']['content']
     
     await interaction.followup.send(help_text,embed=embed1)
+
+@bot.tree.command(name="fefe_model")
+@app_commands.choices(
+    model=[
+        app_commands.Choice(name="gpt-3.5-turbo",value="gpt-3.5-turbo"),
+        app_commands.Choice(name="gpt-4",value="gpt-4")])
+async def fefe_model(interaction: discord.Interaction, model: app_commands.Choice[str]):
+    await change_fefe_model(interaction,model.value)
 
 @bot.tree.command(name="wipe_memories")
 @app_commands.checks.has_permissions(administrator=True)

@@ -34,6 +34,31 @@ async def get_fefe_mode():
     await db.close()
     return mode
 
+async def create_fefe_model_table():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("""
+CREATE TABLE IF NOT EXISTS fefe_model (model VARCHAR);
+INSERT INTO fefe_model VALUES ('gpt-3.5-turbo');
+    """)
+    await db.commit()
+    await db.close()
+async def change_fefe_model(interaction,new_model):
+    db = await create_connection()
+    cursor = await db.cursor()
+    query = "UPDATE fefe_model SET model = ?"
+    await db.execute(query, (new_model,))
+    await db.close()
+    await interaction.response.send_message(f"Fefe's openAi model set: {new_model}")
+async def get_fefe_model():
+    db = await create_connection()
+    cursor = await db.cursor()
+    await cursor.execute("SELECT model FROM fefe_model LIMIT 1")
+    model = await cursor.fetchall()
+    model = model[0][0]
+    await db.close()
+    return model
+
 async def create_chat_history_table():
     db = await create_connection()
     cursor = await db.cursor()
