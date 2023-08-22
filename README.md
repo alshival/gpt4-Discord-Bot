@@ -81,7 +81,7 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 </html>
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%205.00.36%20AM.png?raw=True" alt="Image Description">
-
+Note: Choropleth support currently under development and unstable. Once fine-tuning GPT-4 is available, this feature will be ironed-out.
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-09%204.32.11%20AM.png?raw=True" alt="Data Interpreter">
 
 ## Usage
