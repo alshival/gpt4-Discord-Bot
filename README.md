@@ -66,7 +66,7 @@ REMARK: The bot uses GPT-4 for DATALL-E and Fefe Interpreter. In order to keep c
 If you'd like to use pure GPT-4, it'll cost you daily about a cup of premium coffee (~ $5 to $7). Though a whole month of GPT-3.5-turbo usage costs much less (~$4 for an entire month). But Fefe responds to GIFs much better with GPT-4, which I think makes the experience a lot more fun. I think pure GPT-4 is worth it. If you would like the pure GPT-4, use the slash command `/fefe_model` and select either `gpt-3.5-turbo` or `gpt-4`.
 
 <p align="center">
-    <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-22%206.00.14%20PM.png?raw=True">
+    <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-22%206.32.30%20PM.png?raw=True">
 </p>
 
 Study groups can benefit from a Discord bot that utilizes OpenAI's GPT models. Since AI can make mistakes, the python code used to generate the charts is returned within a python dictionary suitable for fine-tuning an OpenAI model for better performance. 📚🤖📈📉📊📝
