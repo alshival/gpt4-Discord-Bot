@@ -82,8 +82,6 @@ Feel free to use this code as inspiration for utilizing othe models, or reach ou
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-12%205.00.36%20AM.png?raw=True" alt="Image Description">
 
-Note that choropleth map are quite difficult to generate. Fefe currently only supports state-level data. She hasn't learned how to convert between long state name and state abbreviation yet. She currently does well with long names, e.g. `New Jersey`.
-
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-09%204.32.11%20AM.png?raw=True" alt="Data Interpreter">
 
 ## Usage
