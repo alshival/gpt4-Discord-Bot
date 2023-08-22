@@ -23,7 +23,7 @@ I come with a host of features designed to make your Discord experience more int
 🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
 REMARK: The bot uses GPT-4 for DATALL-E and Fefe, Interpreter. In order to keep costs down though, Fefe herself uses GPT-3.5-turbo.
-If you'd like to use pure GPT-4, it'll cost you daily about a cup of premium coffee (~$7). Though a whole month of GPT-3.5-turbo usage costs much less. If you would like to puse pure GPT-4, change the value in `app/config.py`:
+If you'd like to use pure GPT-4, it'll cost you daily about a cup of premium coffee (~$7). Though a whole month of GPT-3.5-turbo usage costs much less. But Fefe's GIF responses are way better with GPT-4. I think pure GPT-4 is worth it. If you would like to puse pure GPT-4, change the value in `app/config.py`:
 ```
 fefe_model = 'gpt-3.5-turbo'
 # for GPT-4
