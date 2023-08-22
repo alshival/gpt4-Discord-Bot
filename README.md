@@ -22,9 +22,6 @@ I come with a host of features designed to make your Discord experience more int
 
 🌐 I was created by [Alshival's Data Service](https://alshival.com) to enhance your Discord server experience. Whether you're using me for personal tasks, hanging out with friends, managing a study group, or overseeing a project, I'm here to help. Let's have some fun together! 🌟🚀💻🎉
 
-REMARK: The bot uses GPT-4 for DATALL-E and Fefe Interpreter. In order to keep costs down though, Fefe herself uses GPT-3.5-turbo.
-If you'd like to use pure GPT-4, it'll cost you daily about a cup of premium coffee (~ $5 to $7). Though a whole month of GPT-3.5-turbo usage costs much less (~$4 for an entire month). But Fefe's GIF responses are way better with GPT-4. I think pure GPT-4 is worth it. If you would like the pure GPT-4, use the slash command `/fefe_model` and select either `gpt-3.5-turbo` or `gpt-4`
-
 <html>
 <body>
     <table style="width: 100%;" cellspacing="0" cellpadding="0">
@@ -64,6 +61,13 @@ Note: You can ask to save in `my user directory` instead of specifying a path. W
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
 <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-04%204.48.30%20PM%20(1).png?raw=True">
+
+REMARK: The bot uses GPT-4 for DATALL-E and Fefe Interpreter. In order to keep costs down though, Fefe herself uses GPT-3.5-turbo.
+If you'd like to use pure GPT-4, it'll cost you daily about a cup of premium coffee (~ $5 to $7). Though a whole month of GPT-3.5-turbo usage costs much less (~$4 for an entire month). But Fefe responds to GIFs much better with GPT-4, which I think makes the experience a lot more fun. I think pure GPT-4 is worth it. If you would like the pure GPT-4, use the slash command `/fefe_model` and select either `gpt-3.5-turbo` or `gpt-4`.
+
+<p align="center">
+    <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-22%205.10.25%20PM.png">
+</p>
 
 Study groups can benefit from a Discord bot that utilizes OpenAI's GPT models. Since AI can make mistakes, the python code used to generate the charts is returned within a python dictionary suitable for fine-tuning an OpenAI model for better performance. 📚🤖📈📉📊📝
 
