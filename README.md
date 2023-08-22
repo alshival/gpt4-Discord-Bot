@@ -10,7 +10,7 @@ I come with a host of features designed to make your Discord experience more int
 
 🔔 I can set reminders for you, ensuring you never miss a deadline or forget about that important meeting. ⏰
 
-💻 Need to write or execute some python code? No problem, I've got you covered, with help from DATALL-E, the Fefe Interpreter, and Exeggutor.
+💻 Need to write or execute some python code? No problem, I've got you covered, with help from DATALL-E, the Fefe Interpreter (formerly the Discord Interpreter), and Exeggutor.
 
 🎨 I can even generate images based on your descriptions. 🖼️
 
