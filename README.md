@@ -64,7 +64,7 @@ fefe_model = 'gpt-4'
     <img src="https://github.com/alshival/gpt4-Discord-Bot/blob/main/app/meta/Screenshot%202023-08-22%2011.25.52%20AM.png?raw=True">
 </center>
         
-Note: You can ask to save in `my user directory` instead of specifying a path. When a user calls Fefe, DATALL-E, or the fefe interpreter, a user directory is created. Any files that are placed in that directory are sent back to the user. You can ask Fefe Interpreter to `export the iris dataset as a .pkl into my user directory`, for example.
+Note: You can ask to save in `my user directory` instead of specifying a path. When a user calls Fefe, DATALL-E, or the fefe interpreter, a user directory is created. Any files that are placed in that directory are sent back to the user. You can ask Fefe Interpreter to `/interpreter export the iris dataset as a .pkl into my user directory`, for example.
 
 Please note that this bot creates a back door to the hardware you are running the bot on, since it depends on the `exec` function. You can spit the output of `.bashrc`, revealing security keys, simply by creating a prompt. Essentially, the Ai can access all files in a sandbox. This is why Discord Interpreter is aimed for small study groups and small teams. It works very well in a virtual environment or on a dedicated raspberry pi. ⚠️🔒🔐
 
