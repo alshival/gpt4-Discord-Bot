@@ -18,13 +18,14 @@ async def browse_urls(text):
     urls = re.findall(r'\b((?!https://media.tenor\.com)(?:https?://|www\.)\S+)\b', text)
     if len(urls) > 0:
         for url in urls:
-            try:
-                url_text = await get_text(url)
-                url_text = url_text[0:min(2000,len(url_text))]
-                # Substitute the URL with its content in the text
-                text = text.replace(url, url_text)
-            except Exception as e:
-                print(f'error downloading URL [{url}]')
+            if 'tenor.com' not in url:
+                try:
+                    url_text = await get_text(url)
+                    url_text = url_text[0:min(2000,len(url_text))]
+                    # Substitute the URL with its content in the text
+                    text = text.replace(url, url_text)
+                except Exception as e:
+                    print(f'error downloading URL [{url}]')
         return text
     else:
         return text

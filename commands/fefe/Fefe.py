@@ -36,18 +36,21 @@ async def talk_to_fefe(ctx,message):
     
     sample_string = json.dumps(sample_prompts)
     sample_tokens = len(enc.encode(sample_string))
-
     messages.extend(sample_prompts)
 
     # Check tokens for latest prompt
     new_prompt = {"role": "user", "content": f"{ctx.author.mention}: {message}"}
     latest_string = json.dumps(new_prompt)
     latest_token = len(enc.encode(latest_string))
-
+    
     # Load in past prompts
-    past_prompts = await fetch_prompts(db,str(ctx.channel.id), 4)
-    past_prompts = check_tokens(past_prompts,fefe_model,completion_limit + latest_token + sample_tokens) 
-        
+    past_prompts = await fetch_prompts(db,str(ctx.channel.id), 3)
+    past_prompts = check_tokens(
+        past_prompts,
+        fefe_model,
+        completion_limit + latest_token + sample_tokens
+    ) 
+
     messages.extend(past_prompts)
 
     # Load newest prompt
@@ -61,7 +64,7 @@ async def talk_to_fefe(ctx,message):
         n=1,
         temperature=0.5,
         top_p=1,
-        frequency_penalty=0.0,
+        frequency_penalty=0.4,
         presence_penalty=0.6,
     )
 

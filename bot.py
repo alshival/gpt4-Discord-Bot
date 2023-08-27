@@ -326,10 +326,9 @@ async def on_ready():
     
     # Return the first choice's text
     greeter = re.sub(r"^[\"']|[\"']$", "",random.choice(response.choices).text.strip())
-
+    print(greeter)
     # Get the first text channel
     first_text_channel = await get_first_text_channel(bot)
-    
     # Store this in memory.
     db = await create_connection()
     await store_prompt(db,json.dumps({'role':'user','content':'You are an Ai anime girl named Fefe who just joined the discord server.'}),'bot','bot','bot')
